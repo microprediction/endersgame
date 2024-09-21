@@ -52,7 +52,7 @@ class BaseAttacker(ABC):
     def __call__(self, y: float, k:int=None)->float:
         """
         :param y:   The current data point in the sequence.
-        :param k:   The prediction horizon 
+        :param k:   The prediction horizon
         :return:    A float indicating directional opinion, if any (1=up, 0=neither, -1=down)
         """
         return 0
@@ -61,7 +61,6 @@ class BaseAttacker(ABC):
     def fit(self):
         """Fit method to be implemented by subclasses."""
         self.fitted=True
-
 
 
 

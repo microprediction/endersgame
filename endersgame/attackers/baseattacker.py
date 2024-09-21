@@ -39,6 +39,8 @@ class BaseAttacker(ABC):
 
         2) Horizon. It is safe to assume that 'k' will be consistent from one invocation to the next.
 
+        3) History. There is no hard convention for how to accumulate and store history.
+
 
     """
 
@@ -48,7 +50,11 @@ class BaseAttacker(ABC):
 
     @abstractmethod
     def __call__(self, y: float, k:int=None)->float:
-        """Should handle all online learning and buffering of history as needed."""
+        """
+        :param y:   The current data point in the sequence.
+        :param k:   The prediction horizon 
+        :return:    A float indicating directional opinion, if any (1=up, 0=neither, -1=down)
+        """
         return 0
 
     @abstractmethod

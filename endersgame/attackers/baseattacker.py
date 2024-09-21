@@ -49,13 +49,22 @@ class BaseAttacker(ABC):
         self.fitted = False
 
     @abstractmethod
-    def __call__(self, y: float, k:int=None)->float:
+    def tick(self, y:float):
+        pass
+
+    @abstractmethod
+    def predict(self, k:int=None):
+        pass
+
+
+    def tick_and_predict(self, y: float, k:int=None)->float:
         """
         :param y:   The current data point in the sequence.
         :param k:   The prediction horizon
         :return:    A float indicating directional opinion, if any (1=up, 0=neither, -1=down)
         """
-        return 0
+        self.tick(y=y)
+        return self.predict(k=k)
 
     @abstractmethod
     def fit(self):

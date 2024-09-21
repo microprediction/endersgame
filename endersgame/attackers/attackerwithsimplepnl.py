@@ -9,7 +9,7 @@ class AttackerWithSimplePnL(BaseAttacker, SimplePnL):
         BaseAttacker.__init__(self)
         SimplePnL.__init__(self)
 
-    def __call__(self, y: float, k: int = None) -> float:
+    def tick_and_predict(self, y: float, k: int = None) -> float:
         decision = 0
         self.update_pnl(y=y, decision=decision)
         return decision

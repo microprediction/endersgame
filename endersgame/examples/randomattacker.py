@@ -9,7 +9,7 @@ class RandomAttacker(AttackerWithSimplePnL):
 
     def __call__(self, y: float, k: int = None) -> float:
         decision = np.sign(0.2*np.random.randn())
-        self.update_pnl(y=y, decision=decision)
+        self.tick(y=y, decision=decision)
         return decision
 
 
@@ -28,7 +28,7 @@ if __name__=='__main__':
         def __call__(self, y: float, k: int = None) -> float:
             # Generate a random decision (+1 or -1) based on a random Gaussian variable
             decision = int(np.random.randn())  # Random noise with standard deviation 0.2
-            self.update_pnl(y=y, decision=decision)
+            self.tick(y=y, decision=decision)
             return decision
 
 

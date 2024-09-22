@@ -56,7 +56,6 @@ class BaseAttacker(ABC):
     def predict(self, k:int=None):
         pass
 
-
     def tick_and_predict(self, y: float, k:int=None)->float:
         """
         :param y:   The current data point in the sequence.
@@ -68,7 +67,13 @@ class BaseAttacker(ABC):
 
     @abstractmethod
     def fit(self):
-        """Fit method to be implemented by subclasses."""
+        """Fit method to be implemented by subclasses.
+
+        You can assume that every epoch (a large, unspecified number of observations ... say 10000 to be concrete) your
+        attacker's fit() method will be called. You can use this for periodic time-intensive fitting that can take (again, to be
+        concrete, a few minutes up to an hour).
+
+        """
         self.fitted=True
 
 

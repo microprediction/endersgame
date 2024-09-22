@@ -20,21 +20,28 @@ class SimplePnL:
     def __init__(self):
         self.reset_pnl()
 
-    def update_pnl(self, y, decision):
-        self._record_decision(y=y, decision=decision)
-        self._resolve_decisions(y=y)
+    def tick_pnl(self, y:float, k:int, decision:float):
+        """
+
+            Adds non-zero 'decision' to a queue so it can be judged later
+            And uses revealed ground truth y to evaluate past decisions
+
+        """
+        self._add_decision_to_queue(y=y, k=k, decision=decision)
+        self._resolve_decisions_on_queue(y=y)
 
     def reset_pnl(self):
         """Resets all PnL tracking variables within the accounting property."""
-        self.accounting = {
+        self.simplepnl = {
+            "backoff":100,              # Minimum time between non-zero predictions
             "current_ndx": 0,
             "last_attack_ndx": None,
             "pending_decisions": [],   # Store decisions waiting for future values
             "pnl_data": [],            # List to store the resolved predictions
-            "pnl_columns": ['decision_ndx','resolution_ndx','decision','y_decision','y_resolution','pnl']
+            "pnl_columns": ['decision_ndx','resolution_ndx','horizon','decision','y_decision','y_resolution','pnl']
         }
 
-    def _record_decision(self, y:float, decision: float):
+    def _add_decision_to_queue(self, y:float, k:int, decision: float):
         """
         Store a decision made at the current time step.
 
@@ -43,30 +50,30 @@ class SimplePnL:
         """
         # Don't record a decision if another decision has recently been made
         # (We want to cut out machine gun attacks)
-        if self.accounting["last_attack_ndx"] is not None and \
-                (self.accounting['current_ndx'] - self.accounting["last_attack_ndx"]) < 100:
-            self.accounting["current_ndx"] += 1
+        if self.simplepnl["last_attack_ndx"] is not None and \
+                (self.simplepnl['current_ndx'] - self.simplepnl["last_attack_ndx"]) < self.simplepnl['backoff']:
+            self.simplepnl["current_ndx"] += 1
             return
 
         # Store the decision and the time it was made
         if decision != 0:
-            self.accounting["pending_decisions"].append((self.accounting['current_ndx'], y, decision))
-            self.accounting["last_attack_ndx"] = self.accounting['current_ndx']
+            self.simplepnl["pending_decisions"].append((self.simplepnl['current_ndx'], y, k, decision))
+            self.simplepnl["last_attack_ndx"] = self.simplepnl['current_ndx']
 
         # Increment total observations
-        self.accounting["current_ndx"] += 1
+        self.simplepnl["current_ndx"] += 1
 
-    def _resolve_decisions(self, y: float):
+    def _resolve_decisions_on_queue(self, y: float):
         """
         Resolve pending decisions by calculating PnL when enough time has passed and the future value is available.
 
         - y: The newly arrived data point (the current value of the sequence).
         """
         resolved_decision_ndxs = []
-        current_ndx = self.accounting['current_ndx']
-        for pending_ndx, (decision_ndx, y_prev, decision) in enumerate(self.accounting["pending_decisions"]):
-            k = current_ndx - decision_ndx  # Horizon passed since the decision
-            if k >= 100:  # Adjust '100' to your desired prediction horizon
+        current_ndx = self.simplepnl['current_ndx']
+        for pending_ndx, (decision_ndx, y_prev, k, decision) in enumerate(self.simplepnl["pending_decisions"]):
+            num_observations_since_decision = current_ndx - decision_ndx  # Horizon passed since the decision
+            if num_observations_since_decision >= k:  # Adjust '100' to your desired prediction horizon
                 # Calculate PnL based on whether the decision was positive or negative
                 if decision > 0:
                     pnl = y - y_prev  
@@ -75,23 +82,24 @@ class SimplePnL:
                 else:
                     raise ValueError('A non-zero decision was logged to the queue')
 
-                # ['decision_ndx','resolution_ndx','decision','y_decision','y_resolution','pnl']
-                pnl_data = (decision_ndx, current_ndx, decision, y_prev, y, pnl )
-                self.accounting["pnl_data"].append(pnl_data)
+                # ['decision_ndx','resolution_ndx','k','decision','y_decision','y_resolution','pnl']
+                pnl_data = (decision_ndx, current_ndx, k, decision, y_prev, y, pnl )
+                resolved_decision_ndxs.append(pending_ndx)
+                self.simplepnl["pnl_data"].append(pnl_data)
 
         # resolved_decision_ndxs contains a list of indexes into self.accounting["pending_decisions"] that we remove:
-        self.accounting["pending_decisions"] = [ d for (pndx,d) in enumerate(self.accounting['pending_decisions']) if pndx not in resolved_decision_ndxs ]
+        self.simplepnl["pending_decisions"] = [d for (pndx, d) in enumerate(self.simplepnl['pending_decisions']) if pndx not in resolved_decision_ndxs]
 
     def get_pnl_tuples(self):
         """
           Takes resolved decision tuples and coverts them into a format that is easily consumed as a dataframe
           pnl_data = (decision_ndx, current_ndx, y_prev, y, decision, pnl )
         """
-        return self.accounting["pnl_data"]
+        return self.simplepnl["pnl_data"]
 
 
     def get_pnl_records(self)->[Dict]:
-        records = [ dict(zip(self.accounting['pnl_columns'], pnl_rec)) for pnl_rec in self.accounting["pnl_data"]]
+        records = [dict(zip(self.simplepnl['pnl_columns'], pnl_rec)) for pnl_rec in self.simplepnl["pnl_data"]]
         return records
 
 
@@ -99,9 +107,11 @@ class SimplePnL:
         """
         Returns a summary of PnL-related statistics from the resolved decisions.
         """
-        total_profit = sum([entry[-1] for entry in self.accounting["pnl_data"] if entry[-1] is not None])
+        total_profit = sum([entry[-1] for entry in self.simplepnl["pnl_data"] if entry[-1] is not None])
         return {
-            "current_ndx": self.accounting["current_ndx"],
-            "num_resolved_decisions": len(self.accounting["pnl_data"]),
+            "current_ndx": self.simplepnl["current_ndx"],
+            "num_resolved_decisions": len(self.simplepnl["pnl_data"]),
             "total_profit": total_profit
         }
+
+

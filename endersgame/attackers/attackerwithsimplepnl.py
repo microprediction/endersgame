@@ -10,9 +10,16 @@ class AttackerWithSimplePnL(BaseAttacker, SimplePnL):
         SimplePnL.__init__(self)
 
     def tick_and_predict(self, y: float, k: int = None) -> float:
-        decision = 0
-        self.update_pnl(y=y, decision=decision)
+        self.tick(y=y)
+        decision = self.predict(k=k)
+        self.tick_pnl(y=y, k=k, decision=decision)
         return decision
+
+    def tick(self, y):
+        pass
+
+    def predict(self, k):
+        return 0
 
     def fit(self):
         # Your fitting logic here

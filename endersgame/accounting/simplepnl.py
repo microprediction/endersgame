@@ -1,4 +1,5 @@
 from typing import Dict
+import numpy as np
 
 
 class SimplePnL:
@@ -104,14 +105,36 @@ class SimplePnL:
 
 
     def get_pnl_summary(self):
-        """
-        Returns a summary of PnL-related statistics from the resolved decisions.
-        """
-        total_profit = sum([entry[-1] for entry in self.simplepnl["pnl_data"] if entry[-1] is not None])
+        """Returns a summary of PnL-related statistics from the resolved decisions."""
+        pnl_values = [entry[-1] for entry in self.simplepnl["pnl_data"] if entry[-1] is not None]
+        total_profit = sum(pnl_values)
+        num_resolved = len(pnl_values)
+
+        if num_resolved == 0:
+            return {
+                "current_ndx": self.simplepnl["current_ndx"],
+                "num_resolved_decisions": num_resolved,
+                "total_profit": total_profit,
+                "win_loss_ratio": None,
+                "average_profit_per_decision": None,
+                "avg_profit_per_decision_std_ratio": None
+            }
+
+        wins = sum(1 for pnl in pnl_values if pnl > 0)
+        losses = sum(1 for pnl in pnl_values if pnl < 0)
+        win_loss_ratio = wins / losses if losses != 0 else float('inf')  # Avoid division by zero
+
+        avg_profit_per_decision = total_profit / num_resolved
+        pnl_std = np.std(pnl_values) if num_resolved > 1 else 0  # Handle std for single entry case
+        standardized_profit = avg_profit_per_decision / pnl_std if pnl_std != 0 else float('inf')
+
         return {
             "current_ndx": self.simplepnl["current_ndx"],
-            "num_resolved_decisions": len(self.simplepnl["pnl_data"]),
-            "total_profit": total_profit
+            "num_resolved_decisions": num_resolved,
+            "total_profit": total_profit,
+            "wins":wins,
+            "losses":losses,
+            "win_loss_ratio": win_loss_ratio,
+            "profit_per_decision": avg_profit_per_decision,
+            "standardized_profit_per_decision": standardized_profit
         }
-
-

@@ -18,6 +18,8 @@ An attacker typically does the following:
 - **Predict**: Based on the attacker’s internal state and logic, it may predict whether the future value is likely to be higher (returns a positive number), lower (returns a negative number), or it may abstain (returns zero).
   
 ### When to Signal
+To elaborate: 
+
 - If the attacker believes the series will on average increase in value: return a positive number (indicating "up").
 
 

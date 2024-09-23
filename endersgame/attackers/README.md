@@ -3,14 +3,13 @@
 
 # Attackers
 
-
 ## Overview
 
 The `BaseAttacker` class provides a pattern designing and implementing an "attacker" model that consumes a sequence of numerical data points (such as stock prices, bond prices, or any time series) and attempts to predict its future movement. The core idea behind this framework is to detect deviations from a martingale-like property, where the expectation of the future value is equal to the current value. That is:
 
- $$ E[y_{t+k}] = y_t $$
+ $$ E[x_{t+k}] = x_t $$
 
-In other words, the attacker’s goal is to analyze incoming data points and occasionally signal whether the future value will deviate upward or downward from the current point. This is useful in scenarios where the attacker attempts to exploit trends or patterns for profit or performance measures. However it is also useful much more generally, as a means of performing ongoing analysis of prediction model residuals in any industry. 
+In other words, the attacker’s goal is to analyze incoming data points and occasionally signal whether the future value will deviate upward or downward from the current point. This is useful in scenarios where the attacker attempts to exploit trends or patterns for profit or performance measures. However, it is also useful much more generally, as a means of performing ongoing analysis of prediction model residuals in any industry. 
 
 ## Key Responsibilities of an Attacker
 
@@ -25,14 +24,14 @@ An attacker typically does the following:
 
 ## How Attackers Are Judged
 
-Attackers are judged by their ability to profit from correctly predicting the directional change in a sequence over a future time horizon $k$, with a reward equal to the change in value. For example, if the attacker signals "up" at time $t$ and the value at $t+k$ is indeed higher than the value at $t$, then the attacker’s decision is considered profitable. The profit can be measured as $y_{t+k} - y_t$. Conversely, a loss might be incurred if the direction chosen is wrong. 
+Attackers are judged by their ability to profit from correctly predicting the directional change in a sequence over a future time horizon $k$, with a reward equal to the change in value. For example, if the attacker signals "up" at time $t$ and the value at $t+k$ is indeed higher than the value at $t$, then the attacker’s decision is considered profitable. The profit can be measured as $x_{t+k} - x_t$. Conversely, a loss might be incurred if the direction chosen is wrong. 
 
 There's no need to implement this yourself. Use the [SimplePnl](https://github.com/microprediction/endersgame/blob/main/endersgame/accounting/simplepnl.py) mixin as demonstrated in [attackerwithsimplepnl.py](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attackerwithsimplepnl.py). 
 
 ### Core Components to Implement
 When creating your own attacker, you should implement the following methods:
 
-1. **`tick(self, y: float)`**:
+1. **`tick(self, x: float)`**:
     - Assimilate the current data point into the model’s state.
     - This function is responsible for updating the internal state with each new incoming observation.
 
@@ -48,7 +47,7 @@ When creating your own attacker, you should implement the following methods:
 
 Here is an example of how the attacker might function in practice:
 
-4. **Tick and Predict**: The combined method `tick_and_predict(y, k)` will be called to test your attacker, but you usually don't need to separately implement it. 
+4. **Tick and Predict**: The combined method `tick_and_predict(x, k)` will be called to test your attacker, but you usually don't need to separately implement it. 
 
 ### Prediction horizon
 
@@ -72,7 +71,7 @@ To create an attacker, you simply extend the `BaseAttacker` class and implement 
 
 ```python
 class MyAttacker(BaseAttacker):
-    def tick(self, y: float):
+    def tick(self, x: float):
         # Update internal state with the new data point
         pass
     
@@ -86,10 +85,9 @@ Now to use, we simply instantiate and feed it one data point at a time:
 ```python
 attacker = MyAttacker()
 
-for t, y in enumerate(sequence_of_data):
-    prediction = attacker.tick_and_predict(y, k=100)
-    print(f"Time {t}: Price {y}, Prediction {prediction}")
+for t, x in enumerate(sequence_of_data):
+    prediction = attacker.tick_and_predict(x, k=100)
+    print(f"Time {t}: Price {x}, Prediction {prediction}")
 ```
-
 
 

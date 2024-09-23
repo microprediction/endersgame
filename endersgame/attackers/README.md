@@ -86,12 +86,11 @@ To create an attacker, you simply extend the `BaseAttacker` class and implement 
 ```python
 class MyAttacker(BaseAttacker):
     def tick(self, x: float):
-        # Update internal state with the new data point
-        pass
+        # Put your logic for internal state updating here
     
     def predict(self, k: int = None) -> float:
-        # Return a directional prediction: -1 for down, 1 for up, 0 for no opinion
-        pass
+        # Put your prediction logic here. Return a directional prediction: -1 for down, 1 for up, 0 for no opinion
+        
 ```
 
 Now to use, we simply instantiate and feed it one data point at a time:

@@ -1,17 +1,5 @@
 # endersgame ![tests](https://github.com/microprediction/endersgame/workflows/endersgame/tests.svg)
 
-Think about the workflow for the participant
 
-### Steps
 
-- Write an attacker (colab notebook)
-- Run sequentially against 1 live stream
-- View statistics
-- View visualizations (maybe gamified)
-- Run against 100 live streams 
-
-Save down the notebook and upload it. 
-
-### Nice to have
-
-- Run against history
+- [Attackers](https://github.com/microprediction/endersgame/tree/main/endersgame/attackers) README

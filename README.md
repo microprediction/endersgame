@@ -1,4 +1,4 @@
-# endersgame
+# endersgame ![tests](https://github.com/microprediction/endersgame/workflows/endersgame/tests.svg)
 
 Think about the workflow for the participant
 

@@ -41,14 +41,14 @@ class MacdAttacker(AttackerWithSimplePnL):
         self.observation_count = 0
         self.warmup = warmup
 
-    def tick(self, y: float, k: int = None) -> float:
+    def tick(self, x: float, k: int = None) -> float:
         """
         Update the MACD and PnL tracking with each new observation.
         """
 
         # Update the MACD signal
-        if not np.isnan(y):
-            self.macd.learn_one(x=y)
+        if not np.isnan(x):
+            self.macd.learn_one(x=x)
 
             # Also update the running Var of the signal
             macd_signal = self.macd.transform_one()['macd_line']
@@ -83,15 +83,15 @@ class MacdAttacker(AttackerWithSimplePnL):
 
 if __name__ == '__main__':
     from endersgame.syntheticdata.momentumregimes import momentum_regimes
-    y_values = momentum_regimes(n=2000)
+    xs = momentum_regimes(n=2000)
     attacker = MacdAttacker(window_slow=26, window_fast=12, window_sign=9, decision_threshold=2.5,
                             min_abstention=5, fading_factor=0.05, warmup=10)
 
     # Process each point and make decisions
     k=100  # Horizon
-    for i, y in enumerate(y_values):
-        decision = attacker.tick_and_predict(y=y, k=k)
-        print(f"Step {i + 1}: Price: {y:.2f}, Decision: {decision}")
+    for i, x in enumerate(xs):
+        decision = attacker.tick_and_predict(x=x, k=k)
+        print(f"Step {i + 1}: Price: {x:.2f}, Decision: {decision}")
 
     # Print the final PnL summary after all points
     summary = attacker.get_pnl_summary()

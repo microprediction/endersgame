@@ -18,8 +18,8 @@ class BufferingAttacker(BaseAttacker):
         self._prediction_period = 25       # How often to predict
 
 
-    def tick(self,y:float)->float:
-        self._history.append(y)
+    def tick(self, x:float)->float:
+        self._history.append(x)
         if len(self._history) > self._max_history_len:
             self._history = self._history[-19000:]
 
@@ -50,7 +50,7 @@ if __name__=='__main__':
     ys = np.cumsum(np.random.randn(500))
     attacker = BufferingAttacker()
     for y in ys:
-        decision = attacker.tick_and_predict(y=y)
+        decision = attacker.tick_and_predict(x=y)
         print(decision)
 
 

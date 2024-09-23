@@ -1,1 +1,1 @@
-from endersgame.bot.client import Bot
+from endersgame.bot.bot import Bot

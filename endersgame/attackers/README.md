@@ -88,11 +88,11 @@ When creating your own attacker, you should implement the following methods:
 
 ### Conventions
 
-- **Prediction Horizon (`k`)**: The horizon $k$ is a consistent future time step over which the attacker is expected to predict. In most cases, you can assume $k$ will remain constant throughout the sequence.
+- **Consistent prediction Horizon (`k`)**: You can generally expect the same prediction horizon $k$ to be fed to the attacker over and over again. 
 
 - **History**  While the framework does not impose strict rules on how to maintain or store historical data. You may choose to do so and an example is provided in [bufferingattacker](https://github.com/microprediction/endersgame/blob/main/endersgame/examples/bufferingattacker.py). 
 
-The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. By implementing only the `tick()` and `predict()` methods, you can create a wide range of attack strategies suited to different types of time series data. 
+The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 
 
 
 

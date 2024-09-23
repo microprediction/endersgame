@@ -75,8 +75,8 @@ While the framework does not impose strict rules on how to maintain or store his
 ## Fitting the Attacker
 If your attacker requires periodic training or retraining, implement the `fit()` method, which will be called every epoch (a large number of observations, such as 10,000). This allows you to update your model without needing to compute intensive operations for every data point.
 
-## Conclusion
-The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. By implementing only the `tick()` and `predict()` methods, you can create a wide range of attack strategies suited to different types of time series data. The modular design also allows you to combine this with other predictive models and frameworks to build powerful forecasting tools.
+## Philosophy
+The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. By implementing only the `tick()` and `predict()` methods, you can create a wide range of attack strategies suited to different types of time series data. 
 
 
 ## Example 

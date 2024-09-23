@@ -50,10 +50,21 @@ class BaseAttacker(ABC):
 
     @abstractmethod
     def tick(self, y:float):
+        """
+
+               Assimilate the current data point somehow into the model's state
+
+        :param y:
+        :return:
+        """
         pass
 
     @abstractmethod
-    def predict(self, k:int=None):
+    def predict(self, k:int=None)->float:
+        """
+        :param k:  Horizon
+        :return: Usually returns 0. Sometimes returns a positive number or negative number.
+        """
         pass
 
     def tick_and_predict(self, y: float, k:int=None)->float:

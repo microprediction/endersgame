@@ -5,7 +5,7 @@
 
 ## Overview
 
-The `BaseAttacker` class provides a pattern designing and implementing an "attacker" model that consumes a univariate sequence of numerical data points (such as stock prices, bond prices, or any time series) and attempts to predict its future movement. The core idea behind this framework is to detect deviations from a martingale-like property, where the expectation of the future value is equal to the current value. That is:
+The `BaseAttacker` class provides a pattern designing and implementing an "attacker" model that consumes a univariate sequence of numerical data points (such as stock prices, bond prices, or any time series) $x_1, x_2, \dots x_t$ and attempts to predict its future movement. The core idea behind this framework is to detect deviations from a martingale-like property, where the expectation of the future value is equal to the current value. That is:
 
 $$ E[x_{t+k}] \approx x_t $$
 

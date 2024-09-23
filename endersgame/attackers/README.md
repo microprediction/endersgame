@@ -18,8 +18,14 @@ An attacker typically does the following:
 - **Predict**: Based on the attacker’s internal state and logic, it may predict whether the future value is likely to be higher (returns a positive number), lower (returns a negative number), or it may abstain (returns zero).
   
 ### When to Signal
-- If the attacker believes the series will increase in value: return a positive number (indicating "up").
-- If the attacker believes the series will decrease in value: return a negative number (indicating "down").
+- If the attacker believes the series will on average increase in value: return a positive number (indicating "up").
+
+   $$ E[x_{t+k}] >  x_t $$
+  
+- If the attacker believes the series will on average decrease in value: return a negative number (indicating "down").
+
+       $$ E[x_{t+k}] >  x_t $$
+
 - In all other cases, return zero to indicate no opinion.
 
 ## How Attackers Are Judged

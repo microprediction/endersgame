@@ -10,6 +10,11 @@ class AttackerWithSimplePnL(BaseAttacker, SimplePnL):
         SimplePnL.__init__(self)
 
     def tick_and_predict(self, y: float, k: int = None) -> float:
+        """
+        :param y:
+        :param k:
+        :return:
+        """
         self.tick(y=y)
         decision = self.predict(k=k)
         self.tick_pnl(y=y, k=k, decision=decision)

@@ -2,7 +2,6 @@ from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
 from endersgame.rivertransformers.macd import MACD
 from river import stats
 import numpy as np
-import matplotlib.pyplot as plt
 import math
 
 
@@ -14,7 +13,7 @@ class MacdAttacker(AttackerWithSimplePnL):
 
     """
 
-    def __init__(self, window_slow=26, window_fast=12, window_sign=9, decision_threshold=2.5, min_abstention=50,
+    def __init__(self, window_slow=26, window_fast=12, window_sign=9, decision_threshold=0.5, min_abstention=50,
                  fading_factor=0.01, warmup=500):
         """
         Parameters:
@@ -48,12 +47,13 @@ class MacdAttacker(AttackerWithSimplePnL):
         """
 
         # Update the MACD signal
-        self.macd.learn_one(x=y)
+        if not np.isnan(y):
+            self.macd.learn_one(x=y)
 
-        # Also update the running Var of the signal
-        macd_signal = self.macd.transform_one()['macd_line']
-        if not np.isnan(macd_signal):
-            self.ewvar_macd_signal.update(macd_signal)
+            # Also update the running Var of the signal
+            macd_signal = self.macd.transform_one()['macd_line']
+            if not np.isnan(macd_signal):
+                self.ewvar_macd_signal.update(macd_signal)
 
 
     def predict(self, k: int = None) -> float:
@@ -82,50 +82,16 @@ class MacdAttacker(AttackerWithSimplePnL):
 
 
 if __name__ == '__main__':
-    # Parameters for the time series
-    num_points = 5000  # Long series
-    regime_change_prob = 0.01  # Probability of switching between regimes
-    momentum_strength = 0.5  # Strength of trends in momentum regimes
-    bounce_strength = 0.3  # Strength of reversions in bounce regimes
-    noise_level = 0.2  # Random noise level
-
-    # Initialize time series
-    y_values = np.zeros(num_points)
-
-    # Set the initial regime (0 = bounce, 1 = momentum)
-    current_regime = np.random.choice([0, 1])
-
-    for i in range(1, num_points):
-        # Random chance to switch regime
-        if np.random.rand() < regime_change_prob:
-            current_regime = 1 - current_regime  # Switch between bounce and momentum
-
-        if current_regime == 0:  # Bounce regime
-            # Bounce around a mean (mean-reverting behavior)
-            y_values[i] = y_values[i - 1] + bounce_strength * (
-                        np.random.randn() - y_values[i - 1]) + noise_level * np.random.randn()
-        else:  # Momentum regime
-            # Trending behavior (momentum)
-            direction = np.sign(np.random.randn())  # Randomly trend up or down
-            y_values[i] = y_values[i - 1] + direction * momentum_strength + noise_level * np.random.randn()
-
-    # Instantiate the MACD attacker with a specific fading factor
+    from endersgame.syntheticdata.momentumregimes import momentum_regimes
+    y_values = momentum_regimes(n=2000)
     attacker = MacdAttacker(window_slow=26, window_fast=12, window_sign=9, decision_threshold=2.5,
-                            min_abstention=50, fading_factor=0.05)
+                            min_abstention=5, fading_factor=0.05, warmup=10)
 
     # Process each point and make decisions
+    k=100  # Horizon
     for i, y in enumerate(y_values):
-        decision = attacker.tick(y=y)
+        decision = attacker.tick_and_predict(y=y, k=k)
         print(f"Step {i + 1}: Price: {y:.2f}, Decision: {decision}")
-
-    # Plot the time series
-    plt.figure(figsize=(12, 6))
-    plt.plot(y_values, label="Simulated Price Series")
-    plt.title("Simulated Time Series (Alternating Between Momentum and Bounce Regimes)")
-    plt.xlabel("Time")
-    plt.ylabel("Price")
-    plt.legend()
-    plt.show()
 
     # Print the final PnL summary after all points
     summary = attacker.get_pnl_summary()

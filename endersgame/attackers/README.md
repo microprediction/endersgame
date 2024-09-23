@@ -20,13 +20,13 @@ An attacker typically does the following:
 ### When to Signal
 - If the attacker believes the series will on average increase in value: return a positive number (indicating "up").
 
-   $$ E[x_{t+k}] >  x_t $$
+       $$ E[x_{t+k}] >  x_t + \epsilon $$
   
 - If the attacker believes the series will on average decrease in value: return a negative number (indicating "down").
 
-       $$ E[x_{t+k}] >  x_t $$
+       $$ E[x_{t+k}] <  x_t - \epsilon $$
 
-- In all other cases, return zero to indicate no opinion.
+- In all other cases, return zero to indicate no opinion. The constant $\epsilon$ is game dependent. 
 
 ## How Attackers Are Judged
 

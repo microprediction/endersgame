@@ -42,18 +42,19 @@ When creating your own attacker, you should implement the following methods:
     - This method is periodically called after large batches of observations (e.g., every 10,000 observations).
     - Use it to perform more intensive fitting or retraining processes that require additional computation.
 
-### Example Workflow
+### 
 
 Here is an example of how the attacker might function in practice:
 
-1. **Tick**: Assimilate the current data point $y_t$ by calling `tick(y)`.
-2. **Predict**: After assimilating the data point, call `predict(k)` to issue a directional opinion for the future value \( y_{t+k} \).
-3. **Tick and Predict**: The combined method `tick_and_predict(y, k)` allows you to both assimilate a new observation and issue a prediction in one step.
+4. **Tick and Predict**: The combined method `tick_and_predict(y, k)` will be called to test your attacker, but you usually don't need to separately implement it. 
 
-### Horizon and Assumptions
+### Prediction horizon
 
 - **Prediction Horizon (`k`)**: The horizon $k$ is a consistent future time step over which the attacker is expected to predict. In most cases, you can assume $k$ will remain constant throughout the sequence.
-- **History**: While the framework does not impose strict rules on how to maintain or store historical data, it is often useful to track prior observations to inform your model’s predictions.
+
+### History
+  
+While the framework does not impose strict rules on how to maintain or store historical data. You may choose to do so and an example is provided in [bufferingattacker](https://github.com/microprediction/endersgame/blob/main/endersgame/examples/bufferingattacker.py). 
 
 
 ## Fitting the Attacker

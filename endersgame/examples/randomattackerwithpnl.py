@@ -7,29 +7,11 @@ class RandomAttacker(AttackerWithSimplePnL):
     def __init__(self):
         super().__init__()
 
-    def __call__(self, y: float, k: int = None) -> float:
-        decision = np.sign(0.2*np.random.randn())
-        self.tick(y=y, decision=decision)
+    def tick_and_predict(self, y: float, k: int = None) -> float:
+        decision = int(0.5*np.random.randn())
+        self.tick_pnl(y=y, k=k, decision=decision)
         return decision
 
-
-
-if __name__=='__main__':
-    # Process 500 Brownian motion points and then spit out the PnL
-    from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
-    import numpy as np
-
-
-    class RandomAttacker(AttackerWithSimplePnL):
-
-        def __init__(self):
-            super().__init__()
-
-        def __call__(self, y: float, k: int = None) -> float:
-            # Generate a random decision (+1 or -1) based on a random Gaussian variable
-            decision = int(np.random.randn())  # Random noise with standard deviation 0.2
-            self.tick(y=y, decision=decision)
-            return decision
 
 
 if __name__ == '__main__':
@@ -39,9 +21,11 @@ if __name__ == '__main__':
         # Instantiate the attacker
         attacker = RandomAttacker()
 
+        k = 10  # horizon
+
         # Process each point and make decisions
         for y in y_values:
-            decision = attacker(y=y)
+            decision = attacker.tick_and_predict(y=y,k=k)
             print(f"Price: {y:.2f}, Decision: {decision}")
 
         # Print the final PnL summary after 500 points

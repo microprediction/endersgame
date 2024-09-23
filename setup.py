@@ -26,12 +26,13 @@ setup(
     packages=["endersgame",
               "endersgame.accounting",
               "endersgame.attackers",
+              "endersgame.rivertransformers",
                 "endersgame.bot"],
     test_suite='pytest',
     tests_require=['pytest'],
     include_package_data=True,
     extras_require={"full":[]},
-    install_requires=["numpy"],
+    install_requires=["numpy","river"],
     entry_points={
         "console_scripts": [
             "endersgame=endersgame.__main__:main",

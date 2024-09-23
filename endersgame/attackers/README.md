@@ -32,7 +32,9 @@ $$ E[x_{t+k}] >  x_t + \epsilon $$
 $$ E[x_{t+k}] <  x_t - \epsilon $$
 
 
-- In all other cases, return zero to indicate no opinion. The constant $\epsilon$ is game dependent. 
+- In all other cases, return zero to indicate no opinion.
+
+The constant $\epsilon$ is game dependent. 
 
 ## How Attackers Are Judged
 

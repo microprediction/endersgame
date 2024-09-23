@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from IPython.display import display
 from typing import List
-from endersgame.bot.client import StreamPoint, Prediction
+from endersgame.bot.bot import StreamPoint, Prediction
 
 # Define margin adjustment functions
 def margin_down(y: float, margin: float = 0.1) -> float:

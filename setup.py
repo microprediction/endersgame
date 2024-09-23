@@ -26,6 +26,8 @@ setup(
     packages=["endersgame",
               "endersgame.accounting",
               "endersgame.attackers",
+              "endersgame.syntheticdata",
+              "endersgame.anomaly",
               "endersgame.rivertransformers",
                 "endersgame.bot"],
     test_suite='pytest',

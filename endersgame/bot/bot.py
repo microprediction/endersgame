@@ -1,28 +1,16 @@
 import asyncio
 import json
 from collections import defaultdict
-from datetime import datetime
+import time
 from abc import abstractmethod, ABC
 
 import websockets
 import requests
 import nest_asyncio
-from pydantic import BaseModel
 
-class Prediction(BaseModel):
-    value: float
-    # TODO: Oneof?
-    t: datetime = None # absolute time
-    n: int = None # relative horizon
+from endersgame.bot.replay import Replay
+from endersgame.bot.streams import StreamPoint, Prediction, StreamBatch
 
-class StreamPoint(BaseModel):
-    substream_id: str
-    value: float
-    t: datetime = None # absolute time
-    n: int = None      # relative time
-
-class StreamBatch(BaseModel):
-    points: list[StreamPoint] = []
 
 class Sink(ABC):
     @abstractmethod
@@ -60,28 +48,12 @@ class Bot:
     def with_substream_sink(self, substream_id: str, sink: Sink):
         self.handlers[substream_id].sinks[type(sink).__name__] = sink
 
-    def login(self, user_id: str):
-        url = f"{self.base_url}/login"
-        data = {"user_id": user_id}
-        response = requests.post(url, json=data)
-        response.raise_for_status()
-        self.token = response.json().get("token")
-
-    def register(self, stream: str, ids_only: list[str] = None):
-        if not self.token:
-            raise ValueError("Please login first")
-        url = f"{self.base_url}/register_stream"
-        data = {"token": self.token, "stream": stream, "ids_only": ids_only}
-        response = requests.post(url, json=data)
-        self.stream_token = response.json().get("stream_token")
-
-    def process(self, data):
+    def process(self, batch: StreamBatch):
         try:
-            batch = StreamBatch.parse_obj(json.loads(data))
             for point in batch.points:
                 if point.substream_id not in self.handlers:
                     if not self.default_model:
-                        raise ValueError("No model is set for the substream and not default model set")
+                        continue
                     self.handlers[point.substream_id].model = self.default_model()
                 handler = self.handlers[point.substream_id]
                 point.n = self.n
@@ -91,14 +63,41 @@ class Bot:
                 for sink in handler.sinks.values():
                     sink.process(point, Prediction(value=prediction, t=point.t, n=self.n + self.k_horizon))
             self.n+=1
-            if self.n > 50:
-                self.disconnect()
-
-        except json.JSONDecodeError:
-            print("Invalid JSON data:", data)
         except Exception as e:
-            print("Error processing data:", data)
+            print("Error processing data:", batch)
             print(e)
+
+    # Replay
+    def run(self, replay: Replay, delay=0.5):
+        while True:
+            batch = replay.tick()
+            if not batch:
+                break
+            self.process(batch)
+            time.sleep(delay)
+
+    # Websockets
+
+    def login(self, user_id: str):
+        try:
+            url = f"{self.base_url}/login"
+            data = {"user_id": user_id}
+            response = requests.post(url, json=data)
+            response.raise_for_status()
+            self.token = response.json().get("token")
+        except requests.exceptions.RequestException as e:
+            raise SystemExit(e)
+
+    def register(self, stream: str, ids_only: list[str] = None):
+        if not self.token:
+            raise ValueError("Please login first")
+        try:
+            url = f"{self.base_url}/register_stream"
+            data = {"token": self.token, "stream": stream, "ids_only": ids_only}
+            response = requests.post(url, json=data)
+            self.stream_token = response.json().get("stream_token")
+        except requests.exceptions.RequestException as e:
+            raise SystemExit(e)
 
     async def _listen(self, url: str):
         async with websockets.connect(url) as websocket:
@@ -110,25 +109,34 @@ class Bot:
             while websocket.open:
                 try:
                     message = await websocket.recv()
-                    self.process(message)
+                    batch = StreamBatch.parse_obj(json.loads(message))
+                    self.process(batch)
+                except json.JSONDecodeError:
+                    print("Invalid JSON data:", message)
                 except websockets.ConnectionClosedOK:
                     print("Connection closed normally.")
                     break
                 except websockets.ConnectionClosedError:
                     print("Connection closed with an error.")
                     break
+                except Exception as e:
+                    print("Error processing data:", message)
+                    print(e)
 
             print("WebSocket connection is closed")
 
     def connect(self):
         if not self.stream_token:
             raise ValueError("Please register first")
-        ws_base_url = self.base_url.replace("http", "ws")
-        print("Connecting to", ws_base_url)
-        ws_url = f"{ws_base_url}/ws?stream_token={self.stream_token}"
-        nest_asyncio.apply()
-        loop = asyncio.get_event_loop()
-        loop.create_task(self._listen(ws_url))
+        try:
+            ws_base_url = self.base_url.replace("http", "ws")
+            print("Connecting to", ws_base_url)
+            ws_url = f"{ws_base_url}/ws?stream_token={self.stream_token}"
+            nest_asyncio.apply()
+            loop = asyncio.get_event_loop()
+            loop.create_task(self._listen(ws_url))
+        except Exception as e:
+            print("Error connecting to websocket:", e)
 
     def disconnect(self):
         if self.websocket and self.websocket.open:

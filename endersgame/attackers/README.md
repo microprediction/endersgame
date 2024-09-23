@@ -24,7 +24,7 @@ An attacker typically does the following:
 
 ## How Attackers Are Judged
 
-Attackers are judged by their ability to correctly predict the directional change in a sequence over a future time horizon \( k \). For example, if the attacker signals "up" at time \( t \) and the value at $t+k$ is indeed higher than the value at \( t \), then the attacker’s decision is considered profitable. The profit can be measured as \( y_{t+k} - y_t \). Similarly, if the attacker predicts "down" and the value decreases, the decision is successful.
+Attackers are judged by their ability to profit from correctly predicting the directional change in a sequence over a future time horizon $k$, with a reward equal to the change in value. For example, if the attacker signals "up" at time $t$ and the value at $t+k$ is indeed higher than the value at $t$, then the attacker’s decision is considered profitable. The profit can be measured as $y_{t+k} - y_t$. Conversely, a loss might be incurred if the direction chosen is wrong. 
 
 ### Core Components to Implement
 When creating your own attacker, you should implement the following methods:

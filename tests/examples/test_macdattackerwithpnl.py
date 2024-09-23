@@ -24,7 +24,7 @@ def test_tick_updates_macd_and_var(macd_attacker):
     y_values = [100, 101, 102]
 
     for y in y_values:
-        macd_attacker.tick(y=y)
+        macd_attacker.tick(x=y)
 
     macd_signal = macd_attacker.macd.transform_one()['macd_line']
     assert not np.isnan(macd_signal), "MACD line should have been updated"
@@ -48,7 +48,7 @@ def test_predict_with_random_data(macd_attacker):
 
     decisions = []
     for y in y_values:
-        macd_attacker.tick(y=y)
+        macd_attacker.tick(x=y)
         decision = macd_attacker.predict()
         decisions.append(decision)
 
@@ -62,7 +62,7 @@ def test_warmup_behavior(macd_attacker):
     y_values = [100, 101, 102, 103, 104, 105]
 
     for i, y in enumerate(y_values):
-        macd_attacker.tick(y=y)
+        macd_attacker.tick(x=y)
         decision = macd_attacker.predict()
         if i < macd_attacker.warmup:
             assert decision == 0, f"Should not predict before warmup period at step {i + 1}"
@@ -75,7 +75,7 @@ def test_final_pnl_summary(macd_attacker):
     y_values = momentum_regimes(n=200)
 
     for y in y_values:
-        macd_attacker.tick_and_predict(y=y, k=100)
+        macd_attacker.tick_and_predict(x=y, k=100)
 
     summary = macd_attacker.get_pnl_summary()
     assert isinstance(summary, dict), "PnL summary should be a dictionary"

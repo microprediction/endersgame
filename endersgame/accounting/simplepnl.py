@@ -21,15 +21,15 @@ class SimplePnL:
     def __init__(self):
         self.reset_pnl()
 
-    def tick_pnl(self, y:float, k:int, decision:float):
+    def tick_pnl(self, x:float, k:int, decision:float):
         """
 
             Adds non-zero 'decision' to a queue so it can be judged later
             And uses revealed ground truth y to evaluate past decisions
 
         """
-        self._add_decision_to_queue(y=y, k=k, decision=decision)
-        self._resolve_decisions_on_queue(y=y)
+        self._add_decision_to_queue(y=x, k=k, decision=decision)
+        self._resolve_decisions_on_queue(y=x)
 
     def reset_pnl(self):
         """Resets all PnL tracking variables within the accounting property."""

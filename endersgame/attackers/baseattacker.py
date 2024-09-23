@@ -49,12 +49,12 @@ class BaseAttacker(ABC):
         self.fitted = False
 
     @abstractmethod
-    def tick(self, y:float):
+    def tick(self, x:float):
         """
 
                Assimilate the current data point somehow into the model's state
 
-        :param y:
+        :param x:
         :return:
         """
         pass
@@ -67,13 +67,13 @@ class BaseAttacker(ABC):
         """
         pass
 
-    def tick_and_predict(self, y: float, k:int=None)->float:
+    def tick_and_predict(self, x: float, k:int=None)->float:
         """
-        :param y:   The current data point in the sequence.
+        :param x:   The current data point in the sequence.
         :param k:   The prediction horizon
         :return:    A float indicating directional opinion, if any (1=up, 0=neither, -1=down)
         """
-        self.tick(y=y)
+        self.tick(x=x)
         return self.predict(k=k)
 
     @abstractmethod

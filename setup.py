@@ -29,7 +29,7 @@ setup(
               "endersgame.syntheticdata",
               "endersgame.anomaly",
               "endersgame.rivertransformers",
-                "endersgame.bot"],
+                "endersgame.crunch"],
     test_suite='pytest',
     tests_require=['pytest'],
     include_package_data=True,

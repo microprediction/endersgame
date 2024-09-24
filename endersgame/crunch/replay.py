@@ -1,8 +1,10 @@
 import csv
+import time
 from datetime import datetime
 from collections import defaultdict
+from typing import Iterator, Optional
 
-from endersgame.bot.streams import StreamBatch, StreamPoint
+from endersgame.crunch.streams import StreamBatch, StreamPoint
 
 
 # Define a data structure for each row
@@ -52,7 +54,16 @@ class Replay:
             return pt.securityId in self.substream_ids_only
         return True
 
-    def tick(self) -> StreamBatch:
+    def values(self, delay: float) -> Iterator[StreamPoint]:
+        while self.idx < len(self.timestamps):
+            batch = self.tick()
+            for pt in batch.points:
+                if pt.substream_id not in self.substream_ids_only:
+                    continue
+                yield pt
+                time.sleep(delay)
+
+    def tick(self) -> Optional[StreamBatch]:
         if self.idx >= len(self.timestamps):
             return None
 
@@ -60,6 +71,7 @@ class Replay:
         points = (
             StreamPoint(substream_id=pt.securityId,
                         t=pt.dt,
+                        n=self.idx,
                         value=pt.get_field_value(self.field))
             for pt in self.data[current_time] if self.filter(pt))
         self.idx += 1

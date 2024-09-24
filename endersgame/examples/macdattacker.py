@@ -36,7 +36,7 @@ class MacdAttacker(AttackerWithSimplePnL):
         self.macd = MACD(window_slow=window_slow, window_fast=window_fast, window_sign=window_sign)
         self.ewvar_macd_signal = stats.EWVar(fading_factor=fading_factor)
         self.decision_threshold = decision_threshold
-        self.abstention_count = 0
+        self.abstention_count = min_abstention
         self.min_abstention = min_abstention
         self.observation_count = 0
         self.warmup = warmup

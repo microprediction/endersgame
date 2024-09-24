@@ -1,4 +1,4 @@
-# endersgame ![tests](https://github.com/microprediction/endersgame/workflows/endersgame/tests.svg)
+# endersgame ![tests](https://github.com/microprediction/endersgame/actions/workflows/tests.yml/badge.svg)
 
 
 

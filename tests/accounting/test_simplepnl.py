@@ -3,7 +3,7 @@ from endersgame.accounting.simplepnl import SimplePnL
 
 def test_initial_state():
     """Test if the initial state of the SimplePnL class is correct."""
-    pnl_tracker = SimplePnL()
+    pnl_tracker = SimplePnL(epsilon=0)
     assert pnl_tracker.simplepnl["current_ndx"] == 0
     assert pnl_tracker.simplepnl["pending_decisions"] == []
     assert pnl_tracker.simplepnl["pnl_data"] == []
@@ -11,7 +11,7 @@ def test_initial_state():
 
 def test_record_and_resolve_decision():
     """Test recording and resolving a single decision."""
-    pnl_tracker = SimplePnL()
+    pnl_tracker = SimplePnL(epsilon=0)
 
     # Step 1: Record a decision at step 0 (y = 100, decision = 1)
     pnl_tracker.tick_pnl(x=100, k=100, decision=1)
@@ -28,7 +28,7 @@ def test_record_and_resolve_decision():
 
 def test_multiple_decisions_over_time():
     """Test multiple decisions being made and resolved over time."""
-    pnl_tracker = SimplePnL()
+    pnl_tracker = SimplePnL(epsilon=0)
 
     # Step 1: Initial state check
     assert pnl_tracker.simplepnl["current_ndx"] == 0
@@ -70,7 +70,7 @@ def test_multiple_decisions_over_time():
 
 def test_sequential_decisions_and_partial_resolution():
     """Test sequential decisions and resolving them one by one."""
-    pnl_tracker = SimplePnL()
+    pnl_tracker = SimplePnL(epsilon=0)
     pnl_tracker.simplepnl['backoff'] = 10
 
     # Step 1: Record first decision
@@ -95,7 +95,7 @@ def test_sequential_decisions_and_partial_resolution():
 
 def test_sequential_resolutions_with_no_decision():
     """Test resolving decisions with no new decision being made."""
-    pnl_tracker = SimplePnL()
+    pnl_tracker = SimplePnL(epsilon=0)
     pnl_tracker.simplepnl['backoff'] = 10
 
     # Step 1: Record a decision (y = 100, decision = 1)

@@ -18,8 +18,9 @@ class SimplePnL:
     - Decisions made within 100 data points of the last attack are ignored.
     """
 
-    def __init__(self):
+    def __init__(self, epsilon=0.005):
         self.reset_pnl()
+        self.epsilon = epsilon
 
     def tick_pnl(self, x:float, k:int, decision:float):
         """
@@ -77,9 +78,9 @@ class SimplePnL:
             if num_observations_since_decision >= k:  # Adjust '100' to your desired prediction horizon
                 # Calculate PnL based on whether the decision was positive or negative
                 if decision > 0:
-                    pnl = y - y_prev  
+                    pnl = y - y_prev - self.epsilon
                 elif decision < 0:
-                    pnl = y_prev - y  
+                    pnl = y_prev - y - self.epsilon
                 else:
                     raise ValueError('A non-zero decision was logged to the queue')
 

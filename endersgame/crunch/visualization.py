@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from IPython.display import display
 from typing import List
-from endersgame.bot.bot import StreamPoint, Prediction
+from endersgame.crunch.websocket import StreamPoint, Prediction
 
 # Define margin adjustment functions
 def margin_down(y: float, margin: float = 0.1) -> float:
@@ -13,8 +13,8 @@ def margin_up(y: float, margin: float = 0.1) -> float:
 # Define TimeSeriesVisualizer class
 class TimeSeriesVisualizer:
     def __init__(self):
-        # Use a style for the plot (can be customized)
-        plt.style.use('seaborn-dark')
+        # Disable automatic figure rendering
+        plt.ioff()
 
         # Do not create the figure immediately
         self.fig = None
@@ -72,8 +72,6 @@ class TimeSeriesVisualizer:
         else:
             # If this is the first time, create a display handle to track the figure
             self.display_handle = display(self.fig, display_id=True)
-
-        plt.draw()
 
     def clear(self):
         """Clear the plot and close the figure."""

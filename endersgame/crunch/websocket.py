@@ -1,80 +1,56 @@
 import asyncio
 import json
+import threading
 from collections import defaultdict
-import time
+from queue import Queue, Empty
 from abc import abstractmethod, ABC
+from typing import Iterator
 
 import websockets
 import requests
 import nest_asyncio
 
-from endersgame.bot.replay import Replay
-from endersgame.bot.streams import StreamPoint, Prediction, StreamBatch
+from endersgame.crunch.replay import Replay
+from endersgame.crunch.streams import StreamPoint, Prediction, StreamBatch
 
 
-class Sink(ABC):
-    @abstractmethod
-    def process(self, data: StreamPoint, prediction: Prediction):
-        pass
-
-    @abstractmethod
-    def clear(self):
-        pass
-
-class Model(ABC):
-    @abstractmethod
-    def tick_and_predict(self, y: float, k:int=None)->float:
-        pass
-
-class Handler:
-    def __init__(self):
-        self.sinks = {}
-        self.model = None
-
-class Bot:
-    def __init__(self, base_url: str = "http://localhost:8000", k_horizon:int=5, model: type[Model] = None):
+class Websocket:
+    def __init__(self, base_url: str = "http://localhost:8000", k_horizon: int = 5, only: str = 'GBP/USD'):
         self.base_url = base_url
         self.token = None
         self.stream_token = None
-        self.default_model = model
-        self.handlers = defaultdict(Handler)
-
         self.n = 0
         self.k_horizon = k_horizon
+        self.substream_id_only = only
+        self._values_queue = Queue()  # Use Queue to store points
+        self._loop = None
+        self._thread = None
+        self.websocket = None
 
-    def with_model(self, substream_id: str, model: Model):
-        self.handlers[substream_id].model = model
-
-    def with_substream_sink(self, substream_id: str, sink: Sink):
-        self.handlers[substream_id].sinks[type(sink).__name__] = sink
+    def values(self) -> Iterator[StreamPoint]:
+        """Yield processed values from the queue."""
+        while True:
+            try:
+                # Get data from the queue with a timeout to prevent blocking indefinitely
+                point = self._values_queue.get(timeout=1)
+                yield point
+            except Empty:
+                # Continue looping if no data is in the queue
+                continue
 
     def process(self, batch: StreamBatch):
+        """Process each point in the StreamBatch."""
         try:
             for point in batch.points:
-                if point.substream_id not in self.handlers:
-                    if not self.default_model:
-                        continue
-                    self.handlers[point.substream_id].model = self.default_model()
-                handler = self.handlers[point.substream_id]
+                if point.substream_id != self.substream_id_only:
+                    continue  # Skip points that don't match the specified substream_id
                 point.n = self.n
-                # TODO: We can use clean up data, order, call different methods later
-                # Right now: relative times
-                prediction = handler.model.tick_and_predict(point.value, self.k_horizon)
-                for sink in handler.sinks.values():
-                    sink.process(point, Prediction(value=prediction, t=point.t, n=self.n + self.k_horizon))
-            self.n+=1
+                # Add the processed point to the queue for consumption
+                self._values_queue.put(point)
+            self.n += 1
         except Exception as e:
             print("Error processing data:", batch)
             print(e)
-
-    # Replay
-    def run(self, replay: Replay, delay=0.5):
-        while True:
-            batch = replay.tick()
-            if not batch:
-                break
-            self.process(batch)
-            time.sleep(delay)
 
     # Websockets
 
@@ -85,6 +61,7 @@ class Bot:
             response = requests.post(url, json=data)
             response.raise_for_status()
             self.token = response.json().get("token")
+            print("Login successful")
         except requests.exceptions.RequestException as e:
             raise SystemExit(e)
 
@@ -96,6 +73,7 @@ class Bot:
             data = {"token": self.token, "stream": stream, "ids_only": ids_only}
             response = requests.post(url, json=data)
             self.stream_token = response.json().get("stream_token")
+            print("Stream registered")
         except requests.exceptions.RequestException as e:
             raise SystemExit(e)
 
@@ -125,23 +103,27 @@ class Bot:
 
             print("WebSocket connection is closed")
 
+    def _run_event_loop(self, url: str):
+        nest_asyncio.apply()
+        self._loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self._loop)
+        self._loop.run_until_complete(self._listen(url))
+
     def connect(self):
         if not self.stream_token:
             raise ValueError("Please register first")
         try:
             ws_base_url = self.base_url.replace("http", "ws")
-            print("Connecting to", ws_base_url)
             ws_url = f"{ws_base_url}/ws?stream_token={self.stream_token}"
-            nest_asyncio.apply()
-            loop = asyncio.get_event_loop()
-            loop.create_task(self._listen(ws_url))
+            self._thread = threading.Thread(target=self._run_event_loop, args=(ws_url,))
+            self._thread.start()
+            print("WebSocket connection started")
         except Exception as e:
             print("Error connecting to websocket:", e)
 
     def disconnect(self):
         if self.websocket and self.websocket.open:
-            asyncio.run(self.websocket.close())
+            asyncio.run_coroutine_threadsafe(self.websocket.close(), self._loop).result()
             print("WebSocket connection has been closed")
-        for handler in self.handlers.values():
-            for sink in handler.sinks.values():
-                sink.clear()
+        if self._thread:
+            self._thread.join()

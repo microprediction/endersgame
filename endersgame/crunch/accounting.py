@@ -4,7 +4,7 @@ from IPython.display import display
 import ipywidgets as widgets
 from typing import Dict
 import warnings
-from endersgame.bot.bot import StreamPoint, Prediction
+from endersgame.crunch.websocket import StreamPoint, Prediction
 
 # Suppress FutureWarning
 warnings.simplefilter(action='ignore', category=FutureWarning)

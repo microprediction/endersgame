@@ -13,8 +13,8 @@ class MacdAttacker(AttackerWithSimplePnL):
 
     """
 
-    def __init__(self, window_slow=26, window_fast=12, window_sign=9, decision_threshold=0.5, min_abstention=50,
-                 fading_factor=0.01, warmup=500):
+    def __init__(self, window_slow=26, window_fast=12, window_sign=9, decision_threshold=2.0, min_abstention=50,
+                 fading_factor=0.01, warmup=500, polarity=1):
         """
         Parameters:
             - window_slow: int, default=26
@@ -31,6 +31,8 @@ class MacdAttacker(AttackerWithSimplePnL):
                 Fading factor for the exponentially weighted moving average (EWMA).
             - warmup: int
                 How long to wait before making any predictions
+            - direction: int
+                +1 or -1 allows you to flip the sign of the signal
         """
         super().__init__()
         self.macd = MACD(window_slow=window_slow, window_fast=window_fast, window_sign=window_sign)
@@ -40,6 +42,7 @@ class MacdAttacker(AttackerWithSimplePnL):
         self.min_abstention = min_abstention
         self.observation_count = 0
         self.warmup = warmup
+        self.polarity = polarity
 
     def tick(self, x: float, k: int = None) -> float:
         """
@@ -48,6 +51,7 @@ class MacdAttacker(AttackerWithSimplePnL):
 
         # Update the MACD signal
         if not np.isnan(x):
+            self.observation_count += 1
             self.macd.learn_one(x=x)
 
             # Also update the running Var of the signal
@@ -61,6 +65,9 @@ class MacdAttacker(AttackerWithSimplePnL):
             Predict based on the MACD signal and make decisions when momentum exceeds the threshold.
         """
 
+        if self.observation_count<self.warmup:
+            return 0
+
         # Avoid making predictions too frequently
         if (self.abstention_count < self.min_abstention):
             self.abstention_count += 1
@@ -68,7 +75,8 @@ class MacdAttacker(AttackerWithSimplePnL):
 
         # Get standardized signal
         try:
-            standardized_signal = math.sqrt(self.ewvar_macd_signal.get())
+            standardized_signal_std = math.sqrt(self.ewvar_macd_signal.get())
+            standardized_signal = self.macd.line_value /standardized_signal_std * np.sign(self.polarity)
         except ArithmeticError:
             standardized_signal = 0
 
@@ -79,22 +87,4 @@ class MacdAttacker(AttackerWithSimplePnL):
             self.abstention_count = 0
         return decision
 
-
-
-if __name__ == '__main__':
-    from endersgame.syntheticdata.momentumregimes import momentum_regimes
-    xs = momentum_regimes(n=2000)
-    attacker = MacdAttacker(window_slow=26, window_fast=12, window_sign=9, decision_threshold=2.5,
-                            min_abstention=5, fading_factor=0.05, warmup=10)
-
-    # Process each point and make decisions
-    k=100  # Horizon
-    for i, x in enumerate(xs):
-        decision = attacker.tick_and_predict(x=x, k=k)
-        print(f"Step {i + 1}: Price: {x:.2f}, Decision: {decision}")
-
-    # Print the final PnL summary after all points
-    summary = attacker.get_pnl_summary()
-    from pprint import pprint
-    pprint(summary)
 

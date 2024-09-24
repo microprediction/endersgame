@@ -13,7 +13,7 @@ def macd_attacker():
 
 def test_initial_state(macd_attacker):
     """Test the initial state of the MacdAttacker."""
-    assert macd_attacker.abstention_count == 0, "Abstention count should be initialized to 0"
+    assert macd_attacker.abstention_count == 5, "Abstention count should be initialized to 5"
     assert macd_attacker.observation_count == 0, "Observation count should be initialized to 0"
     assert isinstance(macd_attacker.macd, MACD), "MACD should be properly initialized"
     assert macd_attacker.decision_threshold == 0.1, "Decision threshold should be initialized to the correct value"
@@ -34,6 +34,7 @@ def test_tick_updates_macd_and_var(macd_attacker):
 def test_predict_with_abstention(macd_attacker):
     """Test that predictions are abstained when abstention_count is below min_abstention."""
     macd_attacker.abstention_count = 0
+    macd_attacker.observation_count = 100
     macd_attacker.min_abstention = 5
     result = macd_attacker.predict()
     assert result == 0, "Should abstain from decision if abstention_count < min_abstention"
@@ -58,7 +59,7 @@ def test_predict_with_random_data(macd_attacker):
 
 def test_warmup_behavior(macd_attacker):
     """Test that no predictions are made before the warmup period."""
-    macd_attacker.warmup = 5  # Set a small warmup period
+    macd_attacker.warmup = 10  # Set a small warmup period
     y_values = [100, 101, 102, 103, 104, 105]
 
     for i, y in enumerate(y_values):

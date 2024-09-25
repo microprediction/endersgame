@@ -15,7 +15,7 @@ from endersgame.crunch.streams import StreamPoint, Prediction, StreamBatch
 
 
 class Websocket:
-    def __init__(self, base_url: str = "http://localhost:8000", k_horizon: int = 5, only: str = 'GBP/USD'):
+    def __init__(self, base_url: str = "http://localhost:8000", k_horizon: int = 5, only: str = 'AUD/USD'):
         self.base_url = base_url
         self.token = None
         self.stream_token = None

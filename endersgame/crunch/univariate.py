@@ -34,7 +34,7 @@ class Crunch:
         self.viz.process(point, prediction)
         self.accounting.process(point, prediction)
 
-    def replay(self, filename: str = "currency.csv", delay: float = 0.01, only: str = 'GBP/USD'):
+    def replay(self, filename: str = "currency.csv", delay: float = 0.01, only: str = 'AUD/USD'):
         """ Replay data from a file."""
         self.setup()
         data = Replay(filename, "mid", substream_ids_only=[only])
@@ -43,7 +43,7 @@ class Crunch:
             self.postprocess(point, Prediction(value=prediction, t=point.t, n=point.n + self.k))
 
     def live(self):
-        """ Live data from a stream."""
+        """Live data from a stream."""
         self.setup()
 
         bot = Websocket("http://localhost:8989")
@@ -52,17 +52,10 @@ class Crunch:
         bot.connect()
         print("Connected to stream")
 
-        # Define a signal handler to stop the process gracefully
-        def signal_handler(sig, frame):
-            print("Interrupt received, disconnecting...")
-            self.stop_event.set()  # Set the event to stop the live feed
-            bot.disconnect()
-            print("Disconnected from stream")
+        # Use a threading Event for clean stopping
+        self.stop_event = threading.Event()
 
-        # Register the signal handler to listen for Ctrl+C
-        signal.signal(signal.SIGINT, signal_handler)
-
-        # Run the live feed in a separate thread to handle values
+        # Define the live feed runner function
         def run():
             try:
                 for point in bot.values():
@@ -73,13 +66,19 @@ class Crunch:
             except Exception as e:
                 print(f"Error during live processing: {e}")
             finally:
-                bot.disconnect()
-                print("Live feed stopped")
+                bot.disconnect()  # Ensure disconnection
+                print("Disconnected from stream")
 
-        # Create and start the live thread
+        # Start the live feed in a separate thread
         live_thread = threading.Thread(target=run)
         live_thread.start()
 
-        # Wait for the thread to finish (on interrupt or natural completion)
-        live_thread.join()
-        print("Live data processing complete")
+        try:
+            # Monitor the live thread and check for cell interruption
+            while live_thread.is_alive():
+                live_thread.join(timeout=1)  # Poll for thread completion
+        except KeyboardInterrupt:
+            print("Cell interrupt detected. Stopping...")
+            self.stop_event.set()  # Signal the thread to stop
+            live_thread.join()  # Ensure the thread finishes
+            print("Live data processing stopped")

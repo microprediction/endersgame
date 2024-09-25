@@ -9,6 +9,50 @@ from endersgame.crunch.websocket import StreamPoint, Prediction
 # Suppress FutureWarning
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+custom_css = """
+<style>
+    .table { 
+        width: 100%; 
+        margin-bottom: 1rem; 
+        background-color: #343a40; /* Dark grey background */
+        color: #f8f9fa; /* Light font color */
+        border-collapse: collapse;
+    }
+    .table th, .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #495057; /* Slightly lighter border */
+    }
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #495057; /* Slightly lighter header border */
+        background-color: #495057; /* Darker grey for header */
+        color: #f8f9fa; /* Light header text color */
+    }
+    .table tbody + tbody {
+        border-top: 2px solid #495057; /* Slightly lighter bottom border */
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #495057; /* Alternate row background */
+    }
+</style>
+"""
+
+# Dictionary mapping original column names to display names
+display_names = {
+    "stream_id": "Stream ID",
+    "current_ndx": "Current Index",
+    "num_resolved_decisions": "Resolved Decisions",
+    "total_profit": "Total Profit",
+    "wins": "Wins",
+    "losses": "Losses",
+    "win_loss_ratio": "Win/Loss Ratio",
+    "profit_per_decision": "Profit/Decision",
+    "standardized_profit_per_decision": "Standardized Profit/Decision",
+    "average_profit_per_decision": "Average Profit/Decision",
+    "avg_profit_per_decision_std_ratio": "Avg Profit/Decision Std Ratio"
+}
+
 class AccountingDataVisualizer:
     def __init__(self, Accountant):
         self.account_model = Accountant
@@ -18,8 +62,13 @@ class AccountingDataVisualizer:
             "wins", "losses", "win_loss_ratio", "profit_per_decision", "standardized_profit_per_decision"
         ])
         self.output = widgets.Output()
-        self.table_widget = widgets.HTML(value=self.df.to_html(classes='table table-striped'))
+        self.table_widget = widgets.HTML(value=self.data())
         display(self.table_widget)
+
+    def data(self):
+        table_html = self.df.drop(columns=['stream_id']).rename(columns=display_names).to_html(classes='table table-striped')
+        # Convert DataFrame to HTML with classes for styling
+        return custom_css + table_html
 
     def process(self, point: StreamPoint, prediction: Prediction):
         if point.substream_id not in self.accountants:
@@ -38,26 +87,7 @@ class AccountingDataVisualizer:
 
     def update_display(self):
         with self.output:
-            self.table_widget.value = self.df.to_html(classes='table table-striped')
+            self.table_widget.value = self.data()
 
     def clear(self):
         pass
-
-
-# Simulate the summary function with multiple streams
-def simulate_multi_stream_summary_function():
-    import random
-    streams = ["stream_1", "stream_2"]
-    summaries = {}
-    for stream_id in streams:
-        summaries[stream_id] = {
-            "current_ndx": random.randint(1, 100),
-            "num_resolved_decisions": random.randint(1, 50),
-            "total_profit": round(random.uniform(100, 1000), 2),
-            "wins": random.randint(1, 20),
-            "losses": random.randint(1, 20),
-            "win_loss_ratio": round(random.uniform(0, 5), 2),
-            "profit_per_decision": round(random.uniform(10, 50), 2),
-            "standardized_profit_per_decision": round(random.uniform(5, 25), 2),
-        }
-    return summaries

@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="endersgame",
-    version="0.0.8",
+    version="0.0.9",
     description="Online autonomous time series prediction of near martingales",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -24,6 +24,7 @@ setup(
         "Programming Language :: Python :: 3.12",
     ],
     packages=["endersgame",
+              "endersgame.datasources",
               "endersgame.accounting",
               "endersgame.attackers",
               "endersgame.examples",

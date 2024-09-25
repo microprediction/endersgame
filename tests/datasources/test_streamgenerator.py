@@ -67,7 +67,7 @@ class TestStreamGenerator:
 
         assert results == expected_results
 
-   
+
 
     @patch('requests.get')
     def test_no_files_available(self, mock_get):

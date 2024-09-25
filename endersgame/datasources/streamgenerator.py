@@ -31,7 +31,8 @@ def stream_generator(stream_id, category):
             response = requests.get(url)
             if response.status_code != 200:
                 # If the file doesn't exist, assume we've reached the end
-                print(f"No more files found for stream_id={stream_id} in category='{category}'.")
+                if False:
+                    print(f"No more files found for stream_id={stream_id} in category='{category}'.")
                 break
 
             # Read the CSV content

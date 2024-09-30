@@ -22,7 +22,7 @@ for x in data_stream:
 
 summary = pnl_tracker.summary()
 print(summary)
-
+```
 
 ## Definition of official decision profit or loss with horizon `k`
 Assume decision>0. We will buy and hold for `k` data points. The profit or loss is then adjusted by a trading cost `epsilon`. 

@@ -1,6 +1,8 @@
 
+from river import stats
 
-class FEWVar:
+
+class FEWVar(stats.base.Univariate):
 
     def __init__(self, fading_factor=0.01):
         # Initialize the fading factor and state variables

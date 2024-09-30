@@ -24,18 +24,9 @@ summary = pnl_tracker.summary()
 print(summary)
 ```
 
-## Definition of official decision profit or loss with horizon `k`
-Assume decision>0. We will buy and hold for `k` data points. The profit or loss is then adjusted by a trading cost `epsilon`. 
- 
-For example if the prediction is received between x(5) and x(6) and k=10 then typically: 
 
-```python
-    profit = x(16) - x(6) - epsilon 
-```
-
-although we reserve the right to start at x(5) instead. 
-
-## Approximation provided by this class
+## profit and loss provided by this class
+We will buy and hold for `k` data points. The profit or loss is then adjusted by a trading cost `epsilon`. 
 
 At present this class assumes instantaneous trading, so in usual usage, a decision made after x(5) is received will incur profit 
 
@@ -43,4 +34,14 @@ At present this class assumes instantaneous trading, so in usual usage, a decisi
    profit = x(15) - x(5) - epsilon
 ```
 in the case of a buy. 
+
+
+## Slight difference in profit and loss measured in live scoring
+We do not know how long an attacker will take to respond. If it is virtually instantaneous, the result may be identical to the above. However in many cases the attacker's decision will be received later. To illustrate, assume decision > 0. 
+ 
+For example if the prediction is driven by x(5) and received between x(5) and x(6) and k=10 then actually:
+
+```python
+    profit = x(16) - x(6) - epsilon 
+```
 

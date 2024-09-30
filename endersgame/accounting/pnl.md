@@ -28,13 +28,19 @@ print(summary)
 Assume decision>0. We will buy and hold for `k` data points. The profit or loss is then adjusted by a trading cost `epsilon`. 
  
 For example if the prediction is received between x(5) and x(6) and k=10 then typically: 
-    
+
+```python
     profit = x(16) - x(6) - epsilon 
+```
 
 although we reserve the right to start at x(5) instead. 
 
 ## Approximation provided by this class
 
-At present this class assumes instantaneous trading, so it will compute
+At present this class assumes instantaneous trading, so in usual usage, a decision made after x(5) is received will incur profit 
 
-   profit = x(15) - x(5) - epsilon 
+```python
+   profit = x(15) - x(5) - epsilon
+```
+in the case of a buy. 
+

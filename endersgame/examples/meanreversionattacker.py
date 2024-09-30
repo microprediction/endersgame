@@ -1,6 +1,4 @@
 import numpy as np
-import types
-from endersgame.attackers.empiricalattacker import EmpiricalAttacker
 from endersgame.attackers.baseattacker import BaseAttacker
 
 

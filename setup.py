@@ -30,6 +30,7 @@ setup(
               "endersgame.examples",
               "endersgame.syntheticdata",
               "endersgame.rivertransformers",
+              "endersgame.riveralternatives",
                 "endersgame.bot"],
     test_suite='pytest',
     tests_require=['pytest'],

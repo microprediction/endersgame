@@ -8,7 +8,7 @@ def test_ewvar():
     import math
 
     # Initialize EWVar with a fading_factor corresponding to decay
-    decay = 0.99
+    decay = 0.9
     fading_factor = 1 - decay  # fading_factor = 0.1
     ew_var = stats.EWVar(fading_factor=fading_factor)
 
@@ -29,7 +29,7 @@ def test_ewvar():
         else:
             delta = x - mean
             mean += alpha * delta
-            var = (1 - alpha) * (var + alpha * delta ** 2)
+            var = (1-alpha) * (var + alpha * delta ** 2)
 
         # Update the EWVar instance
         ew_var.update(x)

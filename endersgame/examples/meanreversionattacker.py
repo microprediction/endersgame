@@ -1,9 +1,10 @@
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
 import numpy as np
 import types
+from endersgame.attackers.empiricalattacker import EmpiricalAttacker
+from endersgame.attackers.baseattacker import BaseAttacker
 
 
-class MeanReversionAttacker(AttackerWithSimplePnL):
+class MeanReversionAttacker(BaseAttacker):
 
     def __init__(self, a=0.01):
         super().__init__()
@@ -21,13 +22,12 @@ class MeanReversionAttacker(AttackerWithSimplePnL):
                 self.state['running_avg'] = (1 - self.params['a']) * self.state['running_avg'] + self.params['a'] * x
 
 
-
-def predict(self, k:int=None)->float:
-    if self.state['current_value'] > self.state['running_avg'] + 1:
-        return -1
-    if self.state['current_value'] < self.state['running_avg'] - 1:
-        return 1
-    return 0
+    def predict(self, k:int=None)->float:
+        if self.state['current_value'] > self.state['running_avg'] + 1:
+            return -1
+        if self.state['current_value'] < self.state['running_avg'] - 1:
+            return 1
+        return 0
 
 
 
@@ -35,7 +35,6 @@ def predict(self, k:int=None)->float:
 if __name__=='__main__':
 
     attacker = MeanReversionAttacker()  # Reset it
-    attacker.predict = types.MethodType(predict, attacker)
 
     xs = [1, 3, 4, 2, 4, 5, 1, 5, 2, 5, 10] * 100
     for x in xs:

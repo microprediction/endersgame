@@ -4,13 +4,14 @@ import numpy as np
 
 class RandomAttacker(AttackerWithSimplePnL):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, epsilon):
+        super().__init__(epsilon)
 
-    def tick_and_predict(self, x: float, k: int = None) -> float:
-        decision = int(0.5*np.random.randn())
-        self.tick_pnl(x=x, k=k, decision=decision)
-        return decision
+    def tick(self, x):
+        pass
+
+    def predict(self, k:int) -> float:
+        return int(0.5*np.random.randn())
 
 
 
@@ -19,7 +20,7 @@ if __name__ == '__main__':
         y_values = np.cumsum(np.random.randn(500))
 
         # Instantiate the attacker
-        attacker = RandomAttacker()
+        attacker = RandomAttacker(epsilon=0.01)
 
         k = 10  # horizon
 
@@ -29,7 +30,7 @@ if __name__ == '__main__':
             print(f"Price: {y:.2f}, Decision: {decision}")
 
         # Print the final PnL summary after 500 points
-        summary = attacker.get_pnl_summary()
+        summary = attacker.pnl.summary()
         print("\nPnL Summary after 500 points:")
         print(f"Current Index: {summary['current_ndx']}")
         print(f"Number of Resolved Decisions: {summary['num_resolved_decisions']}")

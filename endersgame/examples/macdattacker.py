@@ -14,7 +14,7 @@ class MacdAttacker(AttackerWithSimplePnL):
     """
 
     def __init__(self, window_slow=26, window_fast=12, window_sign=9, decision_threshold=2.0, min_abstention=50,
-                 fading_factor=0.01, warmup=500, polarity=1):
+                 fading_factor=0.01, warmup=500, polarity=1, epsilon=0.01):
         """
         Parameters:
             - window_slow: int, default=26
@@ -34,7 +34,7 @@ class MacdAttacker(AttackerWithSimplePnL):
             - direction: int
                 +1 or -1 allows you to flip the sign of the signal
         """
-        super().__init__()
+        super().__init__(epsilon=epsilon)
         self.macd = MACD(window_slow=window_slow, window_fast=window_fast, window_sign=window_sign)
         self.ewvar_macd_signal = stats.EWVar(fading_factor=fading_factor)
         self.decision_threshold = decision_threshold

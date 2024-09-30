@@ -22,34 +22,3 @@ class FEWMean:
         # Return the current EWA
         return self.ewa
 
-
-
-def correct_ewa(xs, fading_factor=0.1):
-    # Weight most recent samples more
-    x_sum = 0
-    weight_sum = 0
-    weight = 1.0
-
-    for x in reversed(xs):
-        x_sum += weight*x
-        weight_sum += weight
-        weight *= fading_factor
-
-    return x_sum/weight_sum
-
-
-if __name__=='__main__':
-
-    # Example usage
-    xs = [1, 2, 3, 4, 5]
-    fading_factor = 0.1
-    result_1 = correct_ewa(xs, fading_factor=fading_factor)
-    ewa_calc = FEWMean(fading_factor=fading_factor)
-    for x in xs:
-        ewa_calc.update(x)
-    result_2 = ewa_calc.get()
-
-    # Sample usage
-    print({'result1':result_1,'result2':result_2})
-
-

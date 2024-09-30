@@ -22,3 +22,18 @@ for x in data_stream:
 
 summary = pnl_tracker.summary()
 print(summary)
+
+## Definition of official decision profit or loss with horizon `k`
+Assume decision>0. We will buy and hold for `k` data points. The profit or loss is then adjusted by a trading cost `epsilon`. 
+ 
+For example if the prediction is received between x(5) and x(6) and k=10 then typically: 
+    
+    profit = x(16) - x(6) - epsilon 
+
+although we reserve the right to start at x(5) instead. 
+
+## Approximation provided by this class
+
+At present this class assumes instantaneous trading, so it will compute
+
+   profit = x(15) - x(5) - epsilon 

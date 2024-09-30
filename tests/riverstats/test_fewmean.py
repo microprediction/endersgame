@@ -1,4 +1,4 @@
-from endersgame.riveralternatives.fewmean import FEWMean
+from endersgame.riverstats.fewmean import FEWMean
 
 
 def finite_ewa(xs, fading_factor=0.1):
@@ -10,7 +10,7 @@ def finite_ewa(xs, fading_factor=0.1):
     for x in reversed(xs):
         x_sum += weight * x
         weight_sum += weight
-        weight *= fading_factor
+        weight *= (1-fading_factor)
 
     return x_sum / weight_sum
 

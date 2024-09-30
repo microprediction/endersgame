@@ -17,7 +17,7 @@ class FEWVar:
             self.weight_sum = 1
         else:
             # Incrementally update the EWA (mean)
-            weight = self.fading_factor * self.weight_sum
+            weight = (1-self.fading_factor) * self.weight_sum
             previous_ewa = self.ewa
             self.ewa = (weight * self.ewa + x) / (weight + 1)
             self.weight_sum = weight + 1
@@ -28,14 +28,14 @@ class FEWVar:
 
     def get(self):
         # Return the current exponentially weighted variance
-        return self.ewv
+        return self.ewv if self.ewv is not None else 0
 
     def get_mean(self):
         # Return the current exponentially weighted mean (for reference)
-        return self.ewa
+        return self.ewa if self.ewa is not None else 0
 
 
-def finite_sample_ewvar(xs, fading_factor=0.1):
+def finite_sample_fewvar(xs, fading_factor=0.1):
     # Initialize variables to calculate EWA and EWVar
     x_sum = 0
     x_square_sum = 0
@@ -47,7 +47,7 @@ def finite_sample_ewvar(xs, fading_factor=0.1):
         x_sum += weight * x
         x_square_sum += weight * x**2
         weight_sum += weight
-        weight *= fading_factor
+        weight *= (1-fading_factor)
 
     # Calculate the weighted mean
     mean = x_sum / weight_sum
@@ -60,8 +60,8 @@ def finite_sample_ewvar(xs, fading_factor=0.1):
 
 if __name__ == '__main__':
     xs = [1, 2, 3, 4, 5]
-    fading_factor = 0.1
-    mean, variance = finite_sample_ewvar(xs, fading_factor=fading_factor)
+    fading_factor = 0.01
+    mean, variance = finite_sample_fewvar(xs, fading_factor=fading_factor)
     print("Corrected Exponentially Weighted Mean:", mean)
     print("Corrected Exponentially Weighted Variance:", variance)
 

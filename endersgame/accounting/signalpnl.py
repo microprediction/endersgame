@@ -1,9 +1,9 @@
 # endersgame/accounting/signalpnl.py
 
 import numpy as np
-from river import stats
 import math
-
+from endersgame.riverstats.fewvar import FEWVar
+from endersgame.riverstats.fewmean import FEWMean
 
 class SignalPnl:
     """
@@ -30,17 +30,16 @@ class SignalPnl:
         self.epsilon = epsilon
         self.current_ndx = 0
         self.fading_factor = fading_factor
-        self.signal_mean = stats.EWMean(fading_factor=fading_factor)
-        self.signal_var = stats.EWVar(fading_factor=fading_factor)
+        self.signal_var = FEWVar(fading_factor=fading_factor)
         self.pnl = {}
         for threshold in self.thresholds:
             self.pnl[threshold] = {
                 'positive': {
-                    'ewa_pnl': stats.EWMean(fading_factor=fading_factor),
+                    'ewa_pnl': FEWMean(fading_factor=fading_factor),
                     'pending_signals': []
                 },
                 'negative': {
-                    'ewa_pnl': stats.EWMean(fading_factor=fading_factor),
+                    'ewa_pnl': FEWMean(fading_factor=fading_factor),
                     'pending_signals': []
                 }
             }
@@ -55,7 +54,7 @@ class SignalPnl:
         - signal (float):  The generated signal.
         """
 
-        signal_mean = self.signal_mean.get()
+        signal_mean = self.signal_var.get_mean()
         signal_var = self.signal_var.get()
 
         # Calculate standard deviation and handle zero variance
@@ -68,7 +67,6 @@ class SignalPnl:
         self.current_ndx += 1
         self.current_standardized_signal = standardized_signal
 
-        self.signal_mean.update(signal)
         self.signal_var.update(signal)
 
     def _add_signal_to_queues(self, x: float, k: int, standardized_signal: float):

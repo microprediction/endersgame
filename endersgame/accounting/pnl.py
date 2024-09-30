@@ -4,28 +4,21 @@ import numpy as np
 
 class PnL:
     """
-    A mixin to track the PnL (Profit and Loss) of decisions made by an attacker.
-
-    Usage:
-          .update_pnl(y=y,decision=decision)
-       after every data point is received and an attack decision made
-
-
-    All state is stored under the `.accounting` property to avoid any conflicts.
+    Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
 
     - Non-zero decisions are tracked in a list of dictionaries.
     - Each decision is resolved when the corresponding future value becomes available.
-    - Decisions made within 100 data points of the last attack are ignored.
+    - Decisions made within self.backoff data points of the last non-zero decision are ignored.
+
     """
 
-    def __init__(self, epsilon=0.005):
-        self.backoff = 100
+    def __init__(self, epsilon:float=0.005, backoff:int=100):
+        self.backoff = backoff
         self.current_ndx = 0
         self.last_attack_ndx = None
         self.pending_decisions = []
         self.pnl_data = []
-        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution',
-                            'pnl']
+        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution','pnl']
         self.epsilon = epsilon
 
     def tick(self, x:float, k:int, decision:float):

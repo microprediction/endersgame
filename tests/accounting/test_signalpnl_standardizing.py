@@ -2,11 +2,11 @@
 
 import pytest
 import numpy as np
-from endersgame.accounting.signalpnl import SignalPnl
+from endersgame.accounting.stdsignalpnl import StdSignalPnl
 
 
 def test_initialization_defaults():
-    pnl = SignalPnl()
+    pnl = StdSignalPnl()
     assert pnl.signal_var.get_mean() == 0.0, "Initial signal mean should be 0.0"
     assert pnl.signal_var.get() == 0.0, "Initial signal variance should be 0.0"
     for threshold in pnl.thresholds:
@@ -16,7 +16,7 @@ def test_initialization_defaults():
 
 
 def test_single_tick():
-    pnl = SignalPnl(fading_factor=0.0)  # Set decay=1.0 to make EWMean and EWVar equivalent to simple mean and var
+    pnl = StdSignalPnl(fading_factor=0.0)  # Set decay=1.0 to make EWMean and EWVar equivalent to simple mean and var
     x = 100
     k = 5
     signal = 2.0
@@ -36,7 +36,7 @@ def test_single_tick():
 
 
 def test_zero_variance_handling():
-    pnl = SignalPnl(fading_factor=0.0)
+    pnl = StdSignalPnl(fading_factor=0.0)
     x = 100
     k = 3
     signals = [5.0, 5.0, 5.0]*10

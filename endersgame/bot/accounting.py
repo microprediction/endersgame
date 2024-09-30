@@ -25,8 +25,8 @@ class AccountingDataVisualizer:
         if point.substream_id not in self.accountants:
             self.accountants[point.substream_id] = self.account_model()
         accountant = self.accountants[point.substream_id]
-        accountant.tick_pnl(point.value, prediction.n - point.n, prediction.value)
-        self.update_data(point.substream_id, accountant.get_pnl_summary())
+        accountant.tick(point.value, prediction.n - point.n, prediction.value)
+        self.update_data(point.substream_id, accountant.summary())
         self.update_display()
 
     def update_data(self, stream_id: str, summary: Dict):

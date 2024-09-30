@@ -8,7 +8,7 @@ from endersgame.rivertransformers.macd import MACD
 def macd_attacker():
     """Fixture to initialize the MacdAttacker instance with default parameters."""
     return MacdAttacker(window_slow=26, window_fast=12, window_sign=9, decision_threshold=0.1,
-                        min_abstention=5, fading_factor=0.05, warmup=10)
+                        min_abstention=5, fading_factor=0.05, warmup=10, epsilon=0.01)
 
 
 def test_initial_state(macd_attacker):
@@ -78,6 +78,6 @@ def test_final_pnl_summary(macd_attacker):
     for y in y_values:
         macd_attacker.tick_and_predict(x=y, k=100)
 
-    summary = macd_attacker.get_pnl_summary()
+    summary = macd_attacker.pnl.summary()
     assert isinstance(summary, dict), "PnL summary should be a dictionary"
 

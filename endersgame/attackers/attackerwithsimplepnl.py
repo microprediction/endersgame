@@ -1,33 +1,30 @@
-from endersgame.accounting.simplepnl import SimplePnL
+from endersgame.accounting.pnl import PnL
 from endersgame.attackers.baseattacker import BaseAttacker
+from abc import abstractmethod
 
-# Illustrates how to mixin some simple accounting to your attacker
 
-class AttackerWithSimplePnL(BaseAttacker, SimplePnL):
+class AttackerWithSimplePnL(BaseAttacker):
 
-    def __init__(self):
+    def __init__(self, epsilon:float):
         BaseAttacker.__init__(self)
-        SimplePnL.__init__(self)
+        self.pnl = PnL(epsilon=epsilon)
 
     def tick_and_predict(self, x: float, k: int = None) -> float:
         """
-        :param x:
-        :param k:
-        :return:
+            Boilerplate for an attacker with profit and loss tracking
         """
         self.tick(x=x)
         decision = self.predict(k=k)
-        self.tick_pnl(x=x, k=k, decision=decision)
+        self.pnl.tick(x=x, k=k, decision=decision)
         return decision
 
+    @abstractmethod
     def tick(self, x):
+        # Your logic goes here
         pass
 
-    def predict(self, k):
+    @abstractmethod
+    def predict(self, k:int=None)->float:
+        # Your logic goes here
         return 0
-
-    def fit(self):
-        # Your fitting logic here
-        pass
-
 

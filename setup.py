@@ -29,7 +29,6 @@ setup(
               "endersgame.attackers",
               "endersgame.examples",
               "endersgame.syntheticdata",
-              "endersgame.anomaly",
               "endersgame.rivertransformers",
                 "endersgame.bot"],
     test_suite='pytest',

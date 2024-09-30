@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from endersgame.accounting.signalpnl import SignalPnl
+from endersgame.accounting.stdsignalpnl import StdSignalPnl
 import math
 import numpy as np
 
@@ -35,12 +35,13 @@ def generate_ornstein_uhlenbeck(length, theta=0.15, mu=0.0, sigma=2.0, x0=0.0, s
 def main():
     # Configuration
     decay = 0.9  # Decay factor for EWMean and EWVar
+    fading_factor = 1-decay
     num_points = 200  # Number of data points (made longer)
     k = 5  # Prediction horizon for PnL calculations
     seed = 42  # Seed for reproducibility
 
     # Initialize SignalPnl with default thresholds and specified decay
-    pnl = SignalPnl(decay=decay)
+    pnl = StdSignalPnl(fading_factor=fading_factor)
 
     # Generate stochastic signals using an Ornstein-Uhlenbeck process
     # Adjust mu and sigma as needed for desired behavior

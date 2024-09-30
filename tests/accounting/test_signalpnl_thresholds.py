@@ -3,12 +3,12 @@ from signal import signal
 # test_signalpnl.py
 
 import numpy as np
-from endersgame.accounting.signalpnl import SignalPnl
+from endersgame.accounting.stdsignalpnl import StdSignalPnl
 
 
 def test_initialization_defaults():
     """Test that the class initializes correctly with default thresholds and decay."""
-    pnl = SignalPnl()
+    pnl = StdSignalPnl()
     assert isinstance(pnl.thresholds, np.ndarray), "Thresholds should be a numpy array."
     assert pnl.current_ndx == 0, "Current index should start at 0."
     assert hasattr(pnl, 'signal_var'), "signal_var attribute should exist."
@@ -18,13 +18,13 @@ def test_initialization_defaults():
 def test_initialization_custom_thresholds():
     """Test that the class initializes correctly with custom thresholds."""
     custom_thresholds = [2, 4]
-    pnl = SignalPnl(thresholds=custom_thresholds, fading_factor=0.95)
+    pnl = StdSignalPnl(thresholds=custom_thresholds, fading_factor=0.95)
     assert np.array_equal(pnl.thresholds, np.array(custom_thresholds)), "Custom thresholds are incorrect."
 
 
 def test_signal_processing():
     """Test that signals are processed and standardized without errors."""
-    pnl = SignalPnl()
+    pnl = StdSignalPnl()
     signals = [1, 2, 3, 4, 5]
     x = 100
     k = 2
@@ -38,7 +38,7 @@ def test_signal_processing():
 def test_threshold_exceedance():
     """Test that standardized signals exceeding thresholds are added to pending signals."""
     thresholds = [1, 2, 3]
-    pnl = SignalPnl(thresholds=thresholds)
+    pnl = StdSignalPnl(thresholds=thresholds)
     x = 100
     k = 2
     # Provide initial signals to establish mean and variance
@@ -71,7 +71,7 @@ def test_signal_resolution():
     """Test that pending signals are resolved after k=2 steps and mean PnL is right."""
     thresholds = [1, 2, 3]
     fading_factor = 0.05
-    signal_pnl = SignalPnl(thresholds=thresholds, fading_factor=fading_factor)
+    signal_pnl = StdSignalPnl(thresholds=thresholds, fading_factor=fading_factor)
     k = 2
 
     # Establish mean and variance with initial signals
@@ -113,7 +113,7 @@ def test_signal_resolution_negative():
     """Test that pending signals are resolved after k=2 steps and mean PnL is right for negative signals."""
     thresholds = [3]
     fading_factor = 0.05
-    signal_pnl = SignalPnl(thresholds=thresholds, fading_factor=fading_factor)
+    signal_pnl = StdSignalPnl(thresholds=thresholds, fading_factor=fading_factor)
     k = 2
 
     # Establish mean and variance with initial signals
@@ -162,7 +162,7 @@ def test_signal_resolution_negative():
 
 def test_predict_no_data():
     """Test that predict returns no action when there is insufficient data."""
-    pnl = SignalPnl()
+    pnl = StdSignalPnl()
     decision = pnl.predict()
     assert decision == 0, "Decision should be 0 when there is insufficient data."
 

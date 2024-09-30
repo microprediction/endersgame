@@ -1,22 +1,23 @@
-# endersgame/accounting/signalpnl.py
+# endersgame/accounting/stdsignalpnl.py
 
 import numpy as np
 import math
 from endersgame.riverstats.fewvar import FEWVar
 from endersgame.riverstats.fewmean import FEWMean
 
-class SignalPnl:
+class StdSignalPnl:
     """
     Creates a standardized signal from an attacker's decisions,
-    then tracks hypothetical PnL for threshold-based choices.
+    then tracks hypothetical PnL for threshold-based choices,
+    and uses this in it's predict() method
 
     To use:
 
-        pnl.tick(x, k, signal)                  # Registers current data point and decision made by attacker
+        stdsignalpnl.tick(x, k, signal)         # Registers current data point and decision made by attacker
         different_decision = pnl.predict(k)     # Offers a decision based on moving average empirical results
     """
 
-    def __init__(self, thresholds=None, fading_factor=0.01, epsilon=0.01):
+    def __init__(self, thresholds=None, fading_factor=0.01, epsilon=0.01, ignore_signal_mean=True):
         """
         Initializes the SignalPnl object with thresholds and fading factor.
         The closer fading_factor is to 1 the more the statistic will adapt to recent values.

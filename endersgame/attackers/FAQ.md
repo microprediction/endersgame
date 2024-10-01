@@ -1,6 +1,8 @@
 
 # Frequently Asked Questions
 
+When implementing an [attacker](https://github.com/microprediction/endersgame/tree/main/endersgame/attackers) keep the following in mind. 
+
 ### FAQ 1: Should I implement `tick_and_predict` ? 
 Only if you really want to. It's already in the base class. 
 

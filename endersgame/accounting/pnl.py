@@ -110,7 +110,7 @@ class PnL:
 
         if num_resolved == 0:
             return {
-                "current_ndx": self.simplepnl["current_ndx"],
+                "current_ndx": self.pnl.current_ndx,
                 "num_resolved_decisions": num_resolved,
                 "total_profit": total_profit,
                 "win_loss_ratio": None,

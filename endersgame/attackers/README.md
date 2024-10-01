@@ -15,7 +15,7 @@ The attacker’s need only *occasionally* signal whether the future value will d
 
 ## Usage
 
-To create an attacker, you simply extend the `BaseAttacker` class and implement the required methods (`tick` and `predict`). For example:
+To create an attacker, you extend the `BaseAttacker` class (or similar) and implement the required methods (`tick` and `predict`). For example:
 
 ```python
 class MyAttacker(BaseAttacker):
@@ -32,13 +32,12 @@ Now to use, we simply instantiate and feed it one data point at a time:
 ```python
 attacker = MyAttacker()
 
-for t, x in enumerate(sequence_of_data):
+for x in enumerate(sequence_of_data):
     prediction = attacker.tick_and_predict(x, horizon=100)
-    print(f"Time {t}: Price {x}, Prediction {prediction}")
+    print(f" Price {x}, Prediction {prediction}")
 ```
-- 
-The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 
 
+The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 
 
 ## The Responsibility of an Attacker
 
@@ -105,7 +104,6 @@ following methods:
 
 - **History**  We generally encourage attackers to be designed using incremental calculations rather than batch but, as noted above, you can
 easily add a buffer of past values with the `HistoryMixin` class (see [BaseAttackerWithHistoryMixin](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/baseattackerwithhistorymixin.py)) not impose strict rules on how to maintain or store historical data.)
-
 
 
 

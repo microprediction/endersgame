@@ -2,6 +2,7 @@
 
 import numpy as np
 import math
+from endersgame import EPSILON
 from endersgame.riverstats.fewvar import FEWVar
 from endersgame.riverstats.fewmean import FEWMean
 
@@ -18,7 +19,7 @@ class StdSignalPnl:
         different_decision = pnl.predict(k)     # Offers a decision based on moving average empirical results
     """
 
-    def __init__(self, thresholds=None, fading_factor=0.01, epsilon=0.01, ignore_signal_mean=True):
+    def __init__(self, thresholds=None, fading_factor=0.01, epsilon=EPSILON, ignore_signal_mean=True):
         """
         Initializes the SignalPnl object with thresholds and fading factor.
         The closer fading_factor is to 1 the more the statistic will adapt to recent values.
@@ -27,7 +28,6 @@ class StdSignalPnl:
             self.thresholds = np.array([1, 2, 3])  # Default thresholds
         else:
             self.thresholds = np.array(thresholds)
-
         self.current_standardized_signal = 0
         self.epsilon = epsilon
         self.current_ndx = 0

@@ -50,3 +50,6 @@ change in a sequence over the next `horizon` steps, with a reward equal to the c
 
 Derive from [AttackerWithSimplePnl](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attackerwithsimplepnl.py) to get a reasonable idea in advance of what that performance might be. 
 
+## Design and responsibilities  
+
+It is strongly recommended that you read the [FAQ](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md). 

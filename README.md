@@ -2,4 +2,5 @@
 
 
 
-- [Attackers](https://github.com/microprediction/endersgame/tree/main/endersgame/attackers) README
+- See the [Attackers](https://github.com/microprediction/endersgame/tree/main/endersgame/attackers) README
+- It is strongly recommended that you read the [FAQ](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md). 

@@ -47,7 +47,6 @@ class BaseAttacker(ABC):
     def __init__(self):
         self.fitted = False
 
-    @abstractmethod
     def tick(self, x: float):
         """
 
@@ -58,7 +57,6 @@ class BaseAttacker(ABC):
         """
         pass
 
-    @abstractmethod
     def predict(self, horizon: int = None) -> float:
         """
         :param horizon:  Horizon

@@ -39,37 +39,15 @@ for x in enumerate(sequence_of_data):
 
 The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 
 
-## The Responsibility of an Attacker
+## What happens when an attacker is launched
 
-The only *actual* responsibility is:
-
-- **tick_and_predict**: It consumes the current data
-point in the sequence and returns a float `decision` that, if positive, indicates that future
-values will on average be higher than the present (or conversely).
-
-When your attacker is launched this is the  method that will be called. 
-
-However `tick_and_predict` is implemented in the parent classes and we'd *advise* that your attacker *typically* implement the following separately instead (e.g. so you don't
+Notice in the code above that when your attacker is run only the `tick_and_predict` method will be called, once for each data point. However `tick_and_predict` is implemented in the parent classes and we'd *advise* that your attacker *typically* implement the following
+separately instead (e.g. so you don't
 need to think about profit and loss tracking, per [PnL](https://github.com/microprediction/endersgame/blob/main/endersgame/accounting/pnl.py) for instance. )
 - **Tick**: It consumes and processes the current data point in the sequence, assimilating it into the model’s state.
 - **Predict**: Based on the attacker’s internal state and logic, it may predict whether the future value is likely to be higher (returns a positive number), lower (returns a negative number), or it may abstain (returns zero).
   
-For avoidance of any doubt: 
-
-- If the attacker believes the series will on average increase in value: return a positive number (indicating "up").
-
-$$ E[x_{t+k}] >  x_t + \epsilon $$
-
-  
-- If the attacker believes the series will on average decrease in value: return a negative number (indicating "down").
-
-
-$$ E[x_{t+k}] <  x_t - \epsilon $$
-
-
-- In all other cases, the attacker should zero to indicate no opinion.
-
-The constant $\epsilon$ is game dependent and analogous to a proportional trading cost.  
+You are strongly advised to read the [FAQ](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md) which discusses these methods.  
 
 ## How Attackers Are Judged
 

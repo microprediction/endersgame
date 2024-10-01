@@ -36,7 +36,7 @@ for x in enumerate(sequence_of_data):
     prediction = attacker.tick_and_predict(x, horizon=100)
     print(f" Price {x}, Prediction {prediction}")
 ```
-- 
+
 The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 
 
 

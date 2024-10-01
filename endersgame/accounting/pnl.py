@@ -1,5 +1,6 @@
 from typing import Dict
 import numpy as np
+from endersgame import EPSILON
 
 
 class PnL:
@@ -12,7 +13,8 @@ class PnL:
 
     """
 
-    def __init__(self, epsilon: float = 0.005, backoff: int = 100):
+    def __init__(self, epsilon: float = EPSILON, backoff: int = 100):
+        self.epsilon = epsilon
         self.backoff = backoff
         self.current_ndx = 0
         self.last_attack_ndx = None
@@ -20,7 +22,7 @@ class PnL:
         self.pnl_data = []
         self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution',
                             'pnl']
-        self.epsilon = epsilon
+
 
     def tick(self, x: float, horizon: int, decision: float):
         """

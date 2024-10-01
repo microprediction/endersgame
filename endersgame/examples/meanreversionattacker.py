@@ -20,7 +20,7 @@ class MeanReversionAttacker(BaseAttacker):
                 self.state['running_avg'] = (1 - self.params['a']) * self.state['running_avg'] + self.params['a'] * x
 
 
-    def predict(self, k:int=None)->float:
+    def predict(self, horizon:int=None)->float:
         if self.state['current_value'] > self.state['running_avg'] + 1:
             return -1
         if self.state['current_value'] < self.state['running_avg'] - 1:

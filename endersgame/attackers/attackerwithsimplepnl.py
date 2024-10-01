@@ -9,13 +9,13 @@ class AttackerWithSimplePnL(BaseAttacker):
         BaseAttacker.__init__(self)
         self.pnl = PnL(epsilon=epsilon)
 
-    def tick_and_predict(self, x: float, k: int = None) -> float:
+    def tick_and_predict(self, x: float, horizon: int = None) -> float:
         """
             Boilerplate for an attacker with profit and loss tracking
         """
         self.tick(x=x)
-        decision = self.predict(k=k)
-        self.pnl.tick(x=x, k=k, decision=decision)
+        decision = self.predict(horizon=horizon)
+        self.pnl.tick(x=x, horizon=horizon, decision=decision)
         return decision
 
     @abstractmethod
@@ -24,7 +24,7 @@ class AttackerWithSimplePnL(BaseAttacker):
         pass
 
     @abstractmethod
-    def predict(self, k:int=None)->float:
+    def predict(self, horizon:int=None)->float:
         # Your logic goes here
         return 0
 

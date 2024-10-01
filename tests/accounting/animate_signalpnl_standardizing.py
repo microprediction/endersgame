@@ -104,7 +104,7 @@ def main():
 
         x = x_values[frame]
         signal = signals[frame]
-        pnl.tick(x, k=k, signal=signal)
+        pnl.tick(x, horizon=k, signal=signal)
         standardized_signal = pnl.current_standardized_signal
         standardized_signals.append(standardized_signal)
 

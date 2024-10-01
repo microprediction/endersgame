@@ -60,7 +60,7 @@ class MacdAttacker(AttackerWithSimplePnL):
                 self.ewvar_macd_signal.update(macd_signal)
 
 
-    def predict(self, k: int = None) -> float:
+    def predict(self, horizon: int = None) -> float:
         """
             Predict based on the MACD signal and make decisions when momentum exceeds the threshold.
         """

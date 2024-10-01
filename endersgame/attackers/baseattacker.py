@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-class BaseAttacker(ABC):
 
+class BaseAttacker(ABC):
     """
 
         An "attacker" consumes a sequence of numbers y1, y2, ... one at a time
@@ -44,12 +44,11 @@ class BaseAttacker(ABC):
 
     """
 
-
     def __init__(self):
         self.fitted = False
 
     @abstractmethod
-    def tick(self, x:float):
+    def tick(self, x: float):
         """
 
                Assimilate the current data point somehow into the model's state
@@ -60,22 +59,18 @@ class BaseAttacker(ABC):
         pass
 
     @abstractmethod
-    def predict(self, k:int=None)->float:
+    def predict(self, horizon: int = None) -> float:
         """
-        :param k:  Horizon
+        :param horizon:  Horizon
         :return: Usually returns 0. Sometimes returns a positive number or negative number.
         """
         pass
 
-    def tick_and_predict(self, x: float, k:int=None)->float:
+    def tick_and_predict(self, x: float, horizon: int = None) -> float:
         """
         :param x:   The current data point in the sequence.
-        :param k:   The prediction horizon
+        :param horizon:   The prediction horizon
         :return:    A float indicating directional opinion, if any (1=up, 0=neither, -1=down)
         """
         self.tick(x=x)
-        return self.predict(k=k)
-
-
-
-
+        return self.predict(horizon=horizon)

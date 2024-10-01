@@ -1,6 +1,7 @@
 
 from endersgame.accounting.stdsignalpnl import StdSignalPnl
 from endersgame.accounting.pnl import PnL
+from endersgame.gameconfig import HORIZON
 
 
 class CalibratedAttacker:
@@ -22,7 +23,7 @@ class CalibratedAttacker:
         self.signal_pnl = StdSignalPnl(fading_factor=fading_factor, thresholds=None)
         self.attacker = attacker
 
-    def tick_and_predict(self, x: float, horizon: int = 1):
+    def tick_and_predict(self, x: float, horizon: int = HORIZON):
         """
              Boilerplate for an 'empirical' attacker
         """

@@ -1,6 +1,8 @@
 from collections import deque
 from endersgame.attackers.attackerwithsimplepnl import BaseAttacker
 from abc import abstractmethod
+
+from endersgame.gameconfig import HORIZON
 from endersgame.mixins.historymixin import HistoryMixin
 import numpy as np
 
@@ -23,13 +25,13 @@ class BaseAttackerWithHistoryMixin(BaseAttacker, HistoryMixin):
         self.tick_history(x)
 
     @abstractmethod
-    def predict_using_history(self, xs:[float], horizon:int)->float:
+    def predict_using_history(self, xs:[float], horizon:int=HORIZON)->float:
         # Create a decision using chronologicaly ordered fixed length vector xs
         pass
 
-    def predict(self,horizon: int = None) -> float:
+    def predict(self,horizon: int = HORIZON) -> float:
         if self.is_history_full():
-            return self.predict_from_sequence(list(self.history))
+            return self.predict_using_history(xs=list(self.history), horizon=horizon)
         else:
             return 0
 
@@ -44,7 +46,7 @@ class ExampleHistoricalAttacker(BaseAttackerWithHistoryMixin):
     def __init__(self, max_history_len=200):
         super().__init__(max_history_len=max_history_len)
 
-    def predict_using_history(self, xs:[float], horizon:int) ->float:
+    def predict_using_history(self, xs:[float], horizon:int=HORIZON) ->float:
         if xs[-1]>np.median(xs)+1:
             return 1
 

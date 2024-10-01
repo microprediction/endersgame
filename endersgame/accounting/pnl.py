@@ -31,8 +31,8 @@ class PnL:
             And uses revealed ground truth y to evaluate past decisions
 
         """
-        self._add_decision_to_queue(y=x, horizon=horizon, decision=decision)
-        self._resolve_decisions_on_queue(y=x)
+        self._add_decision_to_queue(x=x, horizon=horizon, decision=decision)
+        self._resolve_decisions_on_queue(x=x)
 
     def reset_pnl(self):
         """Resets all PnL tracking variables within the accounting property."""
@@ -41,7 +41,7 @@ class PnL:
         self.pending_decisions.clear()
         self.pnl_data.clear()
 
-    def _add_decision_to_queue(self, y: float, horizon: int, decision: float):
+    def _add_decision_to_queue(self, x: float, horizon: int, decision: float):
         """
         Store a decision made at the current time step.
 
@@ -57,13 +57,13 @@ class PnL:
 
         # Store the decision and the time it was made
         if decision != 0:
-            self.pending_decisions.append((self.current_ndx, y, horizon, decision))
+            self.pending_decisions.append((self.current_ndx, x, horizon, decision))
             self.last_attack_ndx = self.current_ndx
 
         # Increment total observations
         self.current_ndx += 1
 
-    def _resolve_decisions_on_queue(self, y: float):
+    def _resolve_decisions_on_queue(self, x: float):
         """
         Resolve pending decisions by calculating PnL when enough time has passed and the future value is available.
 
@@ -71,19 +71,19 @@ class PnL:
         """
         resolved_decision_ndxs = []
         current_ndx = self.current_ndx
-        for pending_ndx, (decision_ndx, y_prev, horizon_, decision) in enumerate(self.pending_decisions):
+        for pending_ndx, (decision_ndx, x_prev, horizon_, decision) in enumerate(self.pending_decisions):
             num_observations_since_decision = current_ndx - decision_ndx  # Horizon passed since the decision
-            if num_observations_since_decision >= horizon_:  # Adjust '100' to your desired prediction horizon
+            if num_observations_since_decision >= horizon_:
                 # Calculate PnL based on whether the decision was positive or negative
                 if decision > 0:
-                    pnl = y - y_prev - self.epsilon
+                    pnl = x - x_prev - self.epsilon
                 elif decision < 0:
-                    pnl = y_prev - y - self.epsilon
+                    pnl = x_prev - x - self.epsilon
                 else:
                     raise ValueError('A non-zero decision was logged to the queue')
 
                 # ['decision_ndx','resolution_ndx','k','decision','y_decision','y_resolution','pnl']
-                pnl_data = (decision_ndx, current_ndx, horizon_, decision, y_prev, y, pnl)
+                pnl_data = (decision_ndx, current_ndx, horizon_, decision, x_prev, x, pnl)
                 resolved_decision_ndxs.append(pending_ndx)
                 self.pnl_data.append(pnl_data)
 
@@ -110,7 +110,7 @@ class PnL:
 
         if num_resolved == 0:
             return {
-                "current_ndx": self.pnl.current_ndx,
+                "current_ndx": self.current_ndx,
                 "num_resolved_decisions": num_resolved,
                 "total_profit": total_profit,
                 "win_loss_ratio": None,

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from endersgame.gameconfig import HORIZON
 
 
 class BaseAttacker(ABC):
@@ -57,14 +58,14 @@ class BaseAttacker(ABC):
         """
         pass
 
-    def predict(self, horizon: int = None) -> float:
+    def predict(self, horizon: int = HORIZON) -> float:
         """
         :param horizon:  Horizon
         :return: Usually returns 0. Sometimes returns a positive number or negative number.
         """
         pass
 
-    def tick_and_predict(self, x: float, horizon: int = None) -> float:
+    def tick_and_predict(self, x: float, horizon: int = HORIZON) -> float:
         """
         :param x:   The current data point in the sequence.
         :param horizon:   The prediction horizon

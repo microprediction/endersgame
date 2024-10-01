@@ -1,6 +1,7 @@
 from endersgame.accounting.pnl import PnL
 from endersgame.attackers.baseattacker import BaseAttacker
 from endersgame import EPSILON
+from endersgame.gameconfig import HORIZON
 
 
 class AttackerWithSimplePnL(BaseAttacker):
@@ -9,7 +10,7 @@ class AttackerWithSimplePnL(BaseAttacker):
         BaseAttacker.__init__(self)
         self.pnl = PnL(epsilon=epsilon)
 
-    def tick_and_predict(self, x: float, horizon: int = None) -> float:
+    def tick_and_predict(self, x: float, horizon: int = HORIZON) -> float:
         """
             Boilerplate for an attacker with profit and loss tracking
         """
@@ -22,7 +23,7 @@ class AttackerWithSimplePnL(BaseAttacker):
         # Your logic goes here
         pass
 
-    def predict(self, horizon:int=None)->float:
+    def predict(self, horizon:int=HORIZON)->float:
         # Your logic goes here
         return 0
 

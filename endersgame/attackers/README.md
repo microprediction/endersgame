@@ -32,9 +32,9 @@ Now to use, we simply instantiate and feed it one data point at a time:
 ```python
 attacker = MyAttacker()
 
-for t, x in enumerate(sequence_of_data):
+for x in enumerate(sequence_of_data):
     prediction = attacker.tick_and_predict(x, horizon=100)
-    print(f"Time {t}: Price {x}, Prediction {prediction}")
+    print(f" Price {x}, Prediction {prediction}")
 ```
 - 
 The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 

@@ -34,18 +34,28 @@ for t, x in enumerate(sequence_of_data):
     prediction = attacker.tick_and_predict(x, horizon=100)
     print(f"Time {t}: Price {x}, Prediction {prediction}")
 ```
+- 
+The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 
 
 
-## The Only Responsibility of an Attacker
+## The Responsibility of an Attacker
 
-An attacker typically does the following:
+The only *actual* responsibility is:
+
+- **tick_and_predict**: It consumes the current data
+point in the sequence and returns a float `decision` that, if positive, indicates that future
+values will on average be higher than the present (or conversely).
+
+When your attacker is launched this is the  method that will be called. 
+
+However `tick_and_predict` is implemented in the parent classes and we'd *advise* that your attacker *typically* implement the following separately instead (e.g. so you don't
+need to think about profit and loss tracking, per [PnL](https://github.com/microprediction/endersgame/blob/main/endersgame/accounting/pnl.py) for instance. )
 - **Tick**: It consumes and processes the current data point in the sequence, assimilating it into the model’s state.
 - **Predict**: Based on the attacker’s internal state and logic, it may predict whether the future value is likely to be higher (returns a positive number), lower (returns a negative number), or it may abstain (returns zero).
   
-To elaborate: 
+For avoidance of any doubt: 
 
 - If the attacker believes the series will on average increase in value: return a positive number (indicating "up").
-
 
 $$ E[x_{t+k}] >  x_t + \epsilon $$
 
@@ -56,9 +66,9 @@ $$ E[x_{t+k}] >  x_t + \epsilon $$
 $$ E[x_{t+k}] <  x_t - \epsilon $$
 
 
-- In all other cases, return zero to indicate no opinion.
+- In all other cases, the attacker should zero to indicate no opinion.
 
-The constant $\epsilon$ is game dependent. 
+The constant $\epsilon$ is game dependent and analogous to a proportional trading cost.  
 
 ## How Attackers Are Judged
 
@@ -66,33 +76,33 @@ As might be inferred from the above, attackers are judged by their ability to pr
 
 There's no need to implement this yourself. Use the [SimplePnl](https://github.com/microprediction/endersgame/blob/main/endersgame/accounting/simplepnl.py) mixin as demonstrated in [attackerwithsimplepnl.py](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attackerwithsimplepnl.py). 
 
-## Core Components to Implement
-When creating your own attacker, you should implement the following methods:
+## Core Methods to Implement
+When creating your own attacker, it is recommended that
+you derive from `Attacker` or `AttackerWithSimplePnL` or something in 
+[attackers](https://github.com/microprediction/endersgame/tree/main/endersgame/attackers), then implement the
+following methods:
 
 1. **`tick(self, x: float)`**:
     - Assimilate the current data point into the model’s state.
-    - This function is responsible for updating the internal state with each new incoming observation.
-
+    - If you wish to maintain a fixed length buffer of lagged values, we suggest taking a look at the pattern provided in [BaseAttackerWithHistoryMixin](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/baseattackerwithhistorymixin.py). 
+   
 2. **`predict(self, k: int = None) -> float`**:
     - Based on the internal state and logic, return a prediction for the future movement of the sequence.
     - Return a positive value if you expect the future value to be higher, a negative value if lower, and zero if no prediction.
 
 
-### Optional Components to Implement
 
-3. **`fit(self)`** (optional):
-    - This method is periodically called after large batches of observations (e.g., every 10,000 observations).
-    - Use it to perform more intensive fitting or retraining processes that require additional computation, if that is needed. 
+### Optional Component to Implement
 
 4. **Tick and Predict**: The combined method `tick_and_predict(x, k)` will be called to test your attacker, but you usually don't need to separately implement it. 
 
 ### Conventions
 
-- **Consistent prediction Horizon (`k`)**: You can generally expect the same prediction horizon $k$ to be fed to the attacker over and over again. 
 
-- **History**  While the framework does not impose strict rules on how to maintain or store historical data. You may choose to do so and an example is provided in [bufferingattacker](https://github.com/microprediction/endersgame/blob/main/endersgame/examples/bufferingattacker.py). 
+- **Consistent prediction Horizon (`horizon`)**: You can generally expect the same prediction horizon to be fed to the attacker over and over again. 
 
-The `BaseAttacker` framework is intentionally minimalist to allow flexibility in how you design your predictive strategies. 
+- **History**  We generally encourage attackers to be designed using incremental calculations rather than batch but, as noted above, you can
+easily add a buffer of past values with the `HistoryMixin` class (see [BaseAttackerWithHistoryMixin](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/baseattackerwithhistorymixin.py)) not impose strict rules on how to maintain or store historical data.)
 
 
 

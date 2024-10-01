@@ -1,16 +1,13 @@
 
 # https://github.com/microprediction/endersnotebooks/blob/main/mean_reversion_attacker.ipynb
 
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
-from endersgame.rivertransformers.macd import MACD
+
 from endersgame.datasources.streamgenerator import stream_generator
-from river import stats
 import numpy as np
-import math
 import types
 from pprint import pprint
-import json
 from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
+
 
 def test_colab_notebook_example():
 

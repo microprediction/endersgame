@@ -36,7 +36,7 @@ for x in enumerate(xs):
     print(f"Price {x}, Prediction {prediction}")
 ```
 
-See FAQ below for why we *don't* recommend implementing `tick_and_predict` explicitly. 
+See [FAQ](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md) for why we *don't* recommend implementing `tick_and_predict` explicitly. 
 
 ## Deployment
 

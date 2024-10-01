@@ -1,6 +1,6 @@
 from endersgame.examples.meanreversionattacker import MeanReversionAttacker
 from endersgame.attackers.calibratedattacker import CalibratedAttacker
-from tests.examples.test_bufferingattacker import attacker
+from tests.examples.test_baseattackerwithhistorymixin import attacker
 
 
 

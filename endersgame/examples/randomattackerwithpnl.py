@@ -10,7 +10,7 @@ class RandomAttacker(AttackerWithSimplePnL):
     def tick(self, x):
         pass
 
-    def predict(self, k:int) -> float:
+    def predict(self, horizon:int) -> float:
         return int(0.5*np.random.randn())
 
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
         # Process each point and make decisions
         for y in y_values:
-            decision = attacker.tick_and_predict(x=y, k=k)
+            decision = attacker.tick_and_predict(x=y, horizon=k)
             print(f"Price: {y:.2f}, Decision: {decision}")
 
         # Print the final PnL summary after 500 points

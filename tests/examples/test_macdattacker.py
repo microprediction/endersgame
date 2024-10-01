@@ -76,7 +76,7 @@ def test_final_pnl_summary(macd_attacker):
     y_values = momentum_regimes(n=200)
 
     for y in y_values:
-        macd_attacker.tick_and_predict(x=y, k=100)
+        macd_attacker.tick_and_predict(x=y, horizon=100)
 
     summary = macd_attacker.pnl.summary()
     assert isinstance(summary, dict), "PnL summary should be a dictionary"

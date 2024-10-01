@@ -52,7 +52,7 @@ def test_tick_and_predict_valid_decisions(setup_attacker):
     price_changes = np.random.randn(10)  # Simulated price changes (random walk)
 
     for price_change in price_changes:
-        decision = calibrated_attacker.tick_and_predict(x=price_change, k=1)
+        decision = calibrated_attacker.tick_and_predict(x=price_change, horizon=1)
         assert decision in [-1, 0, 1], "Decision should be -1, 0, or 1"
 
 
@@ -65,7 +65,7 @@ def test_empirical_attacker_on_sequence(setup_attacker):
 
     decisions = []
     for price_change in price_changes:
-        decision = calibrated_attacker.tick_and_predict(x=price_change, k=1)
+        decision = calibrated_attacker.tick_and_predict(x=price_change, horizon=1)
         decisions.append(decision)
 
     # Ensure that decisions are in the expected range and length

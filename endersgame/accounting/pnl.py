@@ -12,23 +12,24 @@ class PnL:
 
     """
 
-    def __init__(self, epsilon:float=0.005, backoff:int=100):
+    def __init__(self, epsilon: float = 0.005, backoff: int = 100):
         self.backoff = backoff
         self.current_ndx = 0
         self.last_attack_ndx = None
         self.pending_decisions = []
         self.pnl_data = []
-        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution','pnl']
+        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution',
+                            'pnl']
         self.epsilon = epsilon
 
-    def tick(self, x:float, k:int, decision:float):
+    def tick(self, x: float, horizon: int, decision: float):
         """
 
             Adds non-zero 'decision' to a queue so it can be judged later
             And uses revealed ground truth y to evaluate past decisions
 
         """
-        self._add_decision_to_queue(y=x, k=k, decision=decision)
+        self._add_decision_to_queue(y=x, horizon=horizon, decision=decision)
         self._resolve_decisions_on_queue(y=x)
 
     def reset_pnl(self):
@@ -38,8 +39,7 @@ class PnL:
         self.pending_decisions.clear()
         self.pnl_data.clear()
 
-
-    def _add_decision_to_queue(self, y:float, k:int, decision: float):
+    def _add_decision_to_queue(self, y: float, horizon: int, decision: float):
         """
         Store a decision made at the current time step.
 
@@ -55,7 +55,7 @@ class PnL:
 
         # Store the decision and the time it was made
         if decision != 0:
-            self.pending_decisions.append((self.current_ndx, y, k, decision))
+            self.pending_decisions.append((self.current_ndx, y, horizon, decision))
             self.last_attack_ndx = self.current_ndx
 
         # Increment total observations
@@ -69,9 +69,9 @@ class PnL:
         """
         resolved_decision_ndxs = []
         current_ndx = self.current_ndx
-        for pending_ndx, (decision_ndx, y_prev, k, decision) in enumerate(self.pending_decisions):
+        for pending_ndx, (decision_ndx, y_prev, horizon_, decision) in enumerate(self.pending_decisions):
             num_observations_since_decision = current_ndx - decision_ndx  # Horizon passed since the decision
-            if num_observations_since_decision >= k:  # Adjust '100' to your desired prediction horizon
+            if num_observations_since_decision >= horizon_:  # Adjust '100' to your desired prediction horizon
                 # Calculate PnL based on whether the decision was positive or negative
                 if decision > 0:
                     pnl = y - y_prev - self.epsilon
@@ -81,12 +81,13 @@ class PnL:
                     raise ValueError('A non-zero decision was logged to the queue')
 
                 # ['decision_ndx','resolution_ndx','k','decision','y_decision','y_resolution','pnl']
-                pnl_data = (decision_ndx, current_ndx, k, decision, y_prev, y, pnl )
+                pnl_data = (decision_ndx, current_ndx, horizon_, decision, y_prev, y, pnl)
                 resolved_decision_ndxs.append(pending_ndx)
                 self.pnl_data.append(pnl_data)
 
         # resolved_decision_ndxs contains a list of indexes into self.accounting["pending_decisions"] that we remove:
-        self.pending_decisions = [d for (pndx, d) in enumerate(self.pending_decisions) if pndx not in resolved_decision_ndxs]
+        self.pending_decisions = [d for (pndx, d) in enumerate(self.pending_decisions) if
+                                  pndx not in resolved_decision_ndxs]
 
     def get_pnl_tuples(self):
         """
@@ -95,11 +96,9 @@ class PnL:
         """
         return self.pnl_data
 
-
-    def to_records(self)->[Dict]:
+    def to_records(self) -> [Dict]:
         records = [dict(zip(self.pnl_columns, pnl_rec)) for pnl_rec in self.pnl_data]
         return records
-
 
     def summary(self):
         """Returns a summary of PnL-related statistics from the resolved decisions."""
@@ -129,8 +128,8 @@ class PnL:
             "current_ndx": self.current_ndx,
             "num_resolved_decisions": num_resolved,
             "total_profit": total_profit,
-            "wins":wins,
-            "losses":losses,
+            "wins": wins,
+            "losses": losses,
             "win_loss_ratio": win_loss_ratio,
             "profit_per_decision": avg_profit_per_decision,
             "standardized_profit_per_decision": standardized_profit

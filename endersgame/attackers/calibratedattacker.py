@@ -1,4 +1,3 @@
-# empiricalmeanreversionattacker.py
 
 from endersgame.accounting.stdsignalpnl import StdSignalPnl
 from endersgame.accounting.pnl import PnL
@@ -23,14 +22,14 @@ class CalibratedAttacker:
         self.signal_pnl = StdSignalPnl(fading_factor=fading_factor, thresholds=None)
         self.attacker = attacker
 
-    def tick_and_predict(self, x: float, k: int = 1):
+    def tick_and_predict(self, x: float, horizon: int = 1):
         """
              Boilerplate for an 'empirical' attacker
         """
         signal = self.attacker.tick_and_predict(x)
-        self.signal_pnl.tick(x=x, k=k, signal=signal)
-        decision = self.signal_pnl.predict(self.pnl.epsilon)
-        self.pnl.tick(x=x, k=k, decision=decision)
+        self.signal_pnl.tick(x=x, horizon=horizon, signal=signal)
+        decision = self.signal_pnl.predict(epsilon=self.pnl.epsilon)
+        self.pnl.tick(x=x, horizon=horizon, decision=decision)
         return decision
 
 

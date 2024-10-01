@@ -57,7 +57,7 @@ def main():
 
     # Process each signal through the SignalPnl class
     for x, signal in zip(x_values, signals):
-        pnl.tick(x, k=k, signal=signal)
+        pnl.tick(x, horizon=k, signal=signal)
         standardized_signals.append(pnl.current_standardized_signal)
 
     # Identify points where standardized signal exceeds thresholds

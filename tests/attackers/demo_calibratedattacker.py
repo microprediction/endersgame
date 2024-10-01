@@ -47,7 +47,7 @@ if __name__=='__main__':
     # Run the simulation
     for i, price_change in enumerate(price_changes):
         mock_signal = uncalibrated_attacker.tick_and_predict(x=price_change)
-        empirical_decision = calibrated_attacker.tick_and_predict(x=price_change, k=1)
+        empirical_decision = calibrated_attacker.tick_and_predict(x=price_change, horizon=1)
 
         mock_signals.append(mock_signal)
         empirical_decisions.append(empirical_decision)

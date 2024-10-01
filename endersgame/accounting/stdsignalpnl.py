@@ -5,6 +5,7 @@ import math
 from endersgame.riverstats.fewvar import FEWVar
 from endersgame.riverstats.fewmean import FEWMean
 
+
 class StdSignalPnl:
     """
     Creates a standardized signal from an attacker's decisions,
@@ -45,7 +46,7 @@ class StdSignalPnl:
                 }
             }
 
-    def tick(self, x: float, k: int, signal: float):
+    def tick(self, x: float, horizon: int, signal: float):
         """
         Processes the signal at the current time step.
 
@@ -63,14 +64,14 @@ class StdSignalPnl:
 
         standardized_signal = (signal - signal_mean) / signal_std
 
-        self._add_signal_to_queues(x=x, k=k, standardized_signal=standardized_signal)
+        self._add_signal_to_queues(x=x, horizon=horizon, standardized_signal=standardized_signal)
         self._resolve_signals_on_queues(x=x)
         self.current_ndx += 1
         self.current_standardized_signal = standardized_signal
 
         self.signal_var.update(signal)
 
-    def _add_signal_to_queues(self, x: float, k: int, standardized_signal: float):
+    def _add_signal_to_queues(self, x: float, horizon: int, standardized_signal: float):
         """
         For each threshold, determine if the standardized signal exceeds the threshold,
         and store pending actions accordingly.
@@ -86,14 +87,14 @@ class StdSignalPnl:
                 self.pnl[threshold]['positive']['pending_signals'].append({
                     'start_ndx': self.current_ndx,
                     'x_prev': x,
-                    'k': k
+                    'k': horizon
                 })
             if standardized_signal < -threshold:
                 # Signal falls below negative threshold: potential negative action
                 self.pnl[threshold]['negative']['pending_signals'].append({
                     'start_ndx': self.current_ndx,
                     'x_prev': x,
-                    'k': k
+                    'k': horizon
                 })
 
     def _resolve_signals_on_queues(self, x: float):
@@ -151,7 +152,7 @@ class StdSignalPnl:
                 expected_pnls[threshold]['negative'] = expected_pnl
         return expected_pnls
 
-    def predict(self, epsilon: float=None):
+    def predict(self, epsilon: float = None):
         """
         Decide whether to take a positive action (1), negative action (-1), or no action (0)
         based on the current standardized signal and the expected PnL for each threshold.

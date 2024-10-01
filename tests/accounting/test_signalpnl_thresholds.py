@@ -88,23 +88,23 @@ def test_signal_resolution():
     # Generate a big signal that should exceed thresholds when standardized
     big_signal = 10
     x = 130
-    signal_pnl.tick(x=x, k=k, signal=big_signal)  # Should generate pending signals
+    signal_pnl.tick(x=x, horizon=k, signal=big_signal)  # Should generate pending signals
 
     assert len(signal_pnl.pnl[3]['positive']['pending_signals']) == 1, 'One pending expected'
 
     # Advance time
-    signal_pnl.tick(x=135, k=k, signal=0)
+    signal_pnl.tick(x=135, horizon=k, signal=0)
     assert len(signal_pnl.pnl[3]['positive']['pending_signals']) == 1, 'One pending expected'
 
     # Now time again and now it is time to resolve:
-    signal_pnl.tick(x=140, k=k, signal=0)
+    signal_pnl.tick(x=140, horizon=k, signal=0)
     assert len(signal_pnl.pnl[3]['positive']['pending_signals']) == 0, 'No pending expected'
 
     running_pnl_mean = signal_pnl.pnl[3]['positive']['ewa_pnl'].get()
     assert abs(running_pnl_mean - 10) < 1, 'Expected to see an average pnl of 10 because we decided on "up" at 130'
 
     # Now let's test whether it will recommend a trade
-    signal_pnl.tick(x=140, k=2, signal=10)
+    signal_pnl.tick(x=140, horizon=2, signal=10)
     decision = signal_pnl.predict(epsilon=0)
     assert decision > 0
 
@@ -134,18 +134,18 @@ def test_signal_resolution_negative():
     # Generate a big negative signal that should exceed thresholds when standardized
     big_negative_signal = -5
     x = 130
-    signal_pnl.tick(x=x, k=k, signal=big_negative_signal)  # Should generate a pending negative signal
+    signal_pnl.tick(x=x, horizon=k, signal=big_negative_signal)  # Should generate a pending negative signal
 
     # Assert that a pending negative signal has been added for threshold=1
     assert len(signal_pnl.pnl[3]['negative']['pending_signals']) == 1, 'One negative pending expected'
 
     # Advance time by one step (still within k=2 steps)
-    signal_pnl.tick(x=125, k=k, signal=0)
+    signal_pnl.tick(x=125, horizon=k, signal=0)
     assert len(
         signal_pnl.pnl[3]['negative']['pending_signals']) == 1, 'One negative pending expected after first advancement'
 
     # Advance time by another step to resolve the pending signal
-    signal_pnl.tick(x=120, k=k, signal=0)
+    signal_pnl.tick(x=120, horizon=k, signal=0)
     assert len(signal_pnl.pnl[3]['negative']['pending_signals']) == 0, 'No negative pending expected after resolution'
 
     # Check the running PnL mean for the negative threshold
@@ -155,7 +155,7 @@ def test_signal_resolution_negative():
         running_pnl_mean - expected_pnl) < 1.0, f'Expected to see an average pnl of {expected_pnl}, got {running_pnl_mean}'
 
     # Now let's test whether it will recommend a negative trade
-    signal_pnl.tick(x=120, k=k, signal=-10)
+    signal_pnl.tick(x=120, horizon=k, signal=-10)
     decision = signal_pnl.predict(epsilon=0)
     assert decision < 0, 'Expected decision to be negative (-1)'
 

@@ -20,7 +20,7 @@ class MyAttacker(BaseAttacker):
     def tick(self, x: float):
         # Put your logic for internal state updating here
     
-    def predict(self, k: int = None) -> float:
+    def predict(self, horizon: int = None) -> float:
         # Put your prediction logic here. Return a directional prediction: -1 for down, 1 for up, 0 for no opinion
         
 ```
@@ -31,7 +31,7 @@ Now to use, we simply instantiate and feed it one data point at a time:
 attacker = MyAttacker()
 
 for t, x in enumerate(sequence_of_data):
-    prediction = attacker.tick_and_predict(x, k=100)
+    prediction = attacker.tick_and_predict(x, horizon=100)
     print(f"Time {t}: Price {x}, Prediction {prediction}")
 ```
 

@@ -1,10 +1,11 @@
 from endersgame.accounting.pnl import PnL
 from endersgame.attackers.baseattacker import BaseAttacker
+from endersgame import EPSILON
 
 
 class AttackerWithSimplePnL(BaseAttacker):
 
-    def __init__(self, epsilon:float):
+    def __init__(self, epsilon:float=EPSILON):
         BaseAttacker.__init__(self)
         self.pnl = PnL(epsilon=epsilon)
 

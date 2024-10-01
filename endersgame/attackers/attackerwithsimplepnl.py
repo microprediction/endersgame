@@ -1,6 +1,5 @@
 from endersgame.accounting.pnl import PnL
 from endersgame.attackers.baseattacker import BaseAttacker
-from abc import abstractmethod
 
 
 class AttackerWithSimplePnL(BaseAttacker):
@@ -18,12 +17,10 @@ class AttackerWithSimplePnL(BaseAttacker):
         self.pnl.tick(x=x, horizon=horizon, decision=decision)
         return decision
 
-    @abstractmethod
     def tick(self, x):
         # Your logic goes here
         pass
 
-    @abstractmethod
     def predict(self, horizon:int=None)->float:
         # Your logic goes here
         return 0

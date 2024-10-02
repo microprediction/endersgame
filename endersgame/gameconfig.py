@@ -1,2 +1,2 @@
 EPSILON = 0.01     # Trading cost
-HORIZON = 100
+HORIZON = 30

@@ -14,7 +14,7 @@ from endersgame.datasources.streamurl import stream_url
 VALID_PUBLIC_CATEGORIES = ['train','test']
 
 
-def stream_generator(stream_id, category='train', verbose=False):
+def stream_generator(stream_id, category='train', verbose=False, return_float=False):
     """
     A generator that yields values from remote CSV files on GitHub.
 
@@ -50,7 +50,11 @@ def stream_generator(stream_id, category='train', verbose=False):
             values_found = False
             for row in reader:
                 values_found = True
-                yield float(row['value'])
+                value = float(row['value'])
+                if return_float:
+                    yield value
+                else:
+                    yield {'x':value}
 
             if not values_found:
                 # If the file is empty or doesn't contain 'value' column

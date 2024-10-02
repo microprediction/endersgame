@@ -29,7 +29,7 @@ def test_colab_notebook_example():
                     self.state['running_avg'] = (1-self.params['a'])*self.state['running_avg'] + self.params['a']*x
 
 
-    x_train_stream = stream_generator(stream_id=0,category='train')
+    x_train_stream = stream_generator(stream_id=0,category='train', return_float=True)
     attacker = MyAttacker()
     for x in x_train_stream:
         attacker.tick(x)
@@ -53,7 +53,7 @@ def test_colab_notebook_example():
     print(attacker.predict())
 
     horizon = 100       # Horizon
-    x_test_stream = stream_generator(stream_id=1,category='train')
+    x_test_stream = stream_generator(stream_id=1,category='train', return_float=True)
     attacker = MyAttacker()
     attacker.predict = types.MethodType(predict, attacker)     #  <-- If you get sick of doing this then put the method in the class at the outset
     for x in x_test_stream:

@@ -48,7 +48,7 @@ class MyAttacker(AttackerWithSimplePnL):
 
 def test_colab_notebook_example():
     # Initialize the training stream
-    x_train_stream = stream_generator(stream_id=0, category='train')
+    x_train_stream = stream_generator(stream_id=0, category='train', return_float=True)
 
     # Initialize the attacker
     attacker = MyAttacker()
@@ -68,7 +68,7 @@ def test_colab_notebook_example():
 
     # Initialize the test stream
     horizon = 100  # Horizon
-    x_test_stream = stream_generator(stream_id=1, category='train')
+    x_test_stream = stream_generator(stream_id=1, category='train', return_float=True)
 
     # Re-initialize the attacker for testing
     attacker = MyAttacker()

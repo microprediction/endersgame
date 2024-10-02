@@ -11,3 +11,5 @@ This directly contains similar examples with slightly different styles.
 Feel free to contribute more! 
 
 "de gustibus non est disputandum"
+
+Poll results [here](https://www.linkedin.com/posts/petercotton_python-activity-7247233350082445312-f-g5?utm_source=share&utm_medium=member_desktop)

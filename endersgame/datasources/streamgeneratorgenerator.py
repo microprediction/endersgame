@@ -5,7 +5,7 @@ from endersgame.datasources.streamgenerator import stream_generator, VALID_PUBLI
 from endersgame.datasources.streamurl import stream_url
 
 
-def stream_generator_generator(start_stream_id=0, category='train'):
+def stream_generator_generator(start_stream_id=0, category='train', return_float=True):
     """
     Returns the next valid stream generator that checks for the existence of the remote file.
 
@@ -26,7 +26,7 @@ def stream_generator_generator(start_stream_id=0, category='train'):
         response = requests.head(url)
         if response.status_code == 200:
             # If the file exists, yield the stream generator for this stream_id
-            yield stream_generator(stream_id, category)
+            yield stream_generator(stream_id=stream_id, category=category, return_float=return_float)
         else:
             break
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # Example usage of the stream_generator_generator
 
     # Get the next stream:
-    gen_generator = stream_generator_generator(start_stream_id=13, category='train')
+    gen_generator = stream_generator_generator(start_stream_id=13, category='train', return_float=False)
 
     # Use the next stream:
     try:

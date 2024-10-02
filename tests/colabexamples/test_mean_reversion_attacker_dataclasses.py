@@ -34,7 +34,7 @@ class MyAttacker(AttackerWithSimplePnL):
 
 
 def test_colab_notebook_example():
-    x_train_stream = stream_generator(stream_id=0, category='train')
+    x_train_stream = stream_generator(stream_id=0, category='train', return_float=True)
     attacker = MyAttacker()
     for x in x_train_stream:
         attacker.tick(x)
@@ -60,7 +60,7 @@ def test_colab_notebook_example():
 
     # Testing with a horizon
     horizon = 100  # Horizon
-    x_test_stream = stream_generator(stream_id=1, category='train')
+    x_test_stream = stream_generator(stream_id=1, category='train', return_float=True)
     attacker = MyAttacker()
     attacker.predict = types.MethodType(predict, attacker)  # Attach predict method to attacker instance
     for x in x_test_stream:

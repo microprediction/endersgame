@@ -1,5 +1,9 @@
+from unicodedata import category
+
 import requests
 from endersgame.datasources.streamgenerator import stream_generator
+from streamgenerator import VALID_PUBLIC_CATEGORIES
+from endersgame.datasources.streamurl import stream_url
 
 
 def stream_generator_generator(start_stream_id=0, category='train'):
@@ -13,18 +17,18 @@ def stream_generator_generator(start_stream_id=0, category='train'):
     Yields:
     - A stream generator for the next valid stream.
     """
+    assert category.lower() in VALID_PUBLIC_CATEGORIES,' Only test and train data is avaiable'
+
     stream_id = start_stream_id
     while True:
-        # Construct the URL to check if the stream exists
-        url = f'https://raw.githubusercontent.com/microprediction/endersdata/main/data/{category}/stream_{stream_id}_file_1.csv'
+        # Construct the first URL to check if the stream exists
+        url = stream_url(category=category, stream_id=stream_id, file_number=1)
 
-        # Check if the file exists by making a head request
         response = requests.head(url)
         if response.status_code == 200:
             # If the file exists, yield the stream generator for this stream_id
             yield stream_generator(stream_id, category)
         else:
-            # If the file does not exist, stop checking
             break
 
         stream_id += 1  # Move to the next stream

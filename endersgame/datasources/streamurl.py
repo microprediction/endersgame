@@ -2,7 +2,7 @@ from unicodedata import category
 
 
 def stream_url(category, stream_id, file_number):
-    url = f'https://raw.githubusercontent.com/microprediction/endersdata/main/data/{category}/stream_{stream_id}_file_{file_number}.csv'
+    url = f'https://raw.githubusercontent.com/microprediction/endersdata/main/data/{category.lower()}/stream_{stream_id}_file_{file_number}.csv'
     return url
 
 

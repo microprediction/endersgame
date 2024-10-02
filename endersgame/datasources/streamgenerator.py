@@ -11,6 +11,7 @@ from endersgame.datasources.streamurl import stream_url
        
 """
 
+VALID_PUBLIC_CATEGORIES = ['train','test']
 
 
 def stream_generator(stream_id, category='train', verbose=False):
@@ -24,7 +25,7 @@ def stream_generator(stream_id, category='train', verbose=False):
     Yields:
     - float: The next value from the sequence of CSV files.
     """
-    assert category=='train','Only training data is available,sorry! '
+    assert category.lower() in VALID_PUBLIC_CATEGORIES,'Only train and test data is available,sorry! '
 
     import requests
     file_number = 1  # Start from the first file

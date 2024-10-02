@@ -1,1 +1,1 @@
-from endersgame.gameconfig import EPSILON
+from endersgame.gameconfig import EPSILON, HORIZON

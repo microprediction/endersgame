@@ -1,5 +1,6 @@
 
 import csv
+from endersgame.datasources.streamurl import stream_url
 
 """
        Just for convenience, here is a float generator with a limited amount of data stored on github
@@ -10,7 +11,9 @@ import csv
        
 """
 
-def stream_generator(stream_id, category):
+
+
+def stream_generator(stream_id, category='train', verbose=False):
     """
     A generator that yields values from remote CSV files on GitHub.
 
@@ -21,17 +24,19 @@ def stream_generator(stream_id, category):
     Yields:
     - float: The next value from the sequence of CSV files.
     """
+    assert category=='train','Only training data is available,sorry! '
+
     import requests
     file_number = 1  # Start from the first file
     while True:
         # Construct the raw URL for the current file
-        url = f'https://raw.githubusercontent.com/microprediction/endersdata/main/data/{category}/stream_{stream_id}_file_{file_number}.csv'
+        url = stream_url(category=category, stream_id=stream_id, file_number=file_number)
         try:
             # Fetch the content of the CSV file from GitHub
             response = requests.get(url)
             if response.status_code != 200:
                 # If the file doesn't exist, assume we've reached the end
-                if False:
+                if verbose:
                     print(f"No more files found for stream_id={stream_id} in category='{category}'.")
                 break
 
@@ -59,10 +64,10 @@ def stream_generator(stream_id, category):
 
 
 if __name__=='__main__':
-    gen = stream_generator(stream_id=0, category='train')
+    gen = stream_generator(stream_id=0)
     count = 1
     for x in gen:
         count += 1
-        if count>10000:
+        if count > 10000:
             break
     print(f'last value received is {x}')

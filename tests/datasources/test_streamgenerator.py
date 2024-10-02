@@ -34,7 +34,7 @@ class TestStreamGenerator:
         mock_get.side_effect = side_effect
 
         # Instantiate the generator
-        gen = stream_generator(stream_id=0, category='test')
+        gen = stream_generator(stream_id=0, category='train')
         # Collect all values from the generator
         results = list(gen)
         expected_results = [1.0, 2.0, 3.0, 4.0, 5.0]
@@ -61,12 +61,11 @@ class TestStreamGenerator:
 
         mock_get.side_effect = side_effect
 
-        gen = stream_generator(stream_id=0, category='test')
+        gen = stream_generator(stream_id=0, category='train')
         results = list(gen)
         expected_results = []
 
         assert results == expected_results
-
 
 
     @patch('requests.get')
@@ -81,7 +80,7 @@ class TestStreamGenerator:
 
         mock_get.side_effect = side_effect
 
-        gen = stream_generator(stream_id=0, category='test')
+        gen = stream_generator(stream_id=0, category='train')
         results = list(gen)
         expected_results = []
 
@@ -98,7 +97,7 @@ class TestStreamGenerator:
 
         mock_get.side_effect = side_effect
 
-        gen = stream_generator(stream_id=0, category='test')
+        gen = stream_generator(stream_id=0, category='train')
         results = list(gen)
         expected_results = []
 

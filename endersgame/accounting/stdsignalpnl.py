@@ -25,10 +25,10 @@ class StdSignalPnl:
         The closer fading_factor is to 1 the more the statistic will adapt to recent values.
         """
         if thresholds is None:
-            self.thresholds = np.array([1, 2, 3])  # Default thresholds
+            self.thresholds = [1.0, 2.0, 3.0]  # Default thresholds as floats
         else:
-            self.thresholds = np.array(thresholds)
-        self.current_standardized_signal = 0
+            self.thresholds = [float(t) for t in thresholds]  # Ensure all thresholds are floats
+        self.current_standardized_signal = 0.0
         self.epsilon = epsilon
         self.current_ndx = 0
         self.fading_factor = fading_factor
@@ -45,6 +45,7 @@ class StdSignalPnl:
                     'pending_signals': []
                 }
             }
+
 
     def tick(self, x: float, horizon: int, signal: float):
         """
@@ -188,3 +189,61 @@ class StdSignalPnl:
                     best_decision = -1  # Negative action
 
         return best_decision
+
+
+
+    def to_dict(self):
+        """
+        Serializes the state of the StdSignalPnl object to a dictionary.
+        """
+        return {
+            'thresholds': self.thresholds,  # List of floats
+            'current_standardized_signal': self.current_standardized_signal,
+            'epsilon': self.epsilon,
+            'current_ndx': self.current_ndx,
+            'fading_factor': self.fading_factor,
+            'signal_var': self.signal_var.to_dict(),
+            'pnl': {
+                threshold: {
+                    'positive': {
+                        'ewa_pnl': self.pnl[threshold]['positive']['ewa_pnl'].to_dict(),
+                        'pending_signals': self.pnl[threshold]['positive']['pending_signals']
+                    },
+                    'negative': {
+                        'ewa_pnl': self.pnl[threshold]['negative']['ewa_pnl'].to_dict(),
+                        'pending_signals': self.pnl[threshold]['negative']['pending_signals']
+                    }
+                } for threshold in self.thresholds
+            }
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        """
+        Deserializes the state from a dictionary into a new StdSignalPnl instance.
+        Handles string keys in the 'pnl' dictionary by converting them back to floats.
+        """
+        # Ensure thresholds are floats
+        thresholds = [float(t) for t in data['thresholds']]
+
+        instance = cls(
+            thresholds=thresholds,
+            fading_factor=data['fading_factor'],
+            epsilon=data['epsilon']
+        )
+        instance.current_standardized_signal = data['current_standardized_signal']
+        instance.current_ndx = data['current_ndx']
+        instance.signal_var = FEWVar.from_dict(data['signal_var'])
+
+        # Restore PnL
+        for threshold_str, pnl_entry in data['pnl'].items():
+            threshold = float(threshold_str)  # Convert key back to float
+            if threshold in instance.thresholds:
+                instance.pnl[threshold]['positive']['ewa_pnl'] = FEWMean.from_dict(pnl_entry['positive']['ewa_pnl'])
+                instance.pnl[threshold]['positive']['pending_signals'] = pnl_entry['positive']['pending_signals']
+                instance.pnl[threshold]['negative']['ewa_pnl'] = FEWMean.from_dict(pnl_entry['negative']['ewa_pnl'])
+                instance.pnl[threshold]['negative']['pending_signals'] = pnl_entry['negative']['pending_signals']
+
+        return instance
+
+

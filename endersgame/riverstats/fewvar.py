@@ -1,6 +1,4 @@
-
 from river import stats
-
 
 class FEWVar(stats.base.Univariate):
 
@@ -36,39 +34,24 @@ class FEWVar(stats.base.Univariate):
         # Return the current exponentially weighted mean (for reference)
         return self.ewa if self.ewa is not None else 0
 
+    def to_dict(self):
+        """
+        Serializes the state of the FEWVar object to a dictionary.
+        """
+        return {
+            'fading_factor': self.fading_factor,
+            'ewa': self.ewa,
+            'ewv': self.ewv,
+            'weight_sum': self.weight_sum
+        }
 
-def finite_sample_fewvar(xs, fading_factor=0.1):
-    # Initialize variables to calculate EWA and EWVar
-    x_sum = 0
-    x_square_sum = 0
-    weight_sum = 0
-    weight = 1.0
-
-    # Calculate weighted mean and variance
-    for x in reversed(xs):
-        x_sum += weight * x
-        x_square_sum += weight * x**2
-        weight_sum += weight
-        weight *= (1-fading_factor)
-
-    # Calculate the weighted mean
-    mean = x_sum / weight_sum
-
-    # Calculate the weighted variance
-    variance = (x_square_sum / weight_sum) - mean**2
-
-    return mean, variance
-
-
-if __name__ == '__main__':
-    xs = [1, 2, 3, 4, 5]
-    fading_factor = 0.01
-    mean, variance = finite_sample_fewvar(xs, fading_factor=fading_factor)
-    print("Corrected Exponentially Weighted Mean:", mean)
-    print("Corrected Exponentially Weighted Variance:", variance)
-
-    ewvar_calc = FEWVar(fading_factor=fading_factor)
-    for x in xs:
-        ewvar_calc.update(x)
-    print("Exponentially Weighted Mean:", ewvar_calc.get_mean())
-    print("Exponentially Weighted Variance:", ewvar_calc.get())
+    @classmethod
+    def from_dict(cls, data):
+        """
+        Deserializes the state from a dictionary into a new FEWVar instance.
+        """
+        instance = cls(fading_factor=data['fading_factor'])
+        instance.ewa = data['ewa']
+        instance.ewv = data['ewv']
+        instance.weight_sum = data['weight_sum']
+        return instance

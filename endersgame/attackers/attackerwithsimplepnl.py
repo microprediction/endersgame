@@ -1,4 +1,4 @@
-from endersgame.accounting.pnl import PnL
+from endersgame.accounting.pnl import Pnl
 from endersgame.attackers.baseattacker import BaseAttacker
 from endersgame import EPSILON
 from endersgame.gameconfig import HORIZON
@@ -8,7 +8,7 @@ class AttackerWithSimplePnL(BaseAttacker):
 
     def __init__(self, epsilon:float=EPSILON):
         super().__init__()
-        self.pnl = PnL(epsilon=epsilon)
+        self.pnl = Pnl(epsilon=epsilon)
 
     def tick_and_predict(self, x: float, horizon: int = HORIZON) -> float:
         """

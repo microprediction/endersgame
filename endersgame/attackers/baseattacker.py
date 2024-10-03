@@ -50,9 +50,7 @@ class BaseAttacker(ABC):
 
     def tick(self, x: float):
         """
-
                Assimilate the current data point somehow into the model's state
-
         :param x:
         :return:
         """
@@ -63,7 +61,8 @@ class BaseAttacker(ABC):
         :param horizon:  Horizon
         :return: Usually returns 0. Sometimes returns a positive number or negative number.
         """
-        pass
+        # Remark: some will create the class and attach predict later, so we don't want this abstract
+        raise NotImplementedError('predict must be implemented by derived class')
 
     def tick_and_predict(self, x: float, horizon: int = HORIZON) -> float:
         """

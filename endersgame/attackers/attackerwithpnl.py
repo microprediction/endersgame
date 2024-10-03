@@ -4,7 +4,7 @@ from endersgame import EPSILON
 from endersgame.gameconfig import HORIZON
 from abc import abstractmethod
 
-class AttackerWithSimplePnL(BaseAttacker):
+class AttackerWithPnl(BaseAttacker):
 
     def __init__(self, epsilon:float=EPSILON):
         super().__init__()
@@ -27,4 +27,3 @@ class AttackerWithSimplePnL(BaseAttacker):
     def predict(self, horizon:int=HORIZON)->float:
         # Your logic goes here
         return 0
-

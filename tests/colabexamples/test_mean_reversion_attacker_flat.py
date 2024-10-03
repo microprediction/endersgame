@@ -1,12 +1,12 @@
 from endersgame.datasources.streamgenerator import stream_generator
 import numpy as np
 from pprint import pprint
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
+from endersgame.attackers.attackerwithpnl import AttackerWithPnl
 from dataclasses import dataclass, field
 
 
 @dataclass
-class MyAttacker(AttackerWithSimplePnL):
+class MyAttacker(AttackerWithPnl):
     a: float = 0.01
     running_avg: float = field(default=None)
     current_value: float = field(default=None)

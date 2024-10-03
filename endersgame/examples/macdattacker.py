@@ -1,11 +1,11 @@
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
+from endersgame.attackers.attackerwithpnl import AttackerWithPnl
 from endersgame.rivertransformers.macd import MACD
 from river import stats
 import numpy as np
 import math
 
 
-class MacdAttacker(AttackerWithSimplePnL):
+class MacdAttacker(AttackerWithPnl):
     """
 
         An attacker that makes decisions based on the MACD momentum indicator.

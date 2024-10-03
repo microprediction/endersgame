@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from endersgame.attackers.baseattackerwithhistorymixin import ExampleHistoricalAttacker  # Import your actual class
+from endersgame.attackers.attackerwithhistorymixin import ExampleHistoricalAttacker  # Import your actual class
 
 
 @pytest.fixture

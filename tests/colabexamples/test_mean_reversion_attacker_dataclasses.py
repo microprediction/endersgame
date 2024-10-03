@@ -2,7 +2,7 @@ from endersgame.datasources.streamgenerator import stream_generator
 import numpy as np
 import types
 from pprint import pprint
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
+from endersgame.attackers.attackerwithpnl import AttackerWithPnl
 from dataclasses import dataclass
 
 
@@ -17,7 +17,7 @@ class Params:
     a: float = 0.01
 
 
-class MyAttacker(AttackerWithSimplePnL):
+class MyAttacker(AttackerWithPnl):
     def __init__(self, a: float = 0.01, **kwargs):
         super().__init__(**kwargs)
         self.state = State()

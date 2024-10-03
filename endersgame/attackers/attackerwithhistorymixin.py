@@ -1,20 +1,18 @@
 from collections import deque
-from endersgame.attackers.attackerwithsimplepnl import BaseAttacker
-from abc import abstractmethod
-
-from endersgame.gameconfig import HORIZON
+from endersgame.attackers.attackerwithpnl import BaseAttacker
+from endersgame.gameconfig import HORIZON, EPSILON, DEFAULT_HISTORY_LEN
 from endersgame.mixins.historymixin import HistoryMixin
 import numpy as np
 
 
-class BaseAttackerWithHistoryMixin(BaseAttacker, HistoryMixin):
+class AttackerWithHistoryMixin(BaseAttacker, HistoryMixin):
     """
         Demonstrates how to use the HistoryMixin to add a 'history' property
         Derived classes need only implement predict_using_history
     """
 
-    def __init__(self, max_history_len=200, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, max_history_len=DEFAULT_HISTORY_LEN, epsilon=EPSILON):
+        super().__init__()
         HistoryMixin.__init__(self, max_history_len=max_history_len)  # Initialize HistoryMixin
 
     def tick(self, x: float) -> None:
@@ -24,19 +22,22 @@ class BaseAttackerWithHistoryMixin(BaseAttacker, HistoryMixin):
         """
         self.tick_history(x)
 
-    @abstractmethod
     def predict_using_history(self, xs:[float], horizon:int=HORIZON)->float:
         # Create a decision using chronologicaly ordered fixed length vector xs
-        pass
+        raise NotImplementedError("You derived from AttackerWithHistoryMixin but failed to implement either predict_using_history or predict")
 
     def predict(self,horizon: int = HORIZON) -> float:
+        """
+        :param horizon:
+        :return:
+        """
         if self.is_history_full():
             return self.predict_using_history(xs=list(self.history), horizon=horizon)
         else:
             return 0
 
 
-class ExampleHistoricalAttacker(BaseAttackerWithHistoryMixin):
+class ExampleHistoricalAttacker(AttackerWithHistoryMixin):
 
     """
         An example of an attacker that takes a fixed length history

@@ -6,12 +6,12 @@ from endersgame.datasources.streamgenerator import stream_generator
 import numpy as np
 import types
 from pprint import pprint
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
+from endersgame.attackers.attackerwithpnl import AttackerWithPnl
 
 
 def test_colab_notebook_example():
 
-    class MyAttacker(AttackerWithSimplePnL):
+    class MyAttacker(AttackerWithPnl):
 
          def __init__(self, a=0.01, **kwargs):
             super().__init__(**kwargs)

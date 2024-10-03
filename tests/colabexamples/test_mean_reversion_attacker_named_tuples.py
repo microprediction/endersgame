@@ -2,14 +2,14 @@ from collections import namedtuple
 from endersgame.datasources.streamgenerator import stream_generator
 import numpy as np
 from pprint import pprint
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
+from endersgame.attackers.attackerwithpnl import AttackerWithPnl
 
 # Define named tuples for State and Params
 State = namedtuple('State', ['running_avg', 'current_value'])
 Params = namedtuple('Params', ['a'])
 
 
-class MyAttacker(AttackerWithSimplePnL):
+class MyAttacker(AttackerWithPnl):
     def __init__(self, a=0.01, **kwargs):
         """
         Initialize MyAttacker with parameters and initial state.

@@ -1,8 +1,8 @@
-from endersgame.attackers.attackerwithsimplepnl import AttackerWithSimplePnL
+from endersgame.attackers.attackerwithpnl import AttackerWithPnl
 import numpy as np
 
 
-class RandomAttacker(AttackerWithSimplePnL):
+class RandomAttacker(AttackerWithPnl):
 
     def __init__(self, epsilon):
         super().__init__(epsilon)

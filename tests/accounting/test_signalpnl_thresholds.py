@@ -4,12 +4,13 @@ from signal import signal
 
 import numpy as np
 from endersgame.accounting.stdsignalpnl import StdSignalPnl
+from typing import List
 
 
 def test_initialization_defaults():
     """Test that the class initializes correctly with default thresholds and decay."""
     pnl = StdSignalPnl()
-    assert isinstance(pnl.thresholds, np.ndarray), "Thresholds should be a numpy array."
+    assert isinstance(pnl.thresholds, List), "Thresholds should be a numpy array."
     assert pnl.current_ndx == 0, "Current index should start at 0."
     assert hasattr(pnl, 'signal_var'), "signal_var attribute should exist."
     assert isinstance(pnl.pnl, dict), "PnL should be a dictionary."

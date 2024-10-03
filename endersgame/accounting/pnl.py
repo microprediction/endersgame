@@ -3,7 +3,7 @@ import numpy as np
 from endersgame import EPSILON
 from endersgame.accounting.pnlutil import add_pnl_summaries, zero_pnl_summary
 
-class PnL:
+class Pnl:
     """
     Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
 
@@ -137,4 +137,31 @@ class PnL:
             "standardized_profit_per_decision": standardized_profit
         }
 
+    def to_dict(self):
+        """
+        Serializes the state of the PnL object to a dictionary.
+        """
+        return {
+            'epsilon': self.epsilon,
+            'backoff': self.backoff,
+            'current_ndx': self.current_ndx,
+            'last_attack_ndx': self.last_attack_ndx,
+            'pending_decisions': self.pending_decisions,
+            'pnl_data': self.pnl_data
+        }
 
+
+    @classmethod
+    def from_dict(cls, data):
+        """
+        Deserializes the state from a dictionary into a new PnL instance.
+        """
+        instance = cls(
+            epsilon=data['epsilon'],
+            backoff=data['backoff']
+        )
+        instance.current_ndx = data['current_ndx']
+        instance.last_attack_ndx = data['last_attack_ndx']
+        instance.pending_decisions = data['pending_decisions']
+        instance.pnl_data = data['pnl_data']
+        return instance

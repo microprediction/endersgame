@@ -1,6 +1,6 @@
 
 from endersgame.accounting.stdsignalpnl import StdSignalPnl
-from endersgame.accounting.pnl import PnL
+from endersgame.accounting.pnl import Pnl
 from endersgame.gameconfig import HORIZON
 
 
@@ -19,7 +19,7 @@ class CalibratedAttacker:
              attacker:   Any attacker with a tick_and_predict function
              decay:      Decay factor for tracking the pnl of thresholded standardized decisions (see accounting.signalpnl.SignalPnl)
         """
-        self.pnl = PnL(epsilon=epsilon)
+        self.pnl = Pnl(epsilon=epsilon)
         self.signal_pnl = StdSignalPnl(fading_factor=fading_factor, thresholds=None)
         self.attacker = attacker
 

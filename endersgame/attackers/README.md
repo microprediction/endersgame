@@ -3,9 +3,6 @@
 
 # Attackers
 
-See also [endersnotebooks](https://github.com/microprediction/endersnotebooks) and
-[attacker.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attacker.md).
-
 
 The `Attacker` class and cousins like `AttackerWithPnL` can be found in 
 [attackers](https://github.com/microprediction/endersgame/tree/main/endersgame/attackers). These 
@@ -16,3 +13,11 @@ $$ E[x_{t+k}] \approx x_t $$
 The attacker’s need only *occasionally* signal whether the future value will deviate upward or downward from the current point. This is useful in scenarios where the attacker attempts to exploit trends or patterns for profit. However, it is also beneficial in much greater generally, as a means of performing ongoing analysis of prediction model residuals in any application in any industry. 
 
 We suggest [attacker.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attacker.md) as a starting point. 
+
+
+### See also 
+
+ - Colab [notebooks](https://github.com/microprediction/endersnotebooks) demonstrating `Attacker`
+ - Recommended [attacker.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attacker.md)
+ - Attacker [FAQ.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md)
+ - The tournament at [CrunchDAO.com](https://www.crunchdao.com) where you can use them to win rewards. 

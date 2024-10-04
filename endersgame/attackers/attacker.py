@@ -3,24 +3,25 @@ from endersgame.mixins.historymixin import HistoryMixin
 from endersgame import EPSILON
 from endersgame.gameconfig import HORIZON, DEFAULT_HISTORY_LEN
 from typing import Dict, Any
-from endersgame.accounting.pnl import Pnl
+import numpy as np
 
 
 ATTACKER_DESCRIPTION = """
 
-     A recommended attacker for everyday use, providing the following methods:  
+     A recommended attacker for everyday use, providing the following conveniences:  
        
      Lagged values: 
          self.get_recent_history(n) 
-         self.is_history_full()
-         
-     Profit and loss:
          self.pnl.summary()->dict 
 
      You need only implement the following in your derived class:
-      
-          tick()  
-          predict() or predict_from_history() 
+          tick(x)                              To add your own logic that assimilated the incoming data point ...
+          predict()                            To provide a decision by any means or ...
+          predict_from_history(xs:[float])     To provide a decision only using the lagged values
+          
+     You probably want to keep the provided tick_and_predict() method as this will handle pnl and history for you. 
+     
+     
 
 """
 
@@ -83,3 +84,39 @@ class Attacker(AttackerWithPnl,  HistoryMixin):
         instance.history = HistoryMixin.set_history(history_data=history_data, maxlen=max_history_len_with_fallback)
         instance.max_history_len = max_history_len_with_fallback
         return instance
+
+
+if __name__=='__main__':
+
+    # Example of creating your own attacker
+
+    class MyMomentumAttacker(Attacker):
+
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)   # Boilerplate
+
+        def predict_using_history(self, xs:[float], horizon:int):
+            """  An example of taking lagged values
+            :param xs:
+            :return:
+            """
+            short_term_mean = np.mean(xs[-10:])
+            long_term_mean = np.mean(xs[-100:])
+            devo = np.std(np.diff(xs))
+            momentum = 10*(long_term_mean - short_term_mean)/(long_term_mean*devo)
+            signal = int(momentum)    # Usually zero, +1 for buy, -1 for sell
+            return signal
+
+    # Example of using it
+
+    attacker = MyMomentumAttacker(max_history_len=100) # <-- By default no predictions will occur until the buffer is full
+    xs = np.cumsum(np.random.randn(110)+0.01)
+    for k,x in enumerate(xs):
+        decision = attacker.tick_and_predict(x=x)
+        if decision>0:
+            print(f'Buy now at time {k} !', flush=True)
+        if decision<0:
+            print(f'Sell now at time {k}!')
+
+
+

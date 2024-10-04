@@ -2,25 +2,20 @@
 # https://github.com/microprediction/endersnotebooks/blob/main/mean_reversion_attacker.ipynb
 
 
-from endersgame.attackers.attackerwithpnl import AttackerWithPnl
-from endersgame.rivertransformers.macd import MACD
-from endersgame.datasources.streamgenerator import stream_generator
-from river import stats
+from endersgame import Attacker
+from endersgame import stream_generator, stream_generator_generator
 import numpy as np
-import math
 import types
 from pprint import pprint
 import json
 import scipy.optimize as opt
-from endersgame.datasources.streamgeneratorgenerator import stream_generator_generator
-from endersgame.gameconfig import HORIZON
 from typing import Iterable, Iterator
 
 
 
 def test_colab_notebook_example():
 
-    class MyAttacker(AttackerWithPnl):
+    class MyAttacker(Attacker):
 
          def __init__(self, a=0.01, **kwargs):
             super().__init__(**kwargs)

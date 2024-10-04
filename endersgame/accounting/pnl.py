@@ -152,16 +152,16 @@ class Pnl:
 
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, state):
         """
         Deserializes the state from a dictionary into a new PnL instance.
         """
         instance = cls(
-            epsilon=data['epsilon'],
-            backoff=data['backoff']
+            epsilon=state.get('epsilon',EPSILON),
+            backoff=state.get('backoff', 100),  # TODO put in config
         )
-        instance.current_ndx = data['current_ndx']
-        instance.last_attack_ndx = data['last_attack_ndx']
-        instance.pending_decisions = data['pending_decisions']
-        instance.pnl_data = data['pnl_data']
+        instance.current_ndx = state.get('current_ndx',0)
+        instance.last_attack_ndx = state.get('last_attack_ndx')
+        instance.pending_decisions = state.get('pending_decisions',[])
+        instance.pnl_data = state.get('pnl_data',[])
         return instance

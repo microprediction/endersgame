@@ -1,7 +1,10 @@
 # endersgame/accounting/historymixin.py
-
+from cgi import maxlen
 from collections import deque
 import numpy as np
+
+from endersgame.gameconfig import DEFAULT_HISTORY_LEN
+
 
 class HistoryMixin:
     """
@@ -28,7 +31,7 @@ class HistoryMixin:
             x = 0.0  # Default value if conversion fails
         self.history.append(x)
 
-    def get_recent_history(self, n: int) -> list:
+    def get_recent_history(self, n: int=None) -> list:
         """
         Returns the `n` most recent values from the history.
         If there are fewer than `n` values in the history, returns as many as available.
@@ -39,7 +42,10 @@ class HistoryMixin:
         Returns:
         - list: A list of the most recent `n` history values.
         """
-        return list(self.history)[-n:]
+        if n is None:
+            return list(self.history)
+        else:
+            return list(self.history)[-n:]
 
     def __len__(self):
         return len(self.history)
@@ -66,7 +72,7 @@ class HistoryMixin:
         }
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_dict(cls, state: dict):
         """
         Deserializes the state from a dictionary into a new HistoryMixin instance.
 
@@ -76,9 +82,14 @@ class HistoryMixin:
         Returns:
         - HistoryMixin: A new instance of HistoryMixin with the restored state.
         """
-        instance = cls(max_history_len=data.get('max_history_len', 200))
-        history_data = data.get('history', [])
-        # Coerce all history elements to float
+        max_history_len_with_fallback = state.get('max_history_len', DEFAULT_HISTORY_LEN)
+        instance = cls(max_history_len=max_history_len_with_fallback)
+        history_data = state.get('history', [])
+        instance.history = HistoryMixin.set_history(history_data=history_data, maxlen=max_history_len_with_fallback)
+        return instance
+
+    @staticmethod
+    def set_history(history_data, maxlen):
         coerced_history = []
         for item in history_data:
             try:
@@ -86,5 +97,6 @@ class HistoryMixin:
             except (ValueError, TypeError):
                 coerced_item = 0.0  # Default value if conversion fails
             coerced_history.append(coerced_item)
-        instance.history = deque(coerced_history, maxlen=instance.max_history_len)
-        return instance
+        history = deque(coerced_history, maxlen=maxlen)
+        return history
+

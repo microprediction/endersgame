@@ -1,8 +1,4 @@
-# endersgame/accounting/historymixin.py
-from cgi import maxlen
 from collections import deque
-import numpy as np
-
 from endersgame.gameconfig import DEFAULT_HISTORY_LEN
 
 
@@ -13,7 +9,7 @@ class HistoryMixin:
     a deque-based history.
     """
 
-    def __init__(self, max_history_len=200):
+    def __init__(self, max_history_len=DEFAULT_HISTORY_LEN):
         self.max_history_len = max_history_len  # Store as an instance attribute
         self.history = deque(maxlen=max_history_len)  # Fixed-length buffer for history
 

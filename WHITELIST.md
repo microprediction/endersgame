@@ -1,4 +1,4 @@
-Whitelisted packages for endersgame 
+Whitelisted packages for endersgame (best illustrated by [notebooks](https://github.com/microprediction/endersnotebooks))
 
 ### The obvious
 

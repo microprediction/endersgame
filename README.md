@@ -3,7 +3,7 @@
 For detecting small departures from martingality in time-series. 
 
 ### About
-This package is intended to make life simpler for those participating in an ongoing tournament at [CrunchDAO.com](https://www.crunchdao.com), although it hopefully has independent interest. For instance you might build on `Attacker` or examples herein to help find signal in your model residuals.  
+This package is intended to make life simpler for those participating in an ongoing tournament at [CrunchDAO.com](https://www.crunchdao.com), although it hopefully has independent interest. For instance, you might build on `Attacker` or examples herein to help find signal in your model residuals.  
 
  - Colab [notebooks](https://github.com/microprediction/endersnotebooks) demonstrating `Attacker`
  - Recommended [attacker.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attacker.md)

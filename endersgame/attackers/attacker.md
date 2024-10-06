@@ -2,7 +2,7 @@
 
 The `MyMomentumAttacker` illustrates `Attacker` class use. 
 
-It shows how simple it is to create an attacker instance that tracks its own profit and loss, and makes
+Here we create an attacker instance that tracks its own profit and loss, and makes
 predictions using a function of lagged values. 
 
 ## Usage

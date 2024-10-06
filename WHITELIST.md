@@ -14,18 +14,27 @@ Whitelisted packages for endersgame
     river
     timemachines
     momentum
+    simdkalman
+    pydlm
 
-    
+### Streaming feature generation 
+
+    streamz
 
 
 ### Not-so streaming prediction
 
     prophet
+    sktime
+    darts
 
 
-### Technical analysis 
+### Not-so streaming technical analysis 
 
-
+    ta-lib
+    pandas-ta
+    pyti
+    
 
 ### Outlier detection
 

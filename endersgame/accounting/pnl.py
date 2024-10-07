@@ -52,7 +52,7 @@ class Pnl:
         """
         # Don't record a decision if another decision has recently been made
         # (We want to cut out machine gun attacks)
-        if self.last_attack_ndx is not None and \
+        if (self.last_attack_ndx is not None) and \
                 (self.current_ndx - self.last_attack_ndx) < self.backoff:
             self.current_ndx += 1
             return

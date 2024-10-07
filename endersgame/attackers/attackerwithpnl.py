@@ -1,6 +1,6 @@
 from endersgame.accounting.pnl import Pnl
 from endersgame.attackers.baseattacker import BaseAttacker
-from endersgame import EPSILON
+from endersgame import EPSILON, DEFAULT_TRADE_BACKOFF
 from endersgame.gameconfig import HORIZON
 from typing import Dict, Any
 
@@ -9,9 +9,9 @@ class AttackerWithPnl(BaseAttacker):
     An attacker that tracks profit and loss (PnL).
     """
 
-    def __init__(self, epsilon: float = EPSILON):
+    def __init__(self, epsilon: float = EPSILON, backoff:int=DEFAULT_TRADE_BACKOFF):
         super().__init__()
-        self.pnl = Pnl(epsilon=epsilon)
+        self.pnl = Pnl(epsilon=epsilon, backoff=DEFAULT_TRADE_BACKOFF)
 
     def tick_and_predict(self, x: float, horizon: int = HORIZON) -> float:
         """

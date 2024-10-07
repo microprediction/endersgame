@@ -4,7 +4,7 @@ from endersgame import EPSILON
 from endersgame.gameconfig import HORIZON, DEFAULT_HISTORY_LEN
 from typing import Dict, Any
 import numpy as np
-
+from endersgame.accounting.pnl import DEFAULT_TRADE_BACKOFF
 
 ATTACKER_DESCRIPTION = """
 
@@ -28,8 +28,8 @@ ATTACKER_DESCRIPTION = """
 
 class Attacker(AttackerWithPnl,  HistoryMixin):
 
-    def __init__(self, epsilon:float=EPSILON, max_history_len= DEFAULT_HISTORY_LEN):
-        super().__init__(epsilon=epsilon)
+    def __init__(self, epsilon:float=EPSILON, max_history_len= DEFAULT_HISTORY_LEN, backoff:int=DEFAULT_TRADE_BACKOFF):
+        super().__init__(epsilon=epsilon, backoff=backoff)
         HistoryMixin.__init__(self, max_history_len=max_history_len)  # Initialize HistoryMixin
 
     def tick_and_predict(self, x: float, horizon: int = HORIZON) -> float:

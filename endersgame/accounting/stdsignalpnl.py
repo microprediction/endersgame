@@ -56,18 +56,18 @@ class StdSignalPnl:
         - k (int):    Prediction horizon.
         - signal (float):  The generated signal.
         """
+        self.current_ndx += 1
 
         signal_mean = self.signal_var.get_mean()
         signal_var = self.signal_var.get()
 
         # Calculate standard deviation and handle zero variance
         signal_std = math.sqrt(signal_var) if signal_var > 0 else 1.0
-
         standardized_signal = (signal - signal_mean) / signal_std
 
         self._add_signal_to_queues(x=x, horizon=horizon, standardized_signal=standardized_signal)
         self._resolve_signals_on_queues(x=x)
-        self.current_ndx += 1
+
         self.current_standardized_signal = standardized_signal
 
         self.signal_var.update(signal)
@@ -175,7 +175,7 @@ class StdSignalPnl:
             # Positive side
             if std_sig > threshold:
                 ewa_pnl_obj = self.pnl[threshold]['positive']['ewa_pnl']
-                ewa_pnl = ewa_pnl_obj.get()
+                ewa_pnl = ewa_pnl_obj.get() - epsilon
                 if ewa_pnl > best_pnl:
                     best_pnl = ewa_pnl
                     best_decision = 1  # Positive action
@@ -183,7 +183,7 @@ class StdSignalPnl:
             # Negative side
             if std_sig < -threshold:
                 ewa_pnl_obj = self.pnl[threshold]['negative']['ewa_pnl']
-                ewa_pnl = ewa_pnl_obj.get()
+                ewa_pnl = ewa_pnl_obj.get() - epsilon
                 if ewa_pnl > best_pnl:
                     best_pnl = ewa_pnl
                     best_decision = -1  # Negative action

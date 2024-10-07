@@ -19,6 +19,7 @@ class Pnl:
         self.current_ndx = 0
         self.last_attack_ndx = None
         self.pending_decisions = []
+        self.resolved = 0
         self.pnl_data = []
         self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution',
                             'pnl']
@@ -31,6 +32,7 @@ class Pnl:
             And uses revealed ground truth y to evaluate past decisions
 
         """
+        print("TICK", x, horizon, decision)
         self._add_decision_to_queue(x=x, horizon=horizon, decision=decision)
         self._resolve_decisions_on_queue(x=x)
 
@@ -85,6 +87,7 @@ class Pnl:
                 # ['decision_ndx','resolution_ndx','k','decision','y_decision','y_resolution','pnl']
                 pnl_data = (decision_ndx, current_ndx, horizon_, decision, x_prev, x, pnl)
                 resolved_decision_ndxs.append(pending_ndx)
+                self.resolved += 1
                 self.pnl_data.append(pnl_data)
 
         # resolved_decision_ndxs contains a list of indexes into self.accounting["pending_decisions"] that we remove:

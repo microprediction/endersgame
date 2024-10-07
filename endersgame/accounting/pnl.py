@@ -32,7 +32,6 @@ class Pnl:
             And uses revealed ground truth y to evaluate past decisions
 
         """
-        print("TICK", x, horizon, decision)
         self._add_decision_to_queue(x=x, horizon=horizon, decision=decision)
         self._resolve_decisions_on_queue(x=x)
 

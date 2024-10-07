@@ -38,16 +38,20 @@ class MyAttacker(Attacker):
          except ArithmeticError:
              return 0
 
-if __name__=='__main__':
+def test_momentum_attacker():
     from endersgame.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
     gen_gen = stream_generator_generator(category='test')
     attacker = MyAttacker()
     total_pnl = zero_pnl_summary()
+    stream_count = 0
     for stream in gen_gen:
         for message in stream:
             attacker.tick_and_predict(x=message['x'])
         stream_pnl = attacker.pnl.summary()
         total_pnl = add_pnl_summaries(total_pnl,stream_pnl)
+        stream_count += 1
+        if stream_count>=2:
+            break
 
     total_pnl.update({'profit_per_decision':total_pnl['total_profit']/total_pnl['num_resolved_decisions']})
     pprint(total_pnl)

@@ -9,7 +9,7 @@ from endersgame.gameconfig import EPSILON, HORIZON, DEFAULT_HISTORY_LEN
 
 
 # Define a concrete subclass of Attacker for testing purposes
-class TestAttacker(Attacker):
+class ExampleAttacker(Attacker):
     def __init__(self, epsilon=EPSILON, max_history_len=DEFAULT_HISTORY_LEN):
         super().__init__(epsilon=epsilon, max_history_len=max_history_len)
         self.data = []
@@ -43,7 +43,7 @@ class TestAttacker(Attacker):
 # Pytest fixture to create a TestAttacker instance
 @pytest.fixture
 def attacker_instance():
-    return TestAttacker()
+    return ExampleAttacker()
 
 
 def test_attacker_initialization_default(attacker_instance):
@@ -65,7 +65,7 @@ def test_attacker_initialization_custom():
     """
     custom_epsilon = 0.5
     custom_max_history = 50
-    attacker = TestAttacker(epsilon=custom_epsilon, max_history_len=custom_max_history)
+    attacker = ExampleAttacker(epsilon=custom_epsilon, max_history_len=custom_max_history)
 
     assert attacker.pnl.epsilon == custom_epsilon
     assert attacker.max_history_len == custom_max_history
@@ -148,7 +148,7 @@ def test_attacker_serialization(attacker_instance):
     assert state['data'] == inputs
 
     # Deserialize to a new instance
-    new_attacker = TestAttacker.from_dict(state)
+    new_attacker = ExampleAttacker.from_dict(state)
 
     assert new_attacker.pnl.epsilon == attacker_instance.pnl.epsilon
     assert new_attacker.max_history_len == attacker_instance.max_history_len
@@ -161,7 +161,7 @@ def test_attacker_empty_serialization():
     """
     Test serialization and deserialization when history is empty.
     """
-    attacker = TestAttacker()
+    attacker = ExampleAttacker()
     state = attacker.to_dict()
 
     expected_state = {
@@ -173,7 +173,7 @@ def test_attacker_empty_serialization():
     assert state == expected_state
 
     # Deserialize
-    new_attacker = TestAttacker()
+    new_attacker = ExampleAttacker()
     new_attacker.from_dict(state)
 
     assert new_attacker.pnl.epsilon == attacker.pnl.epsilon
@@ -217,7 +217,7 @@ def test_attacker_history_full_behavior(attacker_instance):
     Test that oldest entries are removed when history exceeds max length.
     """
     max_len = 5
-    attacker = TestAttacker(max_history_len=max_len)
+    attacker = ExampleAttacker(max_history_len=max_len)
     for i in range(7):
         attacker.tick_history(float(i))
 

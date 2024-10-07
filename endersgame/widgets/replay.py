@@ -22,5 +22,3 @@ def replay(streams: Iterable[Iterable[dict]]):
             pred = Prediction(value=prediction, n=idx)
             accounting.process(data, pred)
             viz.process(data, pred)
-            if idx > 25:
-                break

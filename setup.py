@@ -39,7 +39,7 @@ setup(
     tests_require=['pytest'],
     include_package_data=True,
     extras_require={"full":[]},
-    install_requires=["numpy","river"],
+    install_requires=["numpy","river","requests","statsmodels"],
     entry_points={
         "console_scripts": [
             "endersgame=endersgame.__main__:main",

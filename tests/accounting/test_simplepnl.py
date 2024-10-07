@@ -8,11 +8,25 @@ def test_initial_state():
     assert pnl_tracker.pending_decisions == [], f"Expected pending_decisions=[], got {pnl_tracker.pending_decisions}"
     assert pnl_tracker.pnl_data == [], f"Expected pnl_data=[], got {pnl_tracker.pnl_data}"
 
+
 def test_tick_once():
     pnl_tracker = Pnl(epsilon=0)
     pnl_tracker.tick(x=1.0, horizon=7, decision=1)
     assert(len(pnl_tracker.pending_decisions)==1)
 
+
+def test_tick_twice():
+    pnl_tracker = Pnl(epsilon=0, backoff=10)
+    pnl_tracker.tick(x=1.0, horizon=7, decision=1)
+    pnl_tracker.tick(x=1.0, horizon=7, decision=1)  # Backoff prevents tracking
+    assert(len(pnl_tracker.pending_decisions)==1)
+
+
+def test_tick_twice_no_backoff():
+    pnl_tracker = Pnl(epsilon=0, backoff=1)
+    pnl_tracker.tick(x=1.0, horizon=7, decision=1)
+    pnl_tracker.tick(x=1.0, horizon=7, decision=1)
+    assert(len(pnl_tracker.pending_decisions)==2)
 
 def test_record_and_resolve_decision():
     """Test recording and resolving a single decision."""

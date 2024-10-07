@@ -26,6 +26,9 @@ class FEWVar(stats.base.Univariate):
             deviation = x - previous_ewa
             self.ewv = (weight * self.ewv + deviation * (x - self.ewa)) / (weight + 1)
 
+    def tick(self, x):
+        return self.update(x=x)
+
     def get(self):
         # Return the current exponentially weighted variance
         return self.ewv if self.ewv is not None else 0

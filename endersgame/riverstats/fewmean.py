@@ -19,6 +19,9 @@ class FEWMean(stats.base.Univariate):
             self.ewa = (weight * self.ewa + x) / (weight + 1)
             self.weight_sum = weight + 1
 
+    def tick(self, x):
+        return self.update(x)
+
     def get(self):
         # Return the current EWA
         return self.ewa if self.ewa is not None else 0

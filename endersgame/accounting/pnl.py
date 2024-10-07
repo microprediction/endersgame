@@ -3,6 +3,8 @@ import numpy as np
 from endersgame import EPSILON
 from endersgame.accounting.pnlutil import add_pnl_summaries, zero_pnl_summary
 
+DEFAULT_TRADE_BACKOFF = 50  #
+
 class Pnl:
     """
     Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
@@ -13,15 +15,15 @@ class Pnl:
 
     """
 
-    def __init__(self, epsilon: float = EPSILON, backoff: int = 100):
-        self.epsilon = epsilon
-        self.backoff = backoff
+    def __init__(self, epsilon: float = EPSILON, backoff: int = DEFAULT_TRADE_BACKOFF):
+        self.epsilon = epsilon      # Trading cost
+        self.backoff = backoff      # We will not record trades more often than this
         self.current_ndx = 0
         self.last_attack_ndx = None
         self.pending_decisions = []
         self.pnl_data = []
-        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution',
-                            'pnl']
+        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon',
+                            'decision', 'y_decision', 'y_resolution','pnl']
 
 
     def tick(self, x: float, horizon: int, decision: float):

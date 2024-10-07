@@ -54,6 +54,7 @@ display_names = {
     "avg_profit_per_decision_std_ratio": "Avg Profit/Decision Std Ratio"
 }
 
+
 class AccountingDataVisualizer:
     def __init__(self):
         self.account_model = Pnl
@@ -75,7 +76,7 @@ class AccountingDataVisualizer:
         if point.substream_id not in self.accountants:
             self.accountants[point.substream_id] = self.account_model()
         accountant = self.accountants[point.substream_id]
-        accountant.tick(point.value, prediction.n - point.n, prediction.value)
+        accountant.tick(point.value, prediction.horizon, prediction.value)
         self.update_data(point.substream_id, accountant.summary())
         self.update_display()
 

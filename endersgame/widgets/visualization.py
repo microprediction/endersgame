@@ -55,9 +55,9 @@ class TimeSeriesVisualizer:
         self._initialize_plot()
 
         # Append new data to lists
-        self.times.append(data.n)
+        self.times.append(data.ndx)
         self.values.append(data.value)
-        self.prediction_times.append(prediction.n)
+        self.prediction_times.append(prediction.ndx)
         self.predictions.append(prediction.value)
 
         # Trim the data to the maximum number of points

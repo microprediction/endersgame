@@ -36,7 +36,7 @@ setup(
               "endersgame.runners",
                 "endersgame.bot"],
     test_suite='pytest',
-    tests_require=['pytest'],
+    tests_require=['pytest','pandas_ta'],
     include_package_data=True,
     extras_require={"full":[]},
     install_requires=["numpy","river","requests","statsmodels"],

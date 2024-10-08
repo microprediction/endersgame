@@ -103,7 +103,7 @@ class RegressionAttacker(Attacker):
             return 0  # Not enough history to make a prediction
 
 
-def debug_regression_attacker(num_lags:int, threshold:float=1.0, burn_in:int=500, category:str='train', max_streams=10000):
+def run_regression_attacker(num_lags:int, threshold:float=1.0, burn_in:int=500, category:str= 'train', max_streams=10000):
     from endersgame.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
     gen_gen = stream_generator_generator(category=category)
     attacker = RegressionAttacker(num_lags=num_lags, threshold=threshold, burn_in=burn_in)
@@ -122,8 +122,8 @@ def debug_regression_attacker(num_lags:int, threshold:float=1.0, burn_in:int=500
     pprint(total_pnl)
 
 def test_regression_attacker():
-    debug_regression_attacker(num_lags=5, max_streams=2)
+    run_regression_attacker(num_lags=5, max_streams=2)
 
 
 if __name__=='__main__':
-    debug_regression_attacker(num_lags=10, threshold=4, burn_in=2000, category='train')
+    run_regression_attacker(num_lags=10, threshold=4, burn_in=2000, category='train')

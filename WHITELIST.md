@@ -8,6 +8,7 @@ Whitelisted packages for endersgame (best illustrated by [notebooks](https://git
     scipy
     scikit-learn
     matplotlib
+    statsmodels
   
 ### Streaming prediction
 
@@ -16,15 +17,10 @@ Whitelisted packages for endersgame (best illustrated by [notebooks](https://git
     momentum
     simdkalman
     pydlm
-
-### Streaming feature generation 
-
     streamz
-
 
 ### Not-so streaming prediction
 
-    prophet
     sktime
     darts
 

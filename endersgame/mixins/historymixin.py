@@ -1,5 +1,6 @@
 from collections import deque
-from endersgame.gameconfig import DEFAULT_HISTORY_LEN
+
+DEFAULT_HISTORY_LEN = 1000
 
 
 class HistoryMixin:

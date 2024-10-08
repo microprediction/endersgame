@@ -1,7 +1,8 @@
 from typing import Dict
 import numpy as np
 from endersgame import EPSILON
-from endersgame.accounting.pnlutil import add_pnl_summaries, zero_pnl_summary
+
+DEFAULT_TRADE_BACKOFF = 1  # The minimum time between non-zero decisions
 
 class Pnl:
     """
@@ -13,16 +14,15 @@ class Pnl:
 
     """
 
-    def __init__(self, epsilon: float = EPSILON, backoff: int = 100):
-        self.epsilon = epsilon
-        self.backoff = backoff
+    def __init__(self, epsilon: float = EPSILON, backoff: int = DEFAULT_TRADE_BACKOFF):
+        self.epsilon = epsilon      # Trading cost
+        self.backoff = backoff      # We will not record trades more often than this
         self.current_ndx = 0
         self.last_attack_ndx = None
         self.pending_decisions = []
-        self.resolved = 0
         self.pnl_data = []
-        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon', 'decision', 'y_decision', 'y_resolution',
-                            'pnl']
+        self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon',
+                            'decision', 'y_decision', 'y_resolution','pnl']
 
 
     def tick(self, x: float, horizon: int, decision: float):
@@ -51,15 +51,14 @@ class Pnl:
         """
         # Don't record a decision if another decision has recently been made
         # (We want to cut out machine gun attacks)
-        if self.last_attack_ndx is not None and \
+        if (self.last_attack_ndx is not None) and \
                 (self.current_ndx - self.last_attack_ndx) < self.backoff:
-            self.current_ndx += 1
-            return
-
-        # Store the decision and the time it was made
-        if decision != 0:
-            self.pending_decisions.append((self.current_ndx, x, horizon, decision))
-            self.last_attack_ndx = self.current_ndx
+            pass
+        else:
+            # Store the decision and the time it was made
+            if decision != 0:
+                self.pending_decisions.append((self.current_ndx, x, horizon, decision))
+                self.last_attack_ndx = self.current_ndx
 
         # Increment total observations
         self.current_ndx += 1
@@ -68,30 +67,49 @@ class Pnl:
         """
         Resolve pending decisions by calculating PnL when enough time has passed and the future value is available.
 
-        - y: The newly arrived data point (the current value of the sequence).
+        - x: The newly arrived data point (the current value of the sequence).
         """
-        resolved_decision_ndxs = []
+        resolved_decision_indices = []
         current_ndx = self.current_ndx
-        for pending_ndx, (decision_ndx, x_prev, horizon_, decision) in enumerate(self.pending_decisions):
-            num_observations_since_decision = current_ndx - decision_ndx  # Horizon passed since the decision
+
+        for pending_index, (decision_ndx, x_prev, horizon_, decision) in enumerate(self.pending_decisions):
+            # Calculate the number of observations since the decision was made
+            num_observations_since_decision = current_ndx - decision_ndx
+
+            # Resolve the decision if the horizon has been reached
             if num_observations_since_decision >= horizon_:
-                # Calculate PnL based on whether the decision was positive or negative
+                # Calculate PnL based on the decision direction
                 if decision > 0:
+                    # Long position: Profit when price increases
                     pnl = x - x_prev - self.epsilon
                 elif decision < 0:
+                    # Short position: Profit when price decreases
                     pnl = x_prev - x - self.epsilon
                 else:
-                    raise ValueError('A non-zero decision was logged to the queue')
+                    raise ValueError('A non-zero decision was logged to the queue with zero decision value')
 
-                # ['decision_ndx','resolution_ndx','k','decision','y_decision','y_resolution','pnl']
-                pnl_data = (decision_ndx, current_ndx, horizon_, decision, x_prev, x, pnl)
-                resolved_decision_ndxs.append(pending_ndx)
-                self.resolved += 1
+                # Record the PnL data
+                pnl_data = (
+                    decision_ndx,  # Time index when the decision was made
+                    current_ndx,  # Current time index when decision is resolved
+                    horizon_,  # Horizon over which the decision was held
+                    decision,  # Decision made (+ve for buy, -ve for sell)
+                    x_prev,  # Price at decision time
+                    x,  # Current price
+                    pnl  # Calculated profit or loss
+                )
+                # Append the PnL data to the list of resolved decisions
                 self.pnl_data.append(pnl_data)
+                # Mark this decision as resolved
+                resolved_decision_indices.append(pending_index)
 
-        # resolved_decision_ndxs contains a list of indexes into self.accounting["pending_decisions"] that we remove:
-        self.pending_decisions = [d for (pndx, d) in enumerate(self.pending_decisions) if
-                                  pndx not in resolved_decision_ndxs]
+        # Remove resolved decisions from the pending list
+        self.pending_decisions = [
+            decision for idx, decision in enumerate(self.pending_decisions)
+            if idx not in resolved_decision_indices
+        ]
+
+
 
     def get_pnl_tuples(self):
         """
@@ -160,7 +178,7 @@ class Pnl:
         """
         instance = cls(
             epsilon=state.get('epsilon',EPSILON),
-            backoff=state.get('backoff', 100),  # TODO put in config
+            backoff=state.get('backoff', DEFAULT_TRADE_BACKOFF),
         )
         instance.current_ndx = state.get('current_ndx',0)
         instance.last_attack_ndx = state.get('last_attack_ndx')

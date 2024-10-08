@@ -1,5 +1,6 @@
 from river import base, stats
 import numpy as np
+from endersgame.riverstats.fewmean import FEWMean
 
 
 class MACD(base.Transformer):
@@ -21,7 +22,7 @@ class MACD(base.Transformer):
 
     """
 
-    def __init__(self, window_slow=26, window_fast=12, window_sign=9):
+    def __init__(self, window_slow=200, window_fast=12, window_sign=9):
         """
         :param window_slow: The number of periods for the slow EMA.
         :param window_fast: The number of periods for the fast EMA.
@@ -43,9 +44,9 @@ class MACD(base.Transformer):
         fading_factor_sign = 2 / (self.window_sign + 1)
 
         # Using river's EWMA to track the slow and fast EMAs, and the signal line
-        self.ema_slow = stats.EWMean(fading_factor=fading_factor_slow)
-        self.ema_fast = stats.EWMean(fading_factor=fading_factor_fast)
-        self.ema_signal = stats.EWMean(fading_factor=fading_factor_sign)
+        self.ema_slow = FEWMean(fading_factor=fading_factor_slow)
+        self.ema_fast = FEWMean(fading_factor=fading_factor_fast)
+        self.ema_signal = FEWMean(fading_factor=fading_factor_sign)
 
 
     def learn_one(self, x):

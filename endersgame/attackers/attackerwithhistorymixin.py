@@ -26,6 +26,7 @@ class AttackerWithHistoryMixin(BaseAttacker, HistoryMixin):
         # Create a decision using chronologicaly ordered fixed length vector xs
         raise NotImplementedError("You derived from AttackerWithHistoryMixin but failed to implement either predict_using_history or predict")
 
+
     def predict(self,horizon: int = HORIZON) -> float:
         """
         :param horizon:

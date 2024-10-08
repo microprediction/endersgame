@@ -9,6 +9,13 @@ def test_initial_state():
     assert pnl_tracker.pnl_data == [], f"Expected pnl_data=[], got {pnl_tracker.pnl_data}"
 
 
+
+def test_tick_once_for_now():
+    pnl_tracker = Pnl(epsilon=0)
+    pnl_tracker.tick(x=1.0, horizon=1, decision=1)
+    assert(len(pnl_tracker.pending_decisions)==1)
+
+
 def test_tick_once():
     pnl_tracker = Pnl(epsilon=0)
     pnl_tracker.tick(x=1.0, horizon=7, decision=1)
@@ -179,4 +186,3 @@ def test_sequential_resolutions_with_no_decision():
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__])
-

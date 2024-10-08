@@ -5,7 +5,7 @@ import pytest
 from endersgame.attackers.baseattacker import BaseAttacker
 from endersgame.gameconfig import HORIZON
 
-class TestAttacker(BaseAttacker):
+class ExampleAttacker(BaseAttacker):
     """
     A simple concrete subclass of BaseAttacker for testing purposes.
     """
@@ -42,7 +42,7 @@ class TestAttacker(BaseAttacker):
         return state
 
     @classmethod
-    def from_dict(cls, state: Dict[str, Any]) -> 'TestAttacker':
+    def from_dict(cls, state: Dict[str, Any]) -> 'ExampleAttacker':
         """
         Deserialize a dictionary to create a TestAttacker instance.
         """
@@ -61,15 +61,15 @@ def test_testattacker_instantiation():
     """
     Test that the TestAttacker can be instantiated correctly.
     """
-    attacker = TestAttacker(parameter=5.0)
-    assert isinstance(attacker, TestAttacker)
+    attacker = ExampleAttacker(parameter=5.0)
+    assert isinstance(attacker, ExampleAttacker)
     assert attacker.parameter == 5.0
 
 def test_testattacker_tick():
     """
     Test the tick method of TestAttacker.
     """
-    attacker = TestAttacker(parameter=5.0)
+    attacker = ExampleAttacker(parameter=5.0)
     attacker.tick(3.0)
     assert attacker.parameter == 8.0
 
@@ -80,7 +80,7 @@ def test_testattacker_predict():
     """
     Test the predict method of TestAttacker.
     """
-    attacker = TestAttacker(parameter=0.0)
+    attacker = ExampleAttacker(parameter=0.0)
     assert attacker.predict() == 0.0
 
     attacker.parameter = 15.0
@@ -93,7 +93,7 @@ def test_testattacker_tick_and_predict():
     """
     Test the tick_and_predict method of TestAttacker.
     """
-    attacker = TestAttacker(parameter=0.0)
+    attacker = ExampleAttacker(parameter=0.0)
     decision = attacker.tick_and_predict(x=12.0)
     assert attacker.parameter == 12.0
     assert decision == 1.0
@@ -110,7 +110,7 @@ def test_testattacker_to_dict():
     """
     Test the serialization (to_dict) of TestAttacker.
     """
-    attacker = TestAttacker(parameter=7.5)
+    attacker = ExampleAttacker(parameter=7.5)
     state = attacker.to_dict()
     expected_state = {
         'parameter': 7.5
@@ -124,15 +124,15 @@ def test_testattacker_from_dict():
     state = {
         'parameter': -10.0
     }
-    attacker = TestAttacker.from_dict(state)
-    assert isinstance(attacker, TestAttacker)
+    attacker = ExampleAttacker.from_dict(state)
+    assert isinstance(attacker, ExampleAttacker)
     assert attacker.parameter == -10.0
 
 def test_testattacker_full_serialization_cycle():
     """
     Test the full serialization and deserialization cycle of TestAttacker.
     """
-    attacker = TestAttacker(parameter=3.5)
+    attacker = ExampleAttacker(parameter=3.5)
     attacker.tick(2.5)  # parameter should now be 6.0
     attacker.tick(-10.0)  # parameter should now be -4.0
 
@@ -142,6 +142,6 @@ def test_testattacker_full_serialization_cycle():
     }
     assert state == expected_state
 
-    new_attacker = TestAttacker.from_dict(state)
-    assert isinstance(new_attacker, TestAttacker)
+    new_attacker = ExampleAttacker.from_dict(state)
+    assert isinstance(new_attacker, ExampleAttacker)
     assert new_attacker.parameter == -4.0

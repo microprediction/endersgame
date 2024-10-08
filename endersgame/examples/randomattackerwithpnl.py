@@ -10,7 +10,7 @@ class RandomAttacker(AttackerWithPnl):
     def tick(self, x):
         pass
 
-    def predict(self, horizon:int) -> float:
+    def predict(self, horizon: int) -> float:
         return int(0.5*np.random.randn())
 
 

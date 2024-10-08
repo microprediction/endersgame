@@ -1,4 +1,6 @@
 numpy
 river
 requests
+statsmodels
+
 

@@ -1,5 +1,3 @@
-from unicodedata import category
-
 import requests
 from endersgame.datasources.streamgenerator import stream_generator, VALID_PUBLIC_CATEGORIES
 from endersgame.datasources.streamurl import stream_url

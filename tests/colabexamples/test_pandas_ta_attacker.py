@@ -7,6 +7,42 @@ import pandas as pd
 import pandas_ta as ta
 
 
+def compute_indicators(data: pd.Series):
+    """
+    Computes several technical indicators based on the recent history.
+
+    Parameters:
+    - data (pd.Series): The recent historical data as a pandas Series.
+
+    Returns:
+    - indicators (dict): A dictionary of computed technical indicators.
+    """
+    indicators = {}
+
+    # Compute Relative Strength Index (RSI)
+    rsi = ta.rsi(data, length=14)
+    if rsi is not None and not rsi.empty:
+        indicators['rsi'] = rsi.iloc[-1]
+    else:
+        indicators['rsi'] = 0  # Default value if not enough data
+
+    # Compute Simple Moving Average (SMA)
+    sma_50 = ta.sma(data, length=50)
+    if sma_50 is not None and not sma_50.empty:
+        indicators['sma_50'] = sma_50.iloc[-1]
+    else:
+        indicators['sma_50'] = 0  # Default value if not enough data
+
+    # Compute Exponential Moving Average (EMA)
+    ema_20 = ta.ema(data, length=20)
+    if ema_20 is not None and not ema_20.empty:
+        indicators['ema_20'] = ema_20.iloc[-1]
+    else:
+        indicators['ema_20'] = 0  # Default value if not enough data
+
+    return indicators
+
+
 class TechnicalIndicatorAttacker(Attacker):
     """
     An attacker that computes technical indicators based on recent history and uses
@@ -39,41 +75,6 @@ class TechnicalIndicatorAttacker(Attacker):
         self.threshold = threshold
         self.burn_in = burn_in
 
-    def compute_indicators(self, data: pd.Series):
-        """
-        Computes several technical indicators based on the recent history.
-
-        Parameters:
-        - data (pd.Series): The recent historical data as a pandas Series.
-
-        Returns:
-        - indicators (dict): A dictionary of computed technical indicators.
-        """
-        indicators = {}
-
-        # Compute Relative Strength Index (RSI)
-        rsi = ta.rsi(data, length=14)
-        if rsi is not None and not rsi.empty:
-            indicators['rsi'] = rsi.iloc[-1]
-        else:
-            indicators['rsi'] = 0  # Default value if not enough data
-
-        # Compute Simple Moving Average (SMA)
-        sma_50 = ta.sma(data, length=50)
-        if sma_50 is not None and not sma_50.empty:
-            indicators['sma_50'] = sma_50.iloc[-1]
-        else:
-            indicators['sma_50'] = 0  # Default value if not enough data
-
-        # Compute Exponential Moving Average (EMA)
-        ema_20 = ta.ema(data, length=20)
-        if ema_20 is not None and not ema_20.empty:
-            indicators['ema_20'] = ema_20.iloc[-1]
-        else:
-            indicators['ema_20'] = 0  # Default value if not enough data
-
-        return indicators
-
     def tick(self, x):
         """
         Processes the new data point.
@@ -92,7 +93,7 @@ class TechnicalIndicatorAttacker(Attacker):
             history_series = pd.Series(history)
 
             # Compute technical indicators from the history
-            indicators = self.compute_indicators(history_series)
+            indicators = compute_indicators(history_series)
 
             # Store the indicators and current index in the input queue
             self.input_queue.append({'ndx': self.current_ndx, 'indicators': indicators})
@@ -128,7 +129,7 @@ class TechnicalIndicatorAttacker(Attacker):
             history_series = pd.Series(history)
 
             # Compute technical indicators for the prediction
-            indicators = self.compute_indicators(history_series)
+            indicators = compute_indicators(history_series)
 
             # Predict the future value HORIZON steps ahead
             y_pred = self.model.predict_one(indicators)

@@ -1,6 +1,6 @@
 # endersgame ![tests](https://github.com/microprediction/endersgame/actions/workflows/tests.yml/badge.svg)
 
-For detecting small departures from martingality in time-series. 
+Utilities to help build `Attackers` that detect small departures from martingality in time-series. 
 
 ### About
 This package is intended to make life simpler for those participating in an ongoing tournament at [CrunchDAO.com](https://www.crunchdao.com), although it hopefully has independent interest. For instance, you might build on `Attacker` or examples herein to help find signal in your model residuals.  

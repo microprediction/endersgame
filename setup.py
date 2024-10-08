@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="endersgame",
-    version="0.4.3",
+    version="0.4.4",
     description="Online autonomous time series prediction of near martingales",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -36,7 +36,7 @@ setup(
     test_suite='pytest',
     tests_require=['pytest','pandas_ta'],
     include_package_data=True,
-    extras_require={"full":[]},
+    extras_require={"tests":["pandas_ta","flake8","pytest"]},
     install_requires=["numpy","river","requests","statsmodels"],
     entry_points={
         "console_scripts": [

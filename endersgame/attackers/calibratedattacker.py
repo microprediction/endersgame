@@ -17,7 +17,7 @@ class CalibratedAttacker:
     def __init__(self, attacker, epsilon=0.005, fading_factor=0.01, min_weight=1.0):
         """
              attacker:   Any attacker with a tick_and_predict function
-             decay:      Decay factor for tracking the pnl of thresholded standardized decisions (see accounting.signalpnl.SignalPnl)
+             fading_factor:      Decay factor for tracking the pnl of thresholded standardized decisions (see accounting.signalpnl.SignalPnl)
         """
         self.pnl = Pnl(epsilon=epsilon)
         self.signal_pnl = StdSignalPnl(fading_factor=fading_factor, thresholds=None)

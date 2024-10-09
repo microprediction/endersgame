@@ -9,9 +9,9 @@ class AttackerWithPnl(BaseAttacker):
     An attacker that tracks profit and loss (PnL).
     """
 
-    def __init__(self, epsilon: float = EPSILON, backoff:int=DEFAULT_TRADE_BACKOFF):
+    def __init__(self, epsilon: float = EPSILON, backoff: int = DEFAULT_TRADE_BACKOFF):
         super().__init__()
-        self.pnl = Pnl(epsilon=epsilon, backoff=DEFAULT_TRADE_BACKOFF)
+        self.pnl = Pnl(epsilon=epsilon, backoff=backoff)
 
     def tick_and_predict(self, x: float, horizon: int = HORIZON) -> float:
         """
@@ -57,7 +57,10 @@ class AttackerWithPnl(BaseAttacker):
 
     @classmethod
     def from_dict(cls, state: Dict[str, Any]) -> 'AttackerWithPnl':
-        epsilon_with_fallback = state.get('pnl',{'epsilon':EPSILON}).get('epsilon')
-        attacker = cls(epsilon=epsilon_with_fallback)
-        attacker.pnl = Pnl.from_dict(state.get('pnl',{}))
+        pnl_state = state.get('pnl', {})
+        epsilon = pnl_state.get('epsilon', EPSILON)
+        backoff = pnl_state.get('backoff', DEFAULT_TRADE_BACKOFF)
+
+        attacker = cls(epsilon=epsilon, backoff=backoff)
+        attacker.pnl = Pnl.from_dict(pnl_state)
         return attacker

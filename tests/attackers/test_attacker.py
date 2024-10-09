@@ -5,13 +5,11 @@ import pytest
 from collections import deque
 from endersgame.attackers.attacker import Attacker
 from endersgame.accounting.pnl import Pnl
-from endersgame.gameconfig import EPSILON, HORIZON, DEFAULT_HISTORY_LEN
+from endersgame.gameconfig import EPSILON, HORIZON, DEFAULT_HISTORY_LEN, DEFAULT_TRADE_BACKOFF
 
-
-# Define a concrete subclass of Attacker for testing purposes
 class ExampleAttacker(Attacker):
-    def __init__(self, epsilon=EPSILON, max_history_len=DEFAULT_HISTORY_LEN):
-        super().__init__(epsilon=epsilon, max_history_len=max_history_len)
+    def __init__(self, epsilon=EPSILON, max_history_len=DEFAULT_HISTORY_LEN, backoff=DEFAULT_TRADE_BACKOFF):
+        super().__init__(epsilon=epsilon, max_history_len=max_history_len, backoff=backoff)
         self.data = []
 
     def tick(self, x):
@@ -26,53 +24,46 @@ class ExampleAttacker(Attacker):
 
     def to_dict(self) -> Dict[str, Any]:
         state = super().to_dict()
-        state.update({'data':self.data})
+        state.update({'data': self.data})
         return state
-
 
     @classmethod
     def from_dict(cls, state: dict):
-        # Call the parent's `from_dict` method if it exists and restore the instance state
-        instance = super().from_dict(state)  # Assuming the parent has a compatible from_dict
-        instance.data = state.get('data')
+        pnl_state = state.get('pnl', {})
+        epsilon = pnl_state.get('epsilon', EPSILON)
+        backoff = pnl_state.get('backoff', DEFAULT_TRADE_BACKOFF)
+        max_history_len = state.get('max_history_len', DEFAULT_HISTORY_LEN)
+
+        instance = cls(epsilon=epsilon, max_history_len=max_history_len, backoff=backoff)
+        instance.history = deque(state.get('history', []), maxlen=max_history_len)
+        instance.pnl = Pnl.from_dict(pnl_state)
+        instance.data = state.get('data', [])
         return instance
 
-
-
-
-# Pytest fixture to create a TestAttacker instance
 @pytest.fixture
 def attacker_instance():
     return ExampleAttacker()
 
-
 def test_attacker_initialization_default(attacker_instance):
-    """
-    Test the default initialization of the Attacker class.
-    """
     assert attacker_instance.pnl.epsilon == EPSILON
+    assert attacker_instance.pnl.backoff == DEFAULT_TRADE_BACKOFF
     assert attacker_instance.max_history_len == DEFAULT_HISTORY_LEN
     assert isinstance(attacker_instance.history, deque)
     assert attacker_instance.history.maxlen == DEFAULT_HISTORY_LEN
     assert len(attacker_instance.history) == 0
     assert isinstance(attacker_instance.pnl, Pnl)
-    assert attacker_instance.pnl.epsilon == EPSILON
-
 
 def test_attacker_initialization_custom():
-    """
-    Test custom initialization of the Attacker class with different epsilon and max_history_len.
-    """
     custom_epsilon = 0.5
     custom_max_history = 50
-    attacker = ExampleAttacker(epsilon=custom_epsilon, max_history_len=custom_max_history)
+    custom_backoff = 75
+    attacker = ExampleAttacker(epsilon=custom_epsilon, max_history_len=custom_max_history, backoff=custom_backoff)
 
     assert attacker.pnl.epsilon == custom_epsilon
+    assert attacker.pnl.backoff == custom_backoff
     assert attacker.max_history_len == custom_max_history
     assert attacker.history.maxlen == custom_max_history
     assert len(attacker.history) == 0
-    assert attacker.pnl.epsilon == custom_epsilon
-
 
 def test_attacker_tick_and_predict_not_full_history(attacker_instance):
     """
@@ -123,34 +114,22 @@ def test_attacker_history_overflow(attacker_instance):
     assert len(attacker_instance.history) == DEFAULT_HISTORY_LEN
     assert list(attacker_instance.history) == [float(i) for i in range(10, DEFAULT_HISTORY_LEN + 10)]
 
-
 def test_attacker_serialization(attacker_instance):
-    """
-    Test serialization and deserialization of the Attacker's state.
-    """
-    # Fill some history
     inputs = [1.0, 2.0, 3.0]
     for x in inputs:
         attacker_instance.tick_and_predict(x)
 
-    # Serialize to dict
     state = attacker_instance.to_dict()
-    expected_state = {
-        'epsilon': EPSILON,
-        'max_history_len': DEFAULT_HISTORY_LEN,
-        'history': inputs,
-        'pnl': attacker_instance.pnl.to_dict(),
-        'data': attacker_instance.data
-    }
+
     assert state['max_history_len'] == DEFAULT_HISTORY_LEN
     assert state['history'] == inputs
     assert state['pnl'] == attacker_instance.pnl.to_dict()
     assert state['data'] == inputs
 
-    # Deserialize to a new instance
     new_attacker = ExampleAttacker.from_dict(state)
 
     assert new_attacker.pnl.epsilon == attacker_instance.pnl.epsilon
+    assert new_attacker.pnl.backoff == attacker_instance.pnl.backoff
     assert new_attacker.max_history_len == attacker_instance.max_history_len
     assert list(new_attacker.history) == list(attacker_instance.history)
     assert new_attacker.pnl.to_dict() == attacker_instance.pnl.to_dict()

@@ -13,138 +13,81 @@ def test_initial_state():
 
 
 def test_tick_once_horizon_one():
-    pnl_tracker = Pnl(epsilon=0)
-    pnl_tracker.tick(x=1.0, horizon=1, decision=1)
+    """Test a single decision with horizon=1.
+    Decision ticked at idx=0
+    Anchor the decision at idx=1 (the start value for the trade)
+    Resolve the decision at idx=2 (the end value for the trade)
+    """
+
+    pnl_tracker = Pnl()
+    pnl_tracker.tick(x=0., horizon=1, decision=1)
     assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
+    assert len(pnl_tracker.pnl_data) == 0, f"Expected 0 PnL records, got {len(pnl_tracker.pnl_data)}"
+
+    pnl_tracker.tick(x=10.0)
+    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
+    assert len(pnl_tracker.pnl_data) == 0, f"Expected 0 PnL records, got {len(pnl_tracker.pnl_data)}"
+
+    pnl_tracker.tick(x=50.0)
+    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
+    assert len(pnl_tracker.pnl_data) == 1, f"Expected 1 PnL record, got {len(pnl_tracker.pnl_data)}"
+    expected_pnl = 50 - 10 - pnl_tracker.epsilon
+    actual_pnl = pnl_tracker.pnl_data[0]['pnl']
+    assert actual_pnl == expected_pnl, f"Expected PnL={expected_pnl}, got {actual_pnl}"
 
 
 def test_tick_once():
-    pnl_tracker = Pnl(epsilon=0)
-    pnl_tracker.tick(x=1.0, horizon=7, decision=1)
+    # value is index ^ 2
+    horizon = 7
+    pnl_tracker = Pnl()
+    pnl_tracker.tick(x=0.0, horizon=horizon, decision=1)
     assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
+    # need "blank" horizon steps to resolve the decision
+    for x in range(horizon):
+        pnl_tracker.tick(x=float(1+x)**2)
+        assert len(pnl_tracker.pending_decisions) == 1, f"Expected 0 pending decisions after resolution, got {len(pnl_tracker.pending_decisions)}"
+    # tick the "resolution" step
+    pnl_tracker.tick(x=float(1+horizon)**2)
+    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 0 pending decisions after resolution, got {len(pnl_tracker.pending_decisions)}"
+    assert len(pnl_tracker.pnl_data) == 1, f"Expected 1 PnL record, got {len(pnl_tracker.pnl_data)}"
+    expected_pnl = (1+horizon)**2 - 1.0 - pnl_tracker.epsilon
+    actual_pnl = pnl_tracker.pnl_data[0]['pnl']
+    assert actual_pnl == expected_pnl, f"Expected PnL={expected_pnl}, got {actual_pnl}"
+
 
 def test_tick_twice_with_backoff():
-    pnl_tracker = Pnl(epsilon=0, backoff=10)
+    pnl_tracker = Pnl(backoff=10)
     pnl_tracker.tick(x=1.0, horizon=7, decision=1)
     pnl_tracker.tick(x=1.1, horizon=7, decision=1)  # Backoff prevents tracking
     assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
 
 def test_tick_twice_no_backoff():
-    pnl_tracker = Pnl(epsilon=0, backoff=1)
+    pnl_tracker = Pnl(backoff=1)
     pnl_tracker.tick(x=1.0, horizon=7, decision=1)
     pnl_tracker.tick(x=1.1, horizon=7, decision=1)
     assert len(pnl_tracker.pending_decisions) == 2, f"Expected 2 pending decisions, got {len(pnl_tracker.pending_decisions)}"
 
-def test_record_and_resolve_decision():
-    """Test recording and resolving a single decision."""
-    pnl_tracker = Pnl(epsilon=0)
-
-    pnl_tracker.tick(x=100, horizon=100, decision=1)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
-
-    pnl_tracker.current_ndx = 100
-    pnl_tracker.tick(x=150, horizon=100, decision=0)  # No new decision
-    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 0 pending decisions after resolution, got {len(pnl_tracker.pending_decisions)}"
-    assert len(pnl_tracker.pnl_data) == 1, f"Expected 1 PnL record, got {len(pnl_tracker.pnl_data)}"
-    expected_pnl = 150 - 100 - pnl_tracker.epsilon
-    actual_pnl = pnl_tracker.pnl_data[0]['pnl']
-    assert actual_pnl == expected_pnl, f"Expected PnL={expected_pnl}, got {actual_pnl}"
-
 def test_multiple_decisions_over_time():
     """Test multiple decisions being made and resolved over time."""
-
-    pnl_tracker = Pnl(epsilon=0, backoff=0)
-    # Step 1: Initial state check
-    assert pnl_tracker.current_ndx == 0, f"Expected current_ndx=0, got {pnl_tracker.current_ndx}"
-    assert pnl_tracker.pending_decisions == [], f"Expected pending_decisions=[], got {pnl_tracker.pending_decisions}"
-    assert pnl_tracker.pnl_data == [], f"Expected pnl_data=[], got {pnl_tracker.pnl_data}"
-
-
-    # Step 2: Record first decision at step 0 (y = 100, decision = 1)
-    pnl_tracker.tick(x=100, horizon=100, decision=1)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
-
-    # Step 3: Move forward by 50 steps without resolving (y = 120, decision = 0)
-    pnl_tracker.current_ndx = 50
-    pnl_tracker.tick(x=120, horizon=50, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
-
-    # Step 4: Move forward another 50 steps and resolve first decision (y = 150)
-    pnl_tracker.current_ndx = 100
-    pnl_tracker.tick(x=150, horizon=100, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 0 pending decisions after resolution, got {len(pnl_tracker.pending_decisions)}"
-    assert len(pnl_tracker.pnl_data) == 1, f"Expected 1 PnL record, got {len(pnl_tracker.pnl_data)}"
-    expected_pnl = 150 - 100 - pnl_tracker.epsilon
-    actual_pnl = pnl_tracker.pnl_data[0]['pnl']
-    assert actual_pnl == expected_pnl, f"Expected PnL={expected_pnl}, got {actual_pnl}"
-
-    # Step 5: Record second decision at step 100 (y = 150, decision = -1)
-    pnl_tracker.tick(x=150, horizon=100, decision=-1)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
-
-    # Step 6: Move forward 50 steps without resolving (y = 140)
-    pnl_tracker.current_ndx = 150
-    pnl_tracker.tick(x=140, horizon=50, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
-
-    # Step 7: Resolve second decision (y = 100)
-    pnl_tracker.current_ndx = 201
-    pnl_tracker.tick(x=130, horizon=100, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 0 pending decisions after resolution, got {len(pnl_tracker.pending_decisions)}"
-    assert len(pnl_tracker.pnl_data) == 2, f"Expected 2 PnL records, got {len(pnl_tracker.pnl_data)}"
-
-    expected_pnl_second = 150 - 130 - pnl_tracker.epsilon
-    actual_pnl_second = pnl_tracker.pnl_data[1]['pnl']
-    assert actual_pnl_second == expected_pnl_second, f"Expected second PnL={expected_pnl_second}, got {actual_pnl_second}"
-
-def test_sequential_decisions_and_partial_resolution():
-    """Test sequential decisions and resolving them one by one."""
-    pnl_tracker = Pnl(epsilon=0, backoff=10)
-
-    pnl_tracker.tick(x=100, horizon=100, decision=1)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
-
-    pnl_tracker.current_ndx = 50
-    pnl_tracker.tick(x=110, horizon=150, decision=-1)
-    assert len(pnl_tracker.pending_decisions) == 2, f"Expected 2 pending decisions, got {len(pnl_tracker.pending_decisions)}"
-
-    pnl_tracker.current_ndx = 100
-    pnl_tracker.tick(x=150, horizon=50, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision after partial resolution, got {len(pnl_tracker.pending_decisions)}"
-    assert len(pnl_tracker.pnl_data) == 1, f"Expected 1 PnL record, got {len(pnl_tracker.pnl_data)}"
-
-    expected_pnl_first = 150 - 100 - pnl_tracker.epsilon
-    actual_pnl_first = pnl_tracker.pnl_data[0]['pnl']
-    assert actual_pnl_first == expected_pnl_first, f"Expected first PnL={expected_pnl_first}, got {actual_pnl_first}"
-
-    pnl_tracker.current_ndx = 200
-    pnl_tracker.tick(x=100, horizon=50, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 0 pending decisions after full resolution, got {len(pnl_tracker.pending_decisions)}"
-    assert len(pnl_tracker.pnl_data) == 2, f"Expected 2 PnL records, got {len(pnl_tracker.pnl_data)}"
-
-    expected_pnl_second = 110 - 100 - pnl_tracker.epsilon
-    actual_pnl_second = pnl_tracker.pnl_data[1]['pnl']
-    assert actual_pnl_second == expected_pnl_second, f"Expected second PnL={expected_pnl_second}, got {actual_pnl_second}"
-
-def test_sequential_resolutions_with_no_decision():
-    """Test resolving decisions with no new decision being made."""
-    pnl_tracker = Pnl(epsilon=0, backoff=10)
-
-    pnl_tracker.tick(x=100, horizon=100, decision=1)
-    assert len(pnl_tracker.pending_decisions) == 1, f"Expected 1 pending decision, got {len(pnl_tracker.pending_decisions)}"
-
-    pnl_tracker.current_ndx = 100
-    pnl_tracker.tick(x=150, horizon=100, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 0 pending decisions after resolution, got {len(pnl_tracker.pending_decisions)}"
-    assert len(pnl_tracker.pnl_data) == 1, f"Expected 1 PnL record, got {len(pnl_tracker.pnl_data)}"
-    expected_pnl = 150 - 100 - pnl_tracker.epsilon
-    actual_pnl = pnl_tracker.pnl_data[0]['pnl']
-    assert actual_pnl == expected_pnl, f"Expected PnL={expected_pnl}, got {actual_pnl}"
-
-    pnl_tracker.current_ndx = 150
-    pnl_tracker.tick(x=160, horizon=50, decision=0)
-    assert len(pnl_tracker.pending_decisions) == 0, f"Expected 0 pending decisions, got {len(pnl_tracker.pending_decisions)}"
-    assert len(pnl_tracker.pnl_data) == 1, f"Expected 1 PnL record, got {len(pnl_tracker.pnl_data)}"
+    pnl_tracker = Pnl(backoff=0)
+    decision_ndx = {0: (1, 5), 5: (-1, 10), 10: (1, 7), 15: (-1, 3)}
+    end_ndx = 15+3+1 # max decision_ndx + horizon + 1
+    expected_pnl = {}
+    for ndx, (decision, horizon) in decision_ndx.items():
+        expected_pnl[ndx + horizon + 1] = decision*(float(ndx + horizon + 1)**2 - float(ndx + 1)**2) - pnl_tracker.epsilon
+    for ndx in range(end_ndx+1):
+        x = float(ndx)**2
+        if ndx in decision_ndx:
+            decision, horizon = decision_ndx[ndx]
+            pnl_tracker.tick(x=x, horizon=horizon, decision=decision)
+        else:
+            pnl_tracker.tick(x=x)
+        if ndx in expected_pnl:
+            # get the latest one
+            pnl_data = pnl_tracker.pnl_data[-1]
+            assert pnl_data['pnl'] == expected_pnl[ndx], f"Expected PnL={expected_pnl[ndx]}, got {pnl_data['pnl']}"
+            del expected_pnl[ndx]
+    assert expected_pnl == {}, f"Expected all PnL records to be resolved, got {len(expected_pnl)} unresolved"
 
 
 
@@ -164,7 +107,7 @@ def test_periodic_decisions():
                 del decision_times[i]
 
             if decision  != 0:
-                decision_times[i+horizon] += 1
+                decision_times[i+horizon+1] += 1 # +1 because we need 1 to anchor
 
             expected_pending = sum(v for v in decision_times.values())
             actual_pending = len(pnl_tracker.pending_decisions)
@@ -195,7 +138,7 @@ def test_periodic_decisions_with_backoff():
                 del decision_times[i]
 
             if decision != 0:
-                decision_times[i+horizon] += 1
+                decision_times[i+horizon+1] += 1 # +1 because we need 1 to anchor
                 last_decision_time = i
 
             expected_pending = sum(v for v in decision_times.values())

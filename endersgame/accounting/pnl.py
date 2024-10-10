@@ -19,6 +19,7 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
         self.backoff = backoff
         self.current_ndx = 0
         self.last_attack_ndx = None
+
         self._pending_decisions: OrderedDict[int, Dict] = OrderedDict()
         self._pnl_data: OrderedDict[int, Dict] = OrderedDict()
         self.pnl_columns = ['decision_ndx', 'resolution_ndx', 'horizon',
@@ -32,11 +33,14 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
     def pnl_data(self) -> List[Dict]:
         return list(self._pnl_data.values())
 
-    def tick(self, x: float, horizon: int, decision: float):
+    def tick(self, x: float, horizon: int = 0, decision: float = 0.):
         """
         Processes a new data point, potentially making a decision and resolving pending decisions.
         """
+        if decision != 0. and horizon == 0:
+            raise ValueError("Cannot make a decision with a non-zero horizon")
         self._add_decision(x, horizon, decision)
+        self._update_anchor(x)
         self._resolve_decisions(x)
         self.current_ndx += 1
 
@@ -44,35 +48,47 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
         """
         Adds a non-zero decision to the pending decisions dictionary.
         """
-        if decision != 0 and (self.last_attack_ndx is None or
-                              self.current_ndx - self.last_attack_ndx >= self.backoff):
-            self._pending_decisions[self.current_ndx] = {
-                'x': x,
-                'horizon': horizon,
-                'decision': decision
-            }
-            self.last_attack_ndx = self.current_ndx
+        if decision == 0 or (self.last_attack_ndx is not None and
+                              self.current_ndx - self.last_attack_ndx < self.backoff):
+            return
+        self._pending_decisions[self.current_ndx] = {
+            'x': x,
+            'anchor': None,
+            'horizon': horizon,
+            'decision': decision
+        }
+        self.last_attack_ndx = self.current_ndx
+
+    def _update_anchor(self, x: float):
+        """
+        For all pending decisions created at index - 1: we set the anchor
+        """
+        if self.current_ndx - 1 in self._pending_decisions:
+            self._pending_decisions[self.current_ndx - 1]['anchor'] = x
 
     def _resolve_decisions(self, x: float):
         """
         Resolves pending decisions by calculating PnL when the future value is available.
         """
         resolved_indices = []
-        for decision_ndx, decision_data in self._pending_decisions.items():
-            if self.current_ndx - decision_ndx >= decision_data['horizon']:
-                x_prev = decision_data['x']
-                decision = decision_data['decision']
-                pnl = (x - x_prev if decision > 0 else x_prev - x) - self.epsilon
-                self._pnl_data[decision_ndx] = {
+        for decision_ndx, pending in self._pending_decisions.items():
+            final_decision = decision_ndx + pending['horizon'] + 1
+            if self.current_ndx != final_decision:
+                continue
+            anchor = pending['anchor']
+            decision = pending['decision']
+
+            pnl = (x - anchor if  decision > 0 else anchor - x) - self.epsilon
+            self._pnl_data[decision_ndx] = {
                     'decision_ndx': decision_ndx,
                     'resolution_ndx': self.current_ndx,
-                    'horizon': decision_data['horizon'],
+                    'horizon': pending['horizon'],
                     'decision': decision,
-                    'y_decision': x_prev,
+                    'y_decision': anchor,
                     'y_resolution': x,
                     'pnl': pnl
                 }
-                resolved_indices.append(decision_ndx)
+            resolved_indices.append(decision_ndx)
 
         for idx in resolved_indices:
             del self._pending_decisions[idx]

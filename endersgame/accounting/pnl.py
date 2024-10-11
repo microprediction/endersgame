@@ -14,9 +14,10 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
 - Decisions made within self.backoff data points of the last non-zero decision are ignored.
 """
 
-    def __init__(self, epsilon: float = EPSILON, backoff: int = DEFAULT_TRADE_BACKOFF):
+    def __init__(self, epsilon: float = EPSILON, backoff: int = DEFAULT_TRADE_BACKOFF, with_trading_lag: bool = False):
         self.epsilon = epsilon
         self.backoff = backoff
+        self.with_trading_lag = with_trading_lag
         self.current_ndx = 0
         self.last_attack_ndx = None
 
@@ -40,20 +41,22 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
         if decision != 0. and horizon == 0:
             raise ValueError("Cannot make a decision with a non-zero horizon")
         self._add_decision(x, horizon, decision)
-        self._update_anchor(x)
+        if self.with_trading_lag:
+            self._update_anchor(x)
         self._resolve_decisions(x)
         self.current_ndx += 1
 
     def _add_decision(self, x: float, horizon: int, decision: float):
         """
-        Adds a non-zero decision to the pending decisions dictionary.
+        Adds a non-zero decision to the pending decisions' dictionary.
         """
         if decision == 0 or (self.last_attack_ndx is not None and
                               self.current_ndx - self.last_attack_ndx < self.backoff):
             return
+        anchor = None if self.with_trading_lag else x
         self._pending_decisions[self.current_ndx] = {
             'x': x,
-            'anchor': None,
+            'anchor': anchor,
             'horizon': horizon,
             'decision': decision
         }
@@ -63,6 +66,7 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
         """
         For all pending decisions created at index - 1: we set the anchor
         """
+        lookup = self.current_ndx - 1
         if self.current_ndx - 1 in self._pending_decisions:
             self._pending_decisions[self.current_ndx - 1]['anchor'] = x
 
@@ -72,7 +76,9 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
         """
         resolved_indices = []
         for decision_ndx, pending in self._pending_decisions.items():
-            final_decision = decision_ndx + pending['horizon'] + 1
+            final_decision = decision_ndx + pending['horizon']
+            if self.with_trading_lag:
+                final_decision += 1
             if self.current_ndx != final_decision:
                 continue
             anchor = pending['anchor']

@@ -1,4 +1,4 @@
-EPSILON = 0.01     # Trading cost
+EPSILON = 0.005     # Trading cost
 HORIZON = 30
 DEFAULT_TRADE_BACKOFF = 100
 

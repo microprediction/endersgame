@@ -7,9 +7,7 @@ Example notebooks are provided to help you get going with a new style of crunch 
 | [Mean reversion](https://github.com/crunchdao/quickstarters/blob/master/competitions/mid-one/mean_reversion/mean_reversion.ipynb) | This notebook demonstrates a mean reversion strategy that predicts whether a time series will go up or down. |
 | [Mean reversion attacker](https://github.com/microprediction/quickstarters/blob/master/competitions/mid-one/mean_reversion_attacker/mean_reversion_attacker.ipynb) | Illustrates use of the `Attacker` class|
 | [Notebook](https://github.com/microprediction/quickstarters/blob/master/competitions/mid-one/mean_reversion/mean_reversion.ipynb) | Shows how to process univariate time series data streams to detect trading opportunities. |
-| [Notebook](https://github.com/microprediction/quickstarters/blob/master/competitions/mid-one/mean_reversion/mean_reversion.ipynb) | Includes the basic setup, data loading, and submission process for CrunchDAO competitions. |
-| [Notebook](https://github.com/microprediction/quickstarters/blob/master/competitions/mid-one/mean_reversion/mean_re
-
+| [Notebook](https://github.com/microprediction/quickstarters/blob/master/competitions/mid-one/mean_reversion/mean_reversion.ipynb) | Includes the basic setup, data loading, and submission process for 
 
 
 

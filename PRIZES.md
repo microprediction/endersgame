@@ -19,26 +19,31 @@ The prize pool will be split among the top ten profit scores in proportion to th
 
 ### Step 1: Calculate total profit for the top 10
 The total profit for the top 10 participants is:
+
 $$
 2000 + 1500 + 1200 + 1000 + 800 + 700 + 600 + 500 + 400 + 300 = 9000
 $$
 
 ### Step 2: Determine each participant's proportion of the total profit
 Each participant's share of the prize pool is proportional to their profit. For example, Alice’s share is:
+
 $$
 \text{Alice's proportion} = \frac{2000}{9000} = 0.2222
 $$
 
 ### Step 3: Calculate each participant's prize
 To determine Alice's share of the $10,000 prize pool, multiply her proportion by the total prize:
+
 $$
 \text{Alice's prize} = 0.2222 \times 10000 = 2222.22
 $$
 
 Similarly, for Bob:
+
 $$
 \text{Bob's proportion} = \frac{1500}{9000} = 0.1667
 $$
+
 $$
 \text{Bob's prize} = 0.1667 \times 10000 = 1666.67
 $$

@@ -12,7 +12,7 @@ predictions using a function of lagged values.
 First, import the `Attacker` class from your module:
 
 ```python
-from endersgame import Attacker
+from midone import Attacker
 import numpy as np 
 
   class MyMomentumAttacker(Attacker):
@@ -52,7 +52,6 @@ ready for use as follows:
 ## See also 
 
  - Colab [notebooks](https://github.com/microprediction/endersnotebooks) demonstrating `Attacker`
- - Recommended [attacker.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attacker.md)
- - Attacker [FAQ.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md)
+ - Recommended [attacker.md](https://github.com/microprediction/midone/blob/main/midone/attackers/attacker.md)
+ - Attacker [FAQ.md](https://github.com/microprediction/midone/blob/main/midone/attackers/FAQ.md)
  - The tournament at [CrunchDAO.com](https://www.crunchdao.com) where you can use them to win rewards. 
-

@@ -1,7 +1,7 @@
 from collections import deque
-from endersgame.attackers.attackerwithpnl import BaseAttacker
-from endersgame.gameconfig import HORIZON, EPSILON, DEFAULT_HISTORY_LEN
-from endersgame.mixins.historymixin import HistoryMixin
+from midone.attackers.attackerwithpnl import BaseAttacker
+from midone.gameconfig import HORIZON, EPSILON, DEFAULT_HISTORY_LEN
+from midone.mixins.historymixin import HistoryMixin
 import numpy as np
 
 
@@ -51,5 +51,3 @@ class ExampleHistoricalAttacker(AttackerWithHistoryMixin):
     def predict_using_history(self, xs:[float], horizon:int=HORIZON) ->float:
         if xs[-1]>np.median(xs)+1:
             return 1
-
-

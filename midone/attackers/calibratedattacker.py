@@ -1,7 +1,7 @@
 
-from endersgame.accounting.stdsignalpnl import StdSignalPnl
-from endersgame.accounting.pnl import Pnl
-from endersgame.gameconfig import HORIZON
+from midone.accounting.stdsignalpnl import StdSignalPnl
+from midone.accounting.pnl import Pnl
+from midone.gameconfig import HORIZON
 
 
 class CalibratedAttacker:
@@ -32,5 +32,3 @@ class CalibratedAttacker:
         decision = self.signal_pnl.predict(epsilon=self.pnl.epsilon)
         self.pnl.tick(x=x, horizon=horizon, decision=decision)
         return decision
-
-

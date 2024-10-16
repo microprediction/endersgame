@@ -1,4 +1,4 @@
-from endersgame.riverstats.fewmean import FEWMean  # Adjust the import path to match your project structure
+from midone.riverstats.fewmean import FEWMean  # Adjust the import path to match your project structure
 
 
 def test_fewmean_to_dict():

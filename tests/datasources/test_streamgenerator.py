@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from endersgame.datasources.streamgenerator import stream_generator
+from midone.datasources.streamgenerator import stream_generator
 
 
 class TestStreamGenerator:

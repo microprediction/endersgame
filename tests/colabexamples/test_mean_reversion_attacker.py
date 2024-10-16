@@ -2,8 +2,8 @@
 # https://github.com/microprediction/endersnotebooks/blob/main/mean_reversion_attacker.ipynb
 
 
-from endersgame import Attacker
-from endersgame import stream_generator, stream_generator_generator
+from midone import Attacker
+from midone import stream_generator, stream_generator_generator
 import numpy as np
 import types
 from pprint import pprint

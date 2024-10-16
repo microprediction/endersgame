@@ -2,7 +2,7 @@
 
 # Standardizing Stochastic Signals Demo
 
-The script [plot_signalpnl_standardizing.py](https://github.com/microprediction/endersgame/blob/main/tests/accounting/plot_signalpnl_standardizing.py)  illustrates the process of standardizing a stochastic signal generated using an Ornstein-Uhlenbeck process. The signals are standardized using exponentially weighted mean and variance to compute Z-scores, allowing for threshold-based decision-making.
+The script [plot_signalpnl_standardizing.py](https://github.com/microprediction/midone/blob/main/tests/accounting/plot_signalpnl_standardizing.py)  illustrates the process of standardizing a stochastic signal generated using an Ornstein-Uhlenbeck process. The signals are standardized using exponentially weighted mean and variance to compute Z-scores, allowing for threshold-based decision-making.
 
 ## Description
 
@@ -12,7 +12,7 @@ The script [plot_signalpnl_standardizing.py](https://github.com/microprediction/
 
 ## Plot Example
 
-![Standardizing Signal PnL](https://github.com/microprediction/endersgame/blob/main/assets/images/standardizing_signal_pnl.png)
+![Standardizing Signal PnL](https://github.com/microprediction/midone/blob/main/assets/images/standardizing_signal_pnl.png)
 
 ## How to Run
 

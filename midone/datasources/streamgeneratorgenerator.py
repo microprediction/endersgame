@@ -1,6 +1,6 @@
 import requests
-from endersgame.datasources.streamgenerator import stream_generator, VALID_PUBLIC_CATEGORIES
-from endersgame.datasources.streamurl import stream_url
+from midone.datasources.streamgenerator import stream_generator, VALID_PUBLIC_CATEGORIES
+from midone.datasources.streamurl import stream_url
 
 
 def stream_generator_generator(start_stream_id=0, category='train', return_float=False):

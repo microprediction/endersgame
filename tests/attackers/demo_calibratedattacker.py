@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from endersgame.attackers.calibratedattacker import CalibratedAttacker
+from midone.attackers.calibratedattacker import CalibratedAttacker
 
 # A demonstration of how to create a calibrated attacker
 # This shows the decisions ("signal") made by a "raw" attacker,

@@ -1,7 +1,7 @@
 
 import pytest
 import numpy as np
-from endersgame.rivertransformers.macd import MACD  # Replace with the actual module path for the MACD class
+from midone.rivertransformers.macd import MACD  # Replace with the actual module path for the MACD class
 
 
 @pytest.fixture
@@ -37,4 +37,3 @@ def test_macd_with_random_walk(macd):
 
         assert isinstance(result['macd_line'], float), "MACD line should return a float"
         assert isinstance(result['signal_line'], float), "Signal line should return a float"
-

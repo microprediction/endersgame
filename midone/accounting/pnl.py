@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple
 import numpy as np
 from collections import OrderedDict
-from endersgame import EPSILON
+from midone import EPSILON
 
 DEFAULT_TRADE_BACKOFF = 1  # The minimum time between non-zero decisions
 
@@ -34,17 +34,28 @@ Simple logging of PnL (Profit and Loss) for all decisions made by an attacker.
     def pnl_data(self) -> List[Dict]:
         return list(self._pnl_data.values())
 
+    def incorrect_decision_indices(self):
+        return [entry['decision_ndx'] for entry in self.pnl_data if entry['pnl'] < 0]
+
     def tick(self, x: float, horizon: int = 0, decision: float = 0.):
         """
         Processes a new data point, potentially making a decision and resolving pending decisions.
         """
         if decision != 0. and horizon == 0:
             raise ValueError("Cannot make a decision with a non-zero horizon")
+        if decision is None:
+            raise ValueError("Decision cannot be None")
         self._add_decision(x, horizon, decision)
         if self.with_trading_lag:
             self._update_anchor(x)
         self._resolve_decisions(x)
         self.current_ndx += 1
+
+    def profit_over(self, last_decisions: int) -> float:
+        """
+        Returns the total profit over the last `last_decisions` decisions.
+        """
+        return sum(entry['pnl'] for entry in self.pnl_data[-last_decisions:])
 
     def _add_decision(self, x: float, horizon: int, decision: float):
         """

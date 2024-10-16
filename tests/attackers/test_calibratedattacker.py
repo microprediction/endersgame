@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from endersgame.attackers.calibratedattacker import CalibratedAttacker
+from midone.attackers.calibratedattacker import CalibratedAttacker
 
 # Mock attacker class with moving average signal
 class MockAttacker:

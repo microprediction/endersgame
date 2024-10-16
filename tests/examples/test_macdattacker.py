@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
-from endersgame.examples.macdattacker import MacdAttacker  # Replace with the actual path to the MacdAttacker
-from endersgame.syntheticdata.momentumregimes import momentum_regimes
-from endersgame.rivertransformers.macd import MACD
+from midone.examples.macdattacker import MacdAttacker  # Replace with the actual path to the MacdAttacker
+from midone.syntheticdata.momentumregimes import momentum_regimes
+from midone.rivertransformers.macd import MACD
 
 @pytest.fixture
 def macd_attacker():
@@ -80,4 +80,3 @@ def test_final_pnl_summary(macd_attacker):
 
     summary = macd_attacker.pnl.summary()
     assert isinstance(summary, dict), "PnL summary should be a dictionary"
-

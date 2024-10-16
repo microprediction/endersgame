@@ -2,7 +2,7 @@
 # demo_standardization_stochastic.py
 
 import matplotlib.pyplot as plt
-from endersgame.accounting.stdsignalpnl import StdSignalPnl
+from midone.accounting.stdsignalpnl import StdSignalPnl
 import math
 import numpy as np
 

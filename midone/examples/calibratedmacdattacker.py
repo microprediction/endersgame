@@ -1,6 +1,6 @@
-from endersgame.examples.macdattacker import MacdAttacker
-from endersgame.attackers.calibratedattacker import CalibratedAttacker
-from endersgame.syntheticdata.momentumregimes import momentum_regimes
+from midone.examples.macdattacker import MacdAttacker
+from midone.attackers.calibratedattacker import CalibratedAttacker
+from midone.syntheticdata.momentumregimes import momentum_regimes
 from pprint import pprint
 
 if __name__=='__main__':

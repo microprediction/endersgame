@@ -1,7 +1,7 @@
-from endersgame import Attacker, HORIZON, EPSILON
+from midone import Attacker, HORIZON, EPSILON
 from river import linear_model
 from collections import deque
-from endersgame import stream_generator_generator
+from midone import stream_generator_generator
 from pprint import pprint
 import pandas as pd
 import pandas_ta as ta
@@ -153,7 +153,7 @@ class TechnicalIndicatorAttacker(Attacker):
 
 def run_technical_indicator_attacker(max_history_len: int = 500, threshold: float = 1.0, burn_in: int = 1000,
                                      category: str = 'train', max_streams: int = 10000):
-    from endersgame.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
+    from midone.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
 
     gen_gen = stream_generator_generator(category=category)
     attacker = TechnicalIndicatorAttacker(max_history_len=max_history_len, threshold=threshold, burn_in=burn_in)

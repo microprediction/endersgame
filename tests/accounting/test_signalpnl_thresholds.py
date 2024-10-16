@@ -3,7 +3,7 @@ from signal import signal
 # test_signalpnl.py
 
 import numpy as np
-from endersgame.accounting.stdsignalpnl import StdSignalPnl
+from midone.accounting.stdsignalpnl import StdSignalPnl
 from typing import List
 
 

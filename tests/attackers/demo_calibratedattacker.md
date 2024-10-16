@@ -1,6 +1,6 @@
 # Calibrated Attacker Demo
 
-The script [demo_calibratedattacker.py](https://github.com/microprediction/endersgame/blob/main/tests/attackers/demo_calibratedattacker.py) demo illustrates how to create and use a `CalibratedAttacker`, which adjusts the decisions of a "raw" attacker based on empirical performance. In this example, the uncalibrated attacker generates real-valued signals based on a moving average of price changes, while the calibrated attacker standardizes these signals and makes empirical decisions.
+The script [demo_calibratedattacker.py](https://github.com/microprediction/midone/blob/main/tests/attackers/demo_calibratedattacker.py) demo illustrates how to create and use a `CalibratedAttacker`, which adjusts the decisions of a "raw" attacker based on empirical performance. In this example, the uncalibrated attacker generates real-valued signals based on a moving average of price changes, while the calibrated attacker standardizes these signals and makes empirical decisions.
 
 ## Description
 
@@ -11,5 +11,4 @@ The script simulates a time series of price changes and plots both the raw signa
 
 ## Plot Example
 
-![Calibrated Attacker Plot](https://github.com/microprediction/endersgame/blob/main/assets/images/calibratedattacker.png)
-
+![Calibrated Attacker Plot](https://github.com/microprediction/midone/blob/main/assets/images/calibratedattacker.png)

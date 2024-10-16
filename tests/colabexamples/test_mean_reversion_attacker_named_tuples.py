@@ -1,8 +1,8 @@
 from collections import namedtuple
-from endersgame.datasources.streamgenerator import stream_generator
+from midone.datasources.streamgenerator import stream_generator
 import numpy as np
 from pprint import pprint
-from endersgame.attackers.attackerwithpnl import AttackerWithPnl
+from midone.attackers.attackerwithpnl import AttackerWithPnl
 
 # Define named tuples for State and Params
 State = namedtuple('State', ['running_avg', 'current_value'])

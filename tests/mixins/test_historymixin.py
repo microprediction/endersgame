@@ -3,7 +3,7 @@
 import pytest
 import json
 from collections import deque
-from endersgame.mixins.historymixin import HistoryMixin  # Adjust the import path as needed
+from midone.mixins.historymixin import HistoryMixin  # Adjust the import path as needed
 
 
 class DummyClass(HistoryMixin):

@@ -1,6 +1,17 @@
+# extracted from a notebook
+
+## third-party
+crunch-cli  # alias of crunch
+midone
 numpy
+pandas
 river
-requests
-statsmodels
+scikit-optimize  # alias of skopt
+scipy
+tqdm
 
-
+## standard
+#datetime
+#json
+#os
+#typing

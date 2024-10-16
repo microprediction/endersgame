@@ -1,5 +1,5 @@
 
-from endersgame.syntheticdata.momentumregimes import momentum_regimes
+from midone.syntheticdata.momentumregimes import momentum_regimes
 import numpy as np
 
 

@@ -1,4 +1,4 @@
-from endersgame.gameconfig import HORIZON
+from midone.gameconfig import HORIZON
 from typing import Dict
 
 class BaseAttacker:

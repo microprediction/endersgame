@@ -1,6 +1,6 @@
 from river import base, stats
 import numpy as np
-from endersgame.riverstats.fewmean import FEWMean
+from midone.riverstats.fewmean import FEWMean
 
 
 class MACD(base.Transformer):
@@ -90,4 +90,3 @@ class MACD(base.Transformer):
         if self.line_value is None or self.signal_line_value is None:
             return {'macd_line': float('nan'), 'signal_line': float('nan')}
         return {'macd_line': self.line_value, 'signal_line': self.signal_line_value}
-

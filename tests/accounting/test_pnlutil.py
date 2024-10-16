@@ -1,4 +1,4 @@
-from endersgame.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
+from midone.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
 
 
 def test_zero_pnl_summary():

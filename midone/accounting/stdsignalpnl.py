@@ -1,10 +1,10 @@
-# endersgame/accounting/stdsignalpnl.py
+# midone/accounting/stdsignalpnl.py
 
 import numpy as np
 import math
-from endersgame import EPSILON
-from endersgame.riverstats.fewvar import FEWVar
-from endersgame.riverstats.fewmean import FEWMean
+from midone import EPSILON
+from midone.riverstats.fewvar import FEWVar
+from midone.riverstats.fewmean import FEWMean
 
 
 class StdSignalPnl:
@@ -245,5 +245,3 @@ class StdSignalPnl:
                 instance.pnl[threshold]['negative']['pending_signals'] = pnl_entry['negative']['pending_signals']
 
         return instance
-
-

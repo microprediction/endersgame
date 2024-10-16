@@ -1,8 +1,8 @@
-from endersgame import Attacker, HORIZON, EPSILON
+from midone import Attacker, HORIZON, EPSILON
 from river import linear_model
 from collections import deque
-from endersgame import Attacker
-from endersgame import stream_generator_generator
+from midone import Attacker
+from midone import stream_generator_generator
 from pprint import pprint
 
 
@@ -104,7 +104,7 @@ class RegressionAttacker(Attacker):
 
 
 def run_regression_attacker(num_lags:int, threshold:float=1.0, burn_in:int=500, category:str= 'train', max_streams=10000):
-    from endersgame.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
+    from midone.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
     gen_gen = stream_generator_generator(category=category)
     attacker = RegressionAttacker(num_lags=num_lags, threshold=threshold, burn_in=burn_in)
     total_pnl = zero_pnl_summary()

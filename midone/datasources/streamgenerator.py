@@ -1,5 +1,5 @@
 import csv
-from endersgame.datasources.streamurl import stream_url
+from midone.datasources.streamurl import stream_url
 
 """
        Just for convenience, here is a float generator with a limited amount of data stored on github

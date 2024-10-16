@@ -1,6 +1,6 @@
 # PnL Tracker
 
-The class [PnL](https://github.com/microprediction/endersgame/blob/main/endersgame/accounting/pnl.py) tracks and logs profit and loss (PnL) for decisions made by an attacker based on future price movements.
+The class [PnL](https://github.com/microprediction/midone/blob/main/midone/accounting/pnl.py) tracks and logs profit and loss (PnL) for decisions made by an attacker based on future price movements.
 
 ## Features
 - **Decision Tracking**: Logs non-zero decisions and resolves them when future data becomes available.
@@ -49,8 +49,6 @@ For example if the prediction is driven by x(5) and received between x(5) and x(
 ## See also 
 
  - Colab [notebooks](https://github.com/microprediction/endersnotebooks) demonstrating `Attacker`
- - Recommended [attacker.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attacker.md)
- - Attacker [FAQ.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md)
+ - Recommended [attacker.md](https://github.com/microprediction/midone/blob/main/midone/attackers/attacker.md)
+ - Attacker [FAQ.md](https://github.com/microprediction/midone/blob/main/midone/attackers/FAQ.md)
  - The tournament at [CrunchDAO.com](https://www.crunchdao.com) where you can use them to win rewards. 
-
-

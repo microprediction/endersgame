@@ -1,8 +1,8 @@
 from collections import defaultdict
 
 import pytest
-from endersgame.accounting.pnl import Pnl
-from endersgame import EPSILON, DEFAULT_TRADE_BACKOFF
+from midone.accounting.pnl import Pnl
+from midone import EPSILON, DEFAULT_TRADE_BACKOFF
 
 def test_initial_state():
     """Test if the initial state of the PnL class is correct."""

@@ -1,4 +1,4 @@
-from endersgame.syntheticdata.momentumregimes import momentum_regimes
+from midone.syntheticdata.momentumregimes import momentum_regimes
 
 
 if __name__=='__main__':

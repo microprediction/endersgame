@@ -1,9 +1,9 @@
-# endersgame/attackers/testattacker.py
+# midone/attackers/testattacker.py
 
 from typing import Dict, Any
 import pytest
-from endersgame.attackers.baseattacker import BaseAttacker
-from endersgame.gameconfig import HORIZON
+from midone.attackers.baseattacker import BaseAttacker
+from midone.gameconfig import HORIZON
 
 class ExampleAttacker(BaseAttacker):
     """
@@ -54,7 +54,7 @@ class ExampleAttacker(BaseAttacker):
 
 
 
-# endersgame/tests/attackers/test_baseattacker.py
+# midone/tests/attackers/test_baseattacker.py
 
 
 def test_testattacker_instantiation():

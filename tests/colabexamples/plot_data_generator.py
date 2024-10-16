@@ -1,5 +1,5 @@
 def demo():
-    from endersgame.datasources.streamgenerator import stream_generator
+    from midone.datasources.streamgenerator import stream_generator
     gen = stream_generator(stream_id=0, category='train')  # 'train', 'test'
 
     xs = list()

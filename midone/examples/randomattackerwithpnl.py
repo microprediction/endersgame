@@ -1,4 +1,4 @@
-from endersgame.attackers.attackerwithpnl import AttackerWithPnl
+from midone.attackers.attackerwithpnl import AttackerWithPnl
 import numpy as np
 
 

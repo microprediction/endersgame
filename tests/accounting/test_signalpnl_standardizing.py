@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from endersgame.accounting.stdsignalpnl import StdSignalPnl
+from midone.accounting.stdsignalpnl import StdSignalPnl
 
 
 def test_initialization_defaults():
@@ -51,4 +51,3 @@ def test_zero_variance_handling():
     expected_standardized_signal = 0.0
     assert pnl.current_standardized_signal == expected_standardized_signal, \
         f"Expected standardized signal {expected_standardized_signal}, got {pnl.current_standardized_signal}"
-

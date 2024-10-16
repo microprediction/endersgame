@@ -1,10 +1,10 @@
-from endersgame.attackers.attackerwithpnl import AttackerWithPnl
-from endersgame.mixins.historymixin import HistoryMixin
-from endersgame import EPSILON
-from endersgame.gameconfig import HORIZON, DEFAULT_HISTORY_LEN
+from midone.attackers.attackerwithpnl import AttackerWithPnl
+from midone.mixins.historymixin import HistoryMixin
+from midone import EPSILON
+from midone.gameconfig import HORIZON, DEFAULT_HISTORY_LEN
 from typing import Dict, Any
 import numpy as np
-from endersgame.accounting.pnl import DEFAULT_TRADE_BACKOFF
+from midone.accounting.pnl import DEFAULT_TRADE_BACKOFF
 
 ATTACKER_DESCRIPTION = """
 
@@ -117,6 +117,3 @@ if __name__=='__main__':
             print(f'Buy now at time {k} !', flush=True)
         if decision<0:
             print(f'Sell now at time {k}!')
-
-
-

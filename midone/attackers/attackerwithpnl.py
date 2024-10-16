@@ -1,7 +1,7 @@
-from endersgame.accounting.pnl import Pnl
-from endersgame.attackers.baseattacker import BaseAttacker
-from endersgame import EPSILON, DEFAULT_TRADE_BACKOFF
-from endersgame.gameconfig import HORIZON
+from midone.accounting.pnl import Pnl
+from midone.attackers.baseattacker import BaseAttacker
+from midone import EPSILON, DEFAULT_TRADE_BACKOFF
+from midone.gameconfig import HORIZON
 from typing import Dict, Any
 
 class AttackerWithPnl(BaseAttacker):

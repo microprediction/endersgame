@@ -1,10 +1,10 @@
 
 # https://github.com/microprediction/endersnotebooks/blob/main/momentum_attacker.ipynb
 
-from endersgame import Attacker
-from endersgame import stream_generator_generator
+from midone import Attacker
+from midone import stream_generator_generator
 from pprint import pprint
-from endersgame import FEWMean, FEWVar
+from midone import FEWMean, FEWVar
 import math
 
 class MyAttacker(Attacker):
@@ -39,7 +39,7 @@ class MyAttacker(Attacker):
              return 0
 
 def test_momentum_attacker():
-    from endersgame.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
+    from midone.accounting.pnlutil import zero_pnl_summary, add_pnl_summaries
     gen_gen = stream_generator_generator(category='test')
     attacker = MyAttacker()
     total_pnl = zero_pnl_summary()

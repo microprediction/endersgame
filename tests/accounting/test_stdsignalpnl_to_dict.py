@@ -1,4 +1,4 @@
-from endersgame.accounting.stdsignalpnl import StdSignalPnl
+from midone.accounting.stdsignalpnl import StdSignalPnl
 
 
 def test_stdsignalpnl_to_dict():

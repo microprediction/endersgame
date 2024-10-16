@@ -1,4 +1,4 @@
-from endersgame.riverstats.fewmean import FEWMean
+from midone.riverstats.fewmean import FEWMean
 
 
 def finite_ewa(xs, fading_factor=0.1):

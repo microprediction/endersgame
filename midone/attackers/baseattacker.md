@@ -36,7 +36,7 @@ for x in enumerate(xs):
     print(f"Price {x}, Prediction {prediction}")
 ```
 
-See [FAQ](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md) for why we *don't* recommend implementing `tick_and_predict` explicitly. 
+See [FAQ](https://github.com/microprediction/midone/blob/main/midone/attackers/FAQ.md) for why we *don't* recommend implementing `tick_and_predict` explicitly. 
 
 ## Deployment
 
@@ -48,8 +48,8 @@ history, train it and do whatever you like. When you are happy with the result y
 As might be inferred from the discussion of the `predict` method in the FAQ below, attackers are judged by their ability to profit from correctly predicting the directional
 change in a sequence over the next `horizon` steps, with a reward equal to the change in value. For example, if the attacker signals "up" at or before observation index $t$ and the value at $t+k$ is indeed higher than the value at $t$, then the attacker’s decision is considered profitable. The profit can be measured as $x_{t+k} - x_t -\epsilon$. Conversely, a loss might be incurred if the direction chosen is wrong, or the change in the right direction less than $\epsilon$. 
 
-Derive from [AttackerWithSimplePnl](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attackerwithsimplepnl.py) to get a reasonable idea in advance of what that performance might be. 
+Derive from [AttackerWithSimplePnl](https://github.com/microprediction/midone/blob/main/midone/attackers/attackerwithsimplepnl.py) to get a reasonable idea in advance of what that performance might be. 
 
 ## Design and responsibilities  
 
-It is strongly recommended that you read the [FAQ](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md). 
+It is strongly recommended that you read the [FAQ](https://github.com/microprediction/midone/blob/main/midone/attackers/FAQ.md). 

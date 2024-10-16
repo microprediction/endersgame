@@ -2,7 +2,7 @@
 
 Utilities to help build `Attackers` that detect small departures from martingality in time-series. 
 
-### [Crunch](https://www.crunchdao.com/) Contest notebooks
+### [Crunch Mid-One Contest](https://www.crunchdao.com/) notebooks
 
 Play the game! You might win some cash or even have ongoing upside. 
 

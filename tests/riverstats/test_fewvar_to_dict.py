@@ -1,4 +1,4 @@
-from endersgame.riverstats.fewvar import FEWVar  # Adjust the import path to match your project structure
+from midone.riverstats.fewvar import FEWVar  # Adjust the import path to match your project structure
 
 
 def test_fewvar_to_dict():

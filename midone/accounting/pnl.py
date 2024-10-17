@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple
 import numpy as np
 from collections import OrderedDict
-from endersgame import EPSILON
+from midone import EPSILON
 
 DEFAULT_TRADE_BACKOFF = 1  # The minimum time between non-zero decisions
 

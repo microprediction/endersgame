@@ -1,5 +1,5 @@
 import numpy as np
-from endersgame.attackers.baseattacker import BaseAttacker
+from midone.attackers.baseattacker import BaseAttacker
 
 
 class MeanReversionAttacker(BaseAttacker):

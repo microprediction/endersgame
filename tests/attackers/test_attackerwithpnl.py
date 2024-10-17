@@ -1,10 +1,10 @@
 # tests/attackers/test_attackerwithpnl.py
 
 import pytest
-from endersgame.attackers.attackerwithpnl import AttackerWithPnl
-from endersgame.accounting.pnl import Pnl
-from endersgame.attackers.baseattacker import BaseAttacker
-from endersgame import EPSILON, DEFAULT_TRADE_BACKOFF
+from midone.attackers.attackerwithpnl import AttackerWithPnl
+from midone.accounting.pnl import Pnl
+from midone.attackers.baseattacker import BaseAttacker
+from midone import EPSILON, DEFAULT_TRADE_BACKOFF
 
 class ConcreteAttackerWithPnl(AttackerWithPnl):
     def __init__(self, epsilon: float = EPSILON, backoff: int = DEFAULT_TRADE_BACKOFF):

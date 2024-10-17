@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from endersgame.accounting.stdsignalpnl import StdSignalPnl
+from midone.accounting.stdsignalpnl import StdSignalPnl
 import math
 import numpy as np
 

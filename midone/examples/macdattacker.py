@@ -1,5 +1,5 @@
-from endersgame.attackers.attackerwithpnl import AttackerWithPnl
-from endersgame.rivertransformers.macd import MACD
+from midone.attackers.attackerwithpnl import AttackerWithPnl
+from midone.rivertransformers.macd import MACD
 from river import stats
 import numpy as np
 import math
@@ -86,5 +86,3 @@ class MacdAttacker(AttackerWithPnl):
         if abs(decision):
             self.abstention_count = 0
         return decision
-
-

@@ -1,5 +1,5 @@
 import pytest
-from endersgame.accounting.pnl import Pnl
+from midone.accounting.pnl import Pnl
 
 def test_pnl_to_dict():
     # Initialize and update PnL

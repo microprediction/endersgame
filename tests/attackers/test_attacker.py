@@ -3,9 +3,9 @@ from typing import Dict, Any
 
 import pytest
 from collections import deque
-from endersgame.attackers.attacker import Attacker
-from endersgame.accounting.pnl import Pnl
-from endersgame.gameconfig import EPSILON, HORIZON, DEFAULT_HISTORY_LEN, DEFAULT_TRADE_BACKOFF
+from midone.attackers.attacker import Attacker
+from midone.accounting.pnl import Pnl
+from midone.gameconfig import EPSILON, HORIZON, DEFAULT_HISTORY_LEN, DEFAULT_TRADE_BACKOFF
 
 class ExampleAttacker(Attacker):
     def __init__(self, epsilon=EPSILON, max_history_len=DEFAULT_HISTORY_LEN, backoff=DEFAULT_TRADE_BACKOFF):

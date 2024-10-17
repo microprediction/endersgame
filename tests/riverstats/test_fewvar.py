@@ -1,5 +1,5 @@
 
-from endersgame.riverstats.fewvar import FEWVar
+from midone.riverstats.fewvar import FEWVar
 
 
 def finite_sample_fewvar(xs, fading_factor=0.1):
@@ -37,4 +37,3 @@ def test_fewvar():
         ewvar_calc.update(x)
     print("Exponentially Weighted Mean:", ewvar_calc.get_mean())
     print("Exponentially Weighted Variance:", ewvar_calc.get())
-

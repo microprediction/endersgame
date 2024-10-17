@@ -1,14 +1,14 @@
 
 # Frequently Asked Questions
 
-When implementing an [attacker](https://github.com/microprediction/endersgame/tree/main/endersgame/attackers) keep the following in mind. 
+When implementing an [attacker](https://github.com/microprediction/midone/tree/main/midone/attackers) keep the following in mind. 
 
 ### FAQ 1: Should I implement `tick_and_predict` ? 
 Only if you really want to. It's already in the base class. 
 
 You *could* overwrite it or even just create a fresh class with a `tick_and_predict` method, if that's your fancy. However, the reason we
 advocate implementing `tick` and `predict` separately and leaving the base `tick_and_predict` alone is that
-it will make it easier to swap out your use of `BaseAttacker` as parent class for something with more functionality such as [AttackerWithSimplePnl](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attackerwithsimplepnl.py) where
+it will make it easier to swap out your use of `BaseAttacker` as parent class for something with more functionality such as [AttackerWithSimplePnl](https://github.com/microprediction/midone/blob/main/midone/attackers/attackerwithsimplepnl.py) where
 the `tick_and_predict` logic is a fraction more involved than just `tick` then `predict`. 
 
 ### FAQ 2: What should `tick` do? Should it log history?
@@ -17,7 +17,7 @@ There is no requirement on what `tick` should do (though it must satisfy the met
 point in the sequence *quickly*, somehow. Presumably this updates the models state - whatever you choose that state to be. 
 
 For some people the state might include a fixed-length buffer of recent values of the series. We generally encourage attackers to be designed using incremental calculations rather than repeating the same calculation on the entire
-history every data point, but that's ultimately your choice and we've made the second pattern easy with the `HistoryMixin` class. See [BaseAttackerWithHistoryMixin](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/baseattackerwithhistorymixin.py) for this
+history every data point, but that's ultimately your choice and we've made the second pattern easy with the `HistoryMixin` class. See [BaseAttackerWithHistoryMixin](https://github.com/microprediction/midone/blob/main/midone/attackers/baseattackerwithhistorymixin.py) for this
 pattern. If you go down this path, you can very easily create an attacker merely by implementing the method that takes past values and returns a decision.
 
 ### FAQ 2: How is the output of `predict` interpreted? 
@@ -38,7 +38,7 @@ In all other cases, the attacker should zero to indicate that whatever opinion i
 No. It makes not difference in the game. Only the sign is used. 
 
 But ... you might want to use combinations of attackers in whatever patterns you devise, and in these arrangements it might well be beneficial to return a continuous signal rather than just 1, -1 or 0. An example is
-provided for you by the [CalibratedAttacker](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/calibratedattacker.py) that makes it easy to wrap an
+provided for you by the [CalibratedAttacker](https://github.com/microprediction/midone/blob/main/midone/attackers/calibratedattacker.py) that makes it easy to wrap an
 attacker with some basic economic empirical logic, so that it only actually trades when the signal is strong enough to indicate that in the past such a trade would have been profitable.  
 
 ### FAQ 4: What does the `horizon` parameter mean? Will it change? 
@@ -60,13 +60,6 @@ for the first 500 data points received.
 ## See also 
 
  - Colab [notebooks](https://github.com/microprediction/endersnotebooks) demonstrating `Attacker`
- - Recommended [attacker.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/attacker.md)
- - Attacker [FAQ.md](https://github.com/microprediction/endersgame/blob/main/endersgame/attackers/FAQ.md)
+ - Recommended [attacker.md](https://github.com/microprediction/midone/blob/main/midone/attackers/attacker.md)
+ - Attacker [FAQ.md](https://github.com/microprediction/midone/blob/main/midone/attackers/FAQ.md)
  - The tournament at [CrunchDAO.com](https://www.crunchdao.com) where you can use them to win rewards. 
-
-
-
-
-
-
-
